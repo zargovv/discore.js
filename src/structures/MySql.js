@@ -62,9 +62,11 @@ module.exports = class MySql {
     if (typeof name !== 'string') {
       throw new TypeError('Name argument must be a string.');
     }
-    name = name.toLowerCase();
-    if (this._models.includes(name)) {
+    if (this._models.find(e => e.toLowerCase() === name.toLowerCase())) {
       throw new ReferenceError(`Model with name ${name} already exists`);
+    }
+    if ({}.hasOwnProperty.call(this, name)) {
+      throw new ReferenceError(`Couldn't create model with name ${name}.`);
     }
     if (typeof options !== 'object') {
       throw new TypeError('Options argument must be an object.');
@@ -85,7 +87,12 @@ module.exports = class MySql {
     options._id = 'VARCHAR(20)';
     defaultOptions._id = undefined;
     this._models.push(name);
-    this[name] = new Model(this.db, name, options, defaultOptions);
+    this[name] = new Model(
+      this.db,
+      name.toLowerCase(),
+      options,
+      defaultOptions
+    );
     return this;
   }
 
