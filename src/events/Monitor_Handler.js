@@ -6,7 +6,6 @@ module.exports = class extends Event {
   }
 
   async run(message) {
-    this.client._private.monitors.forEach(e => e._run(message));
     this.client.monitors.forEach(e => e._run(message));
   }
 };
