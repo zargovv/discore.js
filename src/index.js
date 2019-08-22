@@ -9,4 +9,6 @@ module.exports = {
   PermissionLevels: require('./structures/PermissionLevels'),
   Pages: require('./structures/Pages'),
   MySql: require('./structures/MySql'),
+  Monitor: require('./structures/Monitor'),
+  Trigger: require('./structures/Trigger'),
 };

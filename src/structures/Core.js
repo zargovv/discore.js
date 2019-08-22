@@ -11,6 +11,8 @@ const Config = require('./Config');
 const defaultOptions = {
   eventsFolder: 'events',
   commandsFolder: 'commands',
+  monitorsFolder: 'monitors',
+  triggersFolder: 'triggers',
   token: null,
   prefix: undefined,
   spaceAfterPrefix: false,
@@ -31,6 +33,8 @@ module.exports = class extends Client {
     const thisOptions = {
       eventsFolder: options.eventsFolder,
       commandsFolder: options.commandsFolder,
+      monitorsFolder: options.monitorsFolder,
+      triggersFolder: options.triggersFolder,
       token: options.token,
       prefix: options.prefix,
       spaceAfterPrefix: options.spaceAfterPrefix,
@@ -43,6 +47,8 @@ module.exports = class extends Client {
     };
     delete options.eventsFolder;
     delete options.commandsFolder;
+    delete options.monitorsFolder;
+    delete options.triggersFolder;
     delete options.token;
     delete options.prefix;
     delete options.spaceAfterPrefix;
@@ -94,6 +100,8 @@ module.exports = class extends Client {
     this._private.sentPages = new Collection();
     this._private.eventsFolder = thisOptions.eventsFolder;
     this._private.commandsFolder = thisOptions.commandsFolder;
+    this._private.monitorsFolder = thisOptions.monitorsFolder;
+    this._private.triggersFolder = thisOptions.triggersFolder;
     this._private.fullpath = require.main.filename;
     this._private.filepath = path.basename(require.main.filename);
     this._private.dirpath = path.dirname(require.main.filename);
@@ -129,7 +137,9 @@ module.exports = class extends Client {
     }
 
     new Store(this, 'event', path.join(__dirname, '../events'));
+    new Store(this, 'monitor', path.join(__dirname, '../monitors'));
     new Store(this, 'command');
+    new Store(this, 'trigger');
 
     if (thisOptions.token) this.login(thisOptions.token);
   }

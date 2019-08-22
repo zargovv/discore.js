@@ -1,6 +1,19 @@
 # Change Log
 
-## [0.8.0] - dev
+## [0.9.0] - dev
+
+### Added
+
+- Monitor structure.
+- Trigger structure.
+
+### Changed
+
+### Fixed
+
+- Now you won't get error if there is no events or commands folder created.
+
+## [0.8.0] - 2019-08-22
 
 ### Added
 

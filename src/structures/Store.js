@@ -37,7 +37,7 @@ function getFiles(filename, maindir, thisdir) {
  * @extends {Collection}
  */
 module.exports = class Store extends Collection {
-  constructor(client, type, defaults = null) {
+  constructor(client, type, defaults = null, _private = false) {
     super();
 
     this.client = client;
@@ -48,7 +48,7 @@ module.exports = class Store extends Collection {
     if (defaults) {
       this.init(defaults, path.basename(defaults));
     }
-    this.init(this.filePath, this.folderName);
+    this.init(this.filePath, this.folderName, _private);
   }
 
   /**
@@ -83,7 +83,7 @@ module.exports = class Store extends Collection {
    * @param {String} foldername
    * @returns {Store}
    */
-  init(filepath, foldername, onlyfile = null) {
+  init(filepath, foldername, onlyfile = null, _private = false) {
     try {
       if (typeof onlyfile === 'string') {
         filepath = path.dirname(onlyfile);
@@ -94,6 +94,7 @@ module.exports = class Store extends Collection {
       let dir = files.find(e => e === foldername);
       if (!dir) return;
       dir = path.join(dirPath, dir);
+      if (!fs.existsSync(dir)) return;
       const stat = fs.statSync(dir);
       if (!stat.isDirectory()) return;
       files = getFiles(dir);
