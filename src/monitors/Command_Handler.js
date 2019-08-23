@@ -45,7 +45,7 @@ module.exports = class extends Monitor {
     if (ignoreCase) cmd = cmd.toLowerCase();
     const filter = e => e.key === cmd || e.aliases.includes(cmd);
     const command = this.client.commands.find(filter);
-    if (!command) return this.client.monitors.forEach(e => e._run(message));
+    if (!command) return this.client.triggers.forEach(e => e._run(message));
     const permTest = await this.client.permLevels.test(
       command.permLevel,
       message,
