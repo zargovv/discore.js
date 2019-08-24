@@ -290,11 +290,11 @@ this.client.events.load('./events/event');
 this.client.commands.load('./commands/command');
 
 this.client.events.get('event_id');
-this.client.events.get('event_name'); // Same as previus example
+this.client.events.get('event_name'); // Same as previous example
 
 this.client.commands.get('command_id');
-this.client.commands.get('command_name'); // Same as previus example
-this.client.commands.get('command_alias'); // Same as previus example
+this.client.commands.get('command_name'); // Same as previous example
+this.client.commands.get('command_alias'); // Same as previous example
 ```
 
 ### Permission Levels
@@ -310,7 +310,7 @@ permLevels
   .add(0, true, msg => msg.author.id === '1') // Throws error.
   // Permissions Level 1 is true only if message author id is '1'
   .add(1, false, msg => msg.author.id === '1')
-  // Same as previus example
+  // Same as previous example
   .addLevel(2, false, (msg, client) => {
     return msg.author.id === client.user.id;
   });
@@ -345,7 +345,7 @@ Their structure:
 const { Pages, Embed } = require('discore.js');
 
 const pages = new Pages(this.client, {
-  prevPage: '⏮', // Emoji which is used to switch to the previus page.
+  prevPage: '⏮', // Emoji which is used to switch to the previous page.
   nextPage: '⏭', // Emoji which is used to switch to the next page.
   filter: (reaction, user) => user.id === message.author.id, // Example.
 });
@@ -515,7 +515,7 @@ db.addModel('modelName', data);
 ##### hasOne()
 
 ```js
-// Working with model from previus example.
+// Working with model from previous example.
 // You can use `db['modelName']`
 
 // Searches for document with `id` of '123'.
@@ -531,7 +531,7 @@ console.log(typeof res3); // Same.
 ##### findOne()
 
 ```js
-// Working with model from previus example.
+// Working with model from previous example.
 // You can use `db['modelName']` or `db.modelName`
 
 // Searches for document with `id` of '123'.
@@ -574,7 +574,7 @@ db.modelName.deleteOne({ id: '3213' });
 */
 db.modelName.deleteOne('id', '3212');
 
-// Same as previus example.
+// Same as previous example.
 db.modelName.deleteOne(val => val.id === '3212');
 ```
 
@@ -695,7 +695,7 @@ db.addModel('modelName', data);
 ##### hasOne()
 
 ```js
-// Working with model from previus example.
+// Working with model from previous example.
 // You can use `db['modelName']`
 
 // Searches for document with `id` of '123'.
@@ -711,7 +711,7 @@ console.log(typeof res3); // Same.
 ##### findOne()
 
 ```js
-// Working with model from previus example.
+// Working with model from previous example.
 // You can use `db['modelName']` or `db.modelName`
 
 // Searches for document with `id` of '123'.
@@ -754,7 +754,7 @@ db.modelName.deleteOne({ id: '3213' });
 */
 db.modelName.deleteOne('id', '3212');
 
-// Same as previus example.
+// Same as previous example.
 db.modelName.deleteOne(val => val.id === '3212');
 ```
 
