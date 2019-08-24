@@ -33,8 +33,11 @@ module.exports = class extends Monitor {
         if (matched) matched = matched[0];
       }
     }
-    if (!matched) return;
-    if (typeof matched === 'string' && !content.startsWith(matched)) return;
+    if (!matched) return this.client.triggers.forEach(e => e._run(message));
+    if (typeof matched === 'string' && !content.startsWith(matched)) {
+      this.client.triggers.forEach(e => e._run(message));
+      return;
+    }
     if (matched instanceof Array) matched = matched[0];
     let args = message.content.slice(matched.length);
     if (splitArgs) args = args.split(splitArgs);
