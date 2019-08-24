@@ -92,11 +92,11 @@ module.exports = class Store extends Collection {
       const dirPath = path.dirname(filepath);
       let files = fs.readdirSync(dirPath);
       let dir = files.find(e => e === foldername);
-      if (!dir) return;
+      if (!dir) return this;
       dir = path.join(dirPath, dir);
-      if (!fs.existsSync(dir)) return;
+      if (!fs.existsSync(dir)) return this;
       const stat = fs.statSync(dir);
-      if (!stat.isDirectory()) return;
+      if (!stat.isDirectory()) return this;
       files = getFiles(dir);
       if (typeof onlyfile === 'string') {
         files = [files.find(e => e.path === onlyfile)];
