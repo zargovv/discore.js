@@ -7,6 +7,7 @@
       <a href="https://www.npmjs.com/package/discore.js">
         <img src="https://img.shields.io/npm/dt/discore.js.svg" alt="npm downloads">
       </a>
+<a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fzargovv%2Fdiscore.js?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fzargovv%2Fdiscore.js.svg?type=shield"/></a>
       <a href="https://www.npmjs.com/package/discore.js">
         <img src="https://img.shields.io/snyk/vulnerabilities/npm/discore.js" alt="npm vulnerabilities">
       </a>
@@ -788,3 +789,7 @@ db.modelName.upsertOne({ id: '3213' }, { messageCount: 2 });
 db.modelName.upsertOne('id', '3212', { messageCount: 2 });
 db.modelName.upsertOne(val => val.id === '3212', { messageCount: 2 });
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fzargovv%2Fdiscore.js.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fzargovv%2Fdiscore.js?ref=badge_large)
