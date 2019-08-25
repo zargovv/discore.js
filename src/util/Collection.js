@@ -488,7 +488,7 @@ module.exports = class Collection extends Map {
    * @example collection.sort((guildA, guildB) => guildA.channels.size - guildB.channels.size);
    */
   sort(fn = (x, y) => +(x > y) || +(x === y) - 1) {
-    const entries = [...this.entries].sort((a, b) =>
+    const entries = [...this.entries()].sort((a, b) =>
       fn(a[1], b[1], a[0], b[0])
     );
     const col = new this.constructor(entries);

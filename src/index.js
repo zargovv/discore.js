@@ -9,4 +9,5 @@ module.exports = {
   PermissionLevels: require('./structures/PermissionLevels'),
   Pages: require('./structures/Pages'),
   MySql: require('./structures/MySql'),
+  Store: require('./structures/Store'),
 };
