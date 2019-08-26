@@ -11,7 +11,16 @@
 
 ### Fixed
 
+## [0.8.1] - 2019-08-25
+
+### Added
+
+### Changed
+
+### Fixed
+
 - Now you won't get error if there is no events or commands folder created.
+- Collection#sort method fixed.
 
 ## [0.8.0] - 2019-08-22
 
