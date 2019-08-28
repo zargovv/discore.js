@@ -1,6 +1,27 @@
 # Change Log
 
-## [0.8.0] - dev
+## [0.8.2] - 2019-08-28
+
+### Added
+
+### Changed
+
+### Fixed
+
+- Mongo#addModel method error.
+
+## [0.8.1] - 2019-08-25
+
+### Added
+
+### Changed
+
+### Fixed
+
+- Now you won't get error if there is no events or commands folder created.
+- Collection#sort method fixed.
+
+## [0.8.0] - 2019-08-22
 
 ### Added
 
