@@ -75,7 +75,7 @@ module.exports = class MySql {
     for (const key in options) {
       if ({}.hasOwnProperty.call(options, key)) {
         if (typeof options[key].type === 'function') {
-          options.type = options.type();
+          options[key].type = options[key].type();
         }
         if (!options[key].type.db.includes('mysql')) {
           throw new Error('Used no-sql data type for sql.');

@@ -83,7 +83,7 @@ module.exports = class Mongo {
     for (const key in options) {
       if ({}.hasOwnProperty.call(options, key)) {
         if (typeof options[key].type === 'function') {
-          options.type = options.type();
+          options[key].type = options[key].type();
         }
         if (!options[key].type.db.includes('mongo')) {
           throw new Error('Used sql data type for no-sql.');
