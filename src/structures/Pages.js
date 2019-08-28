@@ -30,7 +30,7 @@ module.exports = class Pages {
   }
 
   /**
-   * @param {...*} msgs Messages to send.
+   * @param {...any} msgs Messages to send.
    * @returns {Pages}
    */
   add(...msgs) {

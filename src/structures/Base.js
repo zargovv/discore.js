@@ -5,6 +5,7 @@ const defaultOptions = {
   key: null,
   name: null,
   id: undefined,
+  once: false,
 };
 
 module.exports = class Base {
@@ -39,6 +40,7 @@ module.exports = class Base {
     this.file = path.basename(fullpath);
     this.type = type;
     this.enabled = this._options.enabled;
+    this.once = this._options.once;
     this.key =
       this._options.key ||
       this._options.name ||
@@ -50,7 +52,9 @@ module.exports = class Base {
   }
 
   /**
-   * @param {...*} ...args
+   * @param {...any} ...args
+   * @private
+   * @async
    * @private
    */
   _run(...args) {

@@ -56,6 +56,11 @@ module.exports = class extends Monitor {
     );
     if (!permTest) return command.noPermsRun(message, args);
     if (command.cooldowns.get(message.author.id) > Date.now()) return;
+    let bool = false;
+    for (const inhibitor of this.client.inhibitors) {
+      bool = Boolean(await inhibitor._run(message, command));
+    }
+    if (bool) return;
     command.cooldowns.set(message.author.id, Date.now() + command.cooldown);
     command._run(message, args);
   }

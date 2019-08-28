@@ -1,11 +1,15 @@
 # Change Log
 
-## [0.9.0] - dev
+## [0.9.1] - dev
 
 ### Added
 
 - Monitor structure.
 - Trigger structure.
+- Inhibitor structure.
+- Command option: once.
+- Monitor option: once.
+- Trigger option: once.
 
 ### Changed
 
