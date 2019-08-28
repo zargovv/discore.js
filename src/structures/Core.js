@@ -13,6 +13,7 @@ const defaultOptions = {
   commandsFolder: 'commands',
   monitorsFolder: 'monitors',
   triggersFolder: 'triggers',
+  inhibitorsFolder: 'triggers',
   token: null,
   prefix: undefined,
   spaceAfterPrefix: false,
@@ -35,6 +36,7 @@ module.exports = class extends Client {
       commandsFolder: options.commandsFolder,
       monitorsFolder: options.monitorsFolder,
       triggersFolder: options.triggersFolder,
+      inhibitorsFolder: options.inhibitorsFolder,
       token: options.token,
       prefix: options.prefix,
       spaceAfterPrefix: options.spaceAfterPrefix,
@@ -49,6 +51,7 @@ module.exports = class extends Client {
     delete options.commandsFolder;
     delete options.monitorsFolder;
     delete options.triggersFolder;
+    delete options.inhibitorsFolder;
     delete options.token;
     delete options.prefix;
     delete options.spaceAfterPrefix;
@@ -102,6 +105,7 @@ module.exports = class extends Client {
     this._private.commandsFolder = thisOptions.commandsFolder;
     this._private.monitorsFolder = thisOptions.monitorsFolder;
     this._private.triggersFolder = thisOptions.triggersFolder;
+    this._private.inhibitorsFolder = thisOptions.inhibitorsFolder;
     this._private.fullpath = require.main.filename;
     this._private.filepath = path.basename(require.main.filename);
     this._private.dirpath = path.dirname(require.main.filename);
@@ -140,6 +144,7 @@ module.exports = class extends Client {
     new Store(this, 'monitor', path.join(__dirname, '../monitors'));
     new Store(this, 'command');
     new Store(this, 'trigger');
+    new Store(this, 'inhibitor');
 
     if (thisOptions.token) this.login(thisOptions.token);
   }
