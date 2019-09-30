@@ -37,7 +37,7 @@ function getFiles(filename, maindir, thisdir) {
  * @extends {Collection}
  */
 module.exports = class Store extends Collection {
-  constructor(client, type, defaults = null) {
+  constructor(client, type, defaults = null, _private = false) {
     super();
 
     this.client = client;
@@ -48,7 +48,7 @@ module.exports = class Store extends Collection {
     if (defaults) {
       this.init(defaults, path.basename(defaults));
     }
-    this.init(this.filePath, this.folderName);
+    this.init(this.filePath, this.folderName, _private);
   }
 
   /**
@@ -83,7 +83,7 @@ module.exports = class Store extends Collection {
    * @param {String} foldername
    * @returns {Store}
    */
-  init(filepath, foldername, onlyfile = null) {
+  init(filepath, foldername, onlyfile = null, _private = false) {
     try {
       if (typeof onlyfile === 'string') {
         filepath = path.dirname(onlyfile);
@@ -92,10 +92,20 @@ module.exports = class Store extends Collection {
       const dirPath = path.dirname(filepath);
       let files = fs.readdirSync(dirPath);
       let dir = files.find(e => e === foldername);
-      if (!dir) return;
+      if (!dir) {
+        this.client[`${this.type}s`] = this;
+        return this;
+      }
       dir = path.join(dirPath, dir);
+      if (!fs.existsSync(dir)) {
+        this.client[`${this.type}s`] = this;
+        return this;
+      }
       const stat = fs.statSync(dir);
-      if (!stat.isDirectory()) return;
+      if (!stat.isDirectory()) {
+        this.client[`${this.type}s`] = this;
+        return this;
+      }
       files = getFiles(dir);
       if (typeof onlyfile === 'string') {
         files = [files.find(e => e.path === onlyfile)];

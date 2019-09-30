@@ -70,6 +70,8 @@ const { Core } = require('discore.js');
 new Core({
   eventsFolder: 'events',
   commandsFolder: 'commands',
+  monitorsFolder: 'monitors',
+  triggersFolder: 'triggers',
   token: null,
   // To make multiple prefixes you can make an array
   // Example: ['!', '.']
@@ -125,7 +127,7 @@ module.exports = class extends Event {
       enabled: true,
       key: null, // Same as name but more important.
       name: null, // Key is going to be event name.
-      once: false, // If true, event will emitted only once.
+      once: false, // Unloads after first use if true.
       id: undefined, // UniqID if not defined. Used to get the event.
     };
     // If key and name are null then they will be defined as file name.
@@ -202,6 +204,7 @@ module.exports = class extends Command {
       permLevel: 0, // Runs noPermsRun() method if tests not passed.
       description: undefined,
       usage: undefined,
+      once: false, // Unloads after first use if true.
     };
     // If key and name are null then they will be defined as file name.
     // For example, test.js is gonna be 'test'
@@ -271,6 +274,223 @@ command
   .reload()
   .toString();
 ```
+
+### Monitors
+
+Monitors are placed in `.\monitors\`(**monitorsFolder** option).
+Runs on any message and receives message as first argument.
+For instance creating `.\monitors\Main\filter.js` will be a monitor `filter` in the `Main` category. Subcategories are also allowed and gonna be a second and more folder levels.
+
+Their structure (options argument defined with default configuration):
+
+```js
+const { Monitor } = require('discore.js');
+
+module.exports = class extends Monitor {
+  get options() {
+    return {
+      // Will run run() method if true, otherwise disabledRun() method.
+      enabled: true,
+      key: null, // Same as name but more important.
+      name: null, // Key is going to be monitor name.
+      id: undefined, // UniqID if not defined. Used to get the monitor.
+      once: false, // Unloads after first use if true.
+    };
+    // If key and name are null then they will be defined as file name.
+    // For example, filter.js is gonna be 'filter'
+  }
+
+  get customOptions() {
+    return {
+      // You can put any options you want.
+      // And use it via this.custom.
+    };
+  }
+
+  get cOptions() {
+    return {
+      // Shortcut for customOptions property.
+      /*
+        If you define both customOptions and cOptions
+        then customOptions becomes more priority
+      */
+    };
+  }
+
+  run(message) {
+    // Monitor code.
+    // Runs only if enabled.
+  }
+
+  disabledRun(message) {
+    // Same as run but runs only if disabled.
+  }
+
+  init() {
+    // Optional method. Runs on 'ready'
+    // event so you are able to use discord
+    // data via this.client.
+  }
+};
+```
+
+#### Methods
+
+- `toggle()`
+- `enable()`
+- `disable()`
+- `unload()`
+- `reload()`
+- `toString()`
+
+#### Properties
+
+- `categories`
+
+### Triggers
+
+Triggers are placed in `.\triggers\`(**triggersFolder** option).
+Runs on any message if it is not a command and receives message as first argument.
+For instance creating `.\triggers\Main\xp.js` will be a trigger `xp` in the `Main` category. Subcategories are also allowed and gonna be a second and more folder levels.
+
+Their structure (options argument defined with default configuration):
+
+```js
+const { Trigger } = require('discore.js');
+
+module.exports = class extends Trigger {
+  get options() {
+    return {
+      // Will run run() method if true, otherwise disabledRun() method.
+      enabled: true,
+      key: null, // Same as name but more important.
+      name: null, // Key is going to be trigger name.
+      id: undefined, // UniqID if not defined. Used to get the trigger.
+      once: false, // Unloads after first use if true.
+    };
+    // If key and name are null then they will be defined as file name.
+    // For example, xp.js is gonna be 'xp'
+  }
+
+  get customOptions() {
+    return {
+      // You can put any options you want.
+      // And use it via this.custom.
+    };
+  }
+
+  get cOptions() {
+    return {
+      // Shortcut for customOptions property.
+      /*
+        If you define both customOptions and cOptions
+        then customOptions becomes more priority
+      */
+    };
+  }
+
+  run(message) {
+    // Trigger code.
+    // Runs only if enabled.
+  }
+
+  disabledRun(message) {
+    // Same as run but runs only if disabled.
+  }
+
+  init() {
+    // Optional method. Runs on 'ready'
+    // event so you are able to use discord
+    // data via this.client.
+  }
+};
+```
+
+#### Methods
+
+- `toggle()`
+- `enable()`
+- `disable()`
+- `unload()`
+- `reload()`
+- `toString()`
+
+#### Properties
+
+- `categories`
+
+### Inhibitors
+
+Inhibitors are placed in `.\inhibitors\`(**inhibitorsFolder** option).
+Runs on any message if it is a command and receives message as first argument
+and command as second argument.
+For instance creating `.\inhibitors\Main\inhibit.js` will be a inhibitor `inhibit` in the `Main` category. Subcategories are also allowed and gonna be a second and more folder levels.
+
+Their structure (options argument defined with default configuration):
+
+```js
+const { Inhibitor } = require('discore.js');
+
+module.exports = class extends Inhibitor {
+  get options() {
+    return {
+      // Will run run() method if true, otherwise disabledRun() method.
+      enabled: true,
+      key: null, // Same as name but more important.
+      name: null, // Key is going to be event name.
+      id: undefined, // UniqID if not defined. Used to get the event.
+      once: false, // Unloads after first use if true.
+    };
+    // If key and name are null then they will be defined as file name.
+    // For example, inhibit.js is gonna be 'inhibit'
+  }
+
+  get customOptions() {
+    return {
+      // You can put any options you want.
+      // And use it via this.custom.
+    };
+  }
+
+  get cOptions() {
+    return {
+      // Shortcut for customOptions property.
+      /*
+        If you define both customOptions and cOptions
+        then customOptions becomes more priority
+      */
+    };
+  }
+
+  run(message, cmd) {
+    // Inhibitor code.
+    // Runs only if enabled.
+  }
+
+  disabledRun(message, cmd) {
+    // Same as run but runs only if disabled.
+  }
+
+  init() {
+    // Optional method. Runs on 'ready'
+    // event so you are able to use discord
+    // data via this.client.
+  }
+};
+```
+
+#### Methods
+
+- `toggle()`
+- `enable()`
+- `disable()`
+- `unload()`
+- `reload()`
+- `toString()`
+
+#### Properties
+
+- `categories`
 
 ### Store
 

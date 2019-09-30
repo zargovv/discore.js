@@ -10,4 +10,7 @@ module.exports = {
   Pages: require('./structures/Pages'),
   MySql: require('./structures/MySql'),
   Store: require('./structures/Store'),
+  Monitor: require('./structures/Monitor'),
+  Trigger: require('./structures/Trigger'),
+  Inhibitor: require('./structures/Inhibitor'),
 };

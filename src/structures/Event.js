@@ -1,11 +1,9 @@
 const Base = require('./Base');
 
-const defaultOptions = {
-  once: false,
-};
+const defaultOptions = {};
 
 /**
- * @extends Base
+ * @extends {Base}
  */
 module.exports = class Event extends Base {
   constructor(client, store, fullpath, options = {}) {
@@ -16,7 +14,6 @@ module.exports = class Event extends Base {
      * @private
      */
     this._options = { ...defaultOptions, ...this._options };
-    this.once = this._options.once;
     /**
      * @name Event#_listener
      * @type {Function}

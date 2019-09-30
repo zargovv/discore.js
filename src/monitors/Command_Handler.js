@@ -1,12 +1,6 @@
-const Event = require('../structures/Event');
+const Monitor = require('../structures/Monitor');
 
-module.exports = class extends Event {
-  get options() {
-    return {
-      key: 'message',
-    };
-  }
-
+module.exports = class extends Monitor {
   async run(message) {
     if (!message) return;
     if (!message.channel) return;
@@ -39,8 +33,11 @@ module.exports = class extends Event {
         if (matched) matched = matched[0];
       }
     }
-    if (!matched) return;
-    if (typeof matched === 'string' && !content.startsWith(matched)) return;
+    if (!matched) return this.client.triggers.forEach(e => e._run(message));
+    if (typeof matched === 'string' && !content.startsWith(matched)) {
+      this.client.triggers.forEach(e => e._run(message));
+      return;
+    }
     if (matched instanceof Array) matched = matched[0];
     let args = message.content.slice(matched.length);
     if (splitArgs) args = args.split(splitArgs);
@@ -51,7 +48,7 @@ module.exports = class extends Event {
     if (ignoreCase) cmd = cmd.toLowerCase();
     const filter = e => e.key === cmd || e.aliases.includes(cmd);
     const command = this.client.commands.find(filter);
-    if (!command) return;
+    if (!command) return this.client.triggers.forEach(e => e._run(message));
     const permTest = await this.client.permLevels.test(
       command.permLevel,
       message,
@@ -59,6 +56,11 @@ module.exports = class extends Event {
     );
     if (!permTest) return command.noPermsRun(message, args);
     if (command.cooldowns.get(message.author.id) > Date.now()) return;
+    let bool = false;
+    for (const inhibitor of this.client.inhibitors.values()) {
+      bool = Boolean(await inhibitor._run(message, command));
+    }
+    if (bool) return;
     command.cooldowns.set(message.author.id, Date.now() + command.cooldown);
     command._run(message, args);
   }

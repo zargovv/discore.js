@@ -2,9 +2,7 @@ const Event = require('../structures/Event');
 
 const reactionControl = class extends Event {
   get options() {
-    return {
-      key: 'raw',
-    };
+    return { key: 'raw' };
   }
 
   async run(event) {

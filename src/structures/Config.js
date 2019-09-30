@@ -15,7 +15,7 @@ module.exports = class Config extends Collection {
       throw new TypeError('Value option must be an object.');
     }
     const { prefix, splitArgs } = value;
-    if (prefix === undefined) value.prefix = '';
+    if (prefix === undefined) value.prefix = this.get(key).prefix;
     if (
       typeof prefix === 'object' &&
       !(prefix instanceof RegExp) &&
