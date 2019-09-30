@@ -19,6 +19,7 @@ module.exports = class Model {
     this.Schema = new mongoose.Schema(this.options);
     this.Model = mongoose.model(this._modelName, this.Schema, this.name);
     this._db = this.Model.db;
+    if (this._db.readyState === 1) this._toCollection();
     this._db.on('connected', () => this._toCollection());
   }
 
