@@ -3,7 +3,7 @@ const mysql = require('mysql');
 const Model = require('../util/SqlModel');
 const Types = require('../util/Types');
 
-module.exports = class MySql {
+class MySql {
   constructor(url) {
     // TODO: Options
     /**
@@ -104,4 +104,6 @@ module.exports = class MySql {
     }
     return Types;
   }
-};
+}
+
+module.exports = MySql;

@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.9.2] - 2019-10-01
+
+### Added
+
+### Fixed
+
+### Changed
+
+- Mongo#open method options argument now accepts previous options if not defined.
+
 ## [0.9.1] - 2019-09-30
 
 ### Added

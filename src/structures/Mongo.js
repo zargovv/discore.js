@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Model = require('../util/Model');
 const Types = require('../util/Types');
 
-module.exports = class Mongo {
+class Mongo {
   constructor(url, options = {}) {
     /**
      * @name Mongo#_models
@@ -48,13 +48,14 @@ module.exports = class Mongo {
    * @param {Object} options
    * @returns {*}
    */
-  open(url, options = {}) {
+  open(url, options) {
     if (!url) url = this.url;
     if (typeof url !== 'string') {
       throw new TypeError('Mongo uri must be a string.');
     }
+    if (typeof options !== 'object') options = this.options;
     this.url = url;
-    return this.connection.openUri(url, { ...this.defaultOptions, ...options });
+    return this.connection.openUri(url, options);
   }
 
   /**
@@ -105,4 +106,6 @@ module.exports = class Mongo {
     }
     return Types;
   }
-};
+}
+
+module.exports = Mongo;
