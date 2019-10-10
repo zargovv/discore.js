@@ -12,6 +12,7 @@ module.exports = class extends Monitor {
       ignoreBots,
       ignoreSelf,
       spaceAfterPrefix,
+      mentionPrefix,
     } = this.client.config.guild.get(message.guild ? message.guild.id : null);
     if (ignoreBots && message.author.bot) return;
     if (ignoreSelf && message.author.id === this.client.user.id) return;
@@ -33,6 +34,7 @@ module.exports = class extends Monitor {
         if (matched) matched = matched[0];
       }
     }
+    if (!matched && mentionPrefix) matched = `<@${this.client.user.id}>`;
     if (!matched) return this.client.triggers.forEach(e => e._run(message));
     if (typeof matched === 'string' && !content.startsWith(matched)) {
       this.client.triggers.forEach(e => e._run(message));
@@ -42,9 +44,7 @@ module.exports = class extends Monitor {
     let args = message.content.slice(matched.length);
     if (splitArgs) args = args.split(splitArgs);
     let cmd = args.shift();
-    if (!cmd && spaceAfterPrefix && args[0]) {
-      cmd = args.shift();
-    }
+    if (!cmd && spaceAfterPrefix && args[0]) cmd = args.shift();
     if (ignoreCase) cmd = cmd.toLowerCase();
     const filter = e => e.key === cmd || e.aliases.includes(cmd);
     const command = this.client.commands.find(filter);

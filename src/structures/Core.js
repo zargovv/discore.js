@@ -16,6 +16,7 @@ const defaultOptions = {
   inhibitorsFolder: 'triggers',
   token: null,
   prefix: undefined,
+  mentionPrefix: false,
   spaceAfterPrefix: false,
   splitArgs: ' ',
   ignoreCase: true,
@@ -39,6 +40,7 @@ module.exports = class extends Client {
       inhibitorsFolder: options.inhibitorsFolder,
       token: options.token,
       prefix: options.prefix,
+      mentionPrefix: options.mentionPrefix,
       spaceAfterPrefix: options.spaceAfterPrefix,
       splitArgs: options.splitArgs,
       ignoreCase: options.ignoreCase,
@@ -54,7 +56,7 @@ module.exports = class extends Client {
     delete options.inhibitorsFolder;
     delete options.token;
     delete options.prefix;
-    delete options.spaceAfterPrefix;
+    delete options.mentionPrefix;
     delete options.splitArgs;
     delete options.ignoreCase;
     delete options.permLevels;

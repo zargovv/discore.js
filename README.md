@@ -73,9 +73,14 @@ new Core({
   monitorsFolder: 'monitors',
   triggersFolder: 'triggers',
   token: null,
+
   // To make multiple prefixes you can make an array
   // Example: ['!', '.']
   prefix: undefined,
+
+  // Set to true if you want to allow @mentioning the bot used as a prefix
+  mentionPrefix: false,
+
   spaceAfterPrefix: false,
   splitArgs: ' ',
   ignoreCase: true,
@@ -1010,6 +1015,6 @@ db.modelName.upsertOne('id', '3212', { messageCount: 2 });
 db.modelName.upsertOne(val => val.id === '3212', { messageCount: 2 });
 ```
 
-
 ## License
+
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fzargovv%2Fdiscore.js.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fzargovv%2Fdiscore.js?ref=badge_large)

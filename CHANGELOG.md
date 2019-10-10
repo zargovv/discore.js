@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.9.4] - 2019-10-11
+
+### Added
+
+- ClientOptions#mentionPrefix option.
+
+### Fixed
+
+### Changed
+
+- MongoOptions#useUnifiedTopology set to true by default.
+
 ## [0.9.2] - 2019-10-01
 
 ### Added

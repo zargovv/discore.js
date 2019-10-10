@@ -21,6 +21,7 @@ class Mongo {
     }
     const defaultOptions = {
       useNewUrlParser: true,
+      useUnifiedTopology: true,
       autoIndex: false,
       reconnectTries: Number.MAX_VALUE,
       reconnectInterval: 500,
