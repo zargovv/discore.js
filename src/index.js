@@ -1,4 +1,5 @@
 module.exports = {
+  Attachment: require('discord.js').Attachment,
   Core: require('./structures/Core'),
   Collection: require('./util/Collection'),
   Command: require('./structures/Command'),
