@@ -34,7 +34,7 @@ module.exports = class extends Monitor {
         if (matched) matched = matched[0];
       }
     }
-    if (!matched && mentionPrefix) matched = `<@${this.client.user.id}>`;
+    if (!matched && mentionPrefix) matched = `<@${this.client.user.id}> `;
     if (!matched) return this.client.triggers.forEach(e => e._run(message));
     if (typeof matched === 'string' && !content.startsWith(matched)) {
       this.client.triggers.forEach(e => e._run(message));
