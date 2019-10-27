@@ -13,14 +13,18 @@ module.exports = class extends Monitor {
       ignoreSelf,
       spaceAfterPrefix,
       mentionPrefix,
+      ignorePrefixCase,
     } = this.client.config.guild.get(message.guild ? message.guild.id : null);
     if (ignoreBots && message.author.bot) return;
     if (ignoreSelf && message.author.id === this.client.user.id) return;
     let { content } = message;
-    if (ignoreCase) content = content.toLowerCase();
     let prefixes = prefix;
     let matched = null;
     if (!(prefixes instanceof Array)) prefixes = [prefixes];
+    if (ignorePrefixCase) {
+      content = content.toLowerCase();
+      prefixes = prefixes.map(e => e.toLowerCase());
+    }
     for (const _prefix of prefixes) {
       if (matched) break;
       if (typeof _prefix === 'string' && content.startsWith(_prefix)) {

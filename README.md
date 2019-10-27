@@ -84,6 +84,7 @@ new Core({
   spaceAfterPrefix: false,
   splitArgs: ' ',
   ignoreCase: true,
+  ignorePrefixCase: true,
   permLevels: new PermissionLevels(),
   ignoreSelf: true,
   ignoreBots: true,
@@ -97,8 +98,10 @@ new Core({
 this.client.config.guild.set('guild_id', {
   // Default settings:
   prefix: undefined,
+  mentionPrefix: false,
   splitArgs: ' ',
   ignoreCase: true,
+  ignorePrefixCase: true,
   permLevels: new PermissionLevels(),
   ignoreSelf: true,
   ignoreBots: true,

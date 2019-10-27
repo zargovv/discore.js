@@ -20,6 +20,7 @@ const defaultOptions = {
   spaceAfterPrefix: false,
   splitArgs: ' ',
   ignoreCase: true,
+  ignorePrefixCase: true,
   permLevels: new PermissionLevels(),
   ignoreBots: true,
   ignoreSelf: true,
@@ -44,6 +45,7 @@ module.exports = class extends Client {
       spaceAfterPrefix: options.spaceAfterPrefix,
       splitArgs: options.splitArgs,
       ignoreCase: options.ignoreCase,
+      ignorePrefixCase: options.ignorePrefixCase,
       permLevels: options.permLevels,
       ignoreBots: options.ignoreBots,
       ignoreSelf: options.ignoreSelf,
@@ -59,6 +61,7 @@ module.exports = class extends Client {
     delete options.mentionPrefix;
     delete options.splitArgs;
     delete options.ignoreCase;
+    delete options.ignorePrefixCase;
     delete options.permLevels;
     delete options.ignoreBots;
     delete options.ignoreSelf;
@@ -116,6 +119,7 @@ module.exports = class extends Client {
     this.prefix = thisOptions.prefix;
     this.splitArgs = thisOptions.splitArgs;
     this.ignoreCase = thisOptions.ignoreCase;
+    this.ignorePrefixCase = thisOptions.ignorePrefixCase;
     this.permLevels = thisOptions.permLevels;
     this.ignoreBots = thisOptions.ignoreBots;
     this.ignoreSelf = thisOptions.ignoreSelf;

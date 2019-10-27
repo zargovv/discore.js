@@ -13,4 +13,5 @@ module.exports = {
   Monitor: require('./structures/Monitor'),
   Trigger: require('./structures/Trigger'),
   Inhibitor: require('./structures/Inhibitor'),
+  Discord: require('discord.js'),
 };

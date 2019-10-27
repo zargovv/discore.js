@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.9.5] - 2019-10-27
+
+### Added
+
+- Discord property which extends whole discord.js.
+- ClientOptions#ignorePrefixCase option.
+
+### Fixed
+
+- Prefixes.
+
+### Changed
+
 ## [0.9.4] - 2019-10-11
 
 ### Added
