@@ -38,7 +38,12 @@ module.exports = class extends Monitor {
         if (matched) matched = matched[0];
       }
     }
-    if (!matched && mentionPrefix) matched = `<@${this.client.user.id}> `;
+    if (!matched && mentionPrefix) {
+      matched = `<@${this.client.user.id}> `;
+      if (message.mentions.users.first()) {
+        message.mentions.delete(message.mentions.users.keys().first());
+      }
+    }
     if (!matched) return this.client.triggers.forEach(e => e._run(message));
     if (typeof matched === 'string' && !content.startsWith(matched)) {
       this.client.triggers.forEach(e => e._run(message));
@@ -60,11 +65,12 @@ module.exports = class extends Monitor {
     );
     if (!permTest) return command.noPermsRun(message, args);
     if (command.cooldowns.get(message.author.id) > Date.now()) return;
-    let bool = false;
+    let bool = true;
     for (const inhibitor of this.client.inhibitors.values()) {
+      if (!bool) return;
       bool = Boolean(await inhibitor._run(message, command));
     }
-    if (bool) return;
+    if (!bool) return;
     command.cooldowns.set(message.author.id, Date.now() + command.cooldown);
     command._run(message, args);
   }

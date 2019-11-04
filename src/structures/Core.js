@@ -13,7 +13,7 @@ const defaultOptions = {
   commandsFolder: 'commands',
   monitorsFolder: 'monitors',
   triggersFolder: 'triggers',
-  inhibitorsFolder: 'triggers',
+  inhibitorsFolder: 'inhibitors',
   token: null,
   prefix: undefined,
   mentionPrefix: false,

@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.9.6] - 2019-11-04
+
+### Added
+
+### Fixed
+
+- Mention prefix.
+- Inhibitors.
+
+### Changed
+
+- Inhibitors should return true if you want a command to run.
+
 ## [0.9.5] - 2019-10-27
 
 ### Added
