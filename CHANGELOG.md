@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.9.7] - 2019-11-20
+
+### Added
+
+### Fixed
+
+### Changed
+
+- Now you can create mysql connection using connection options.
+
 ## [0.9.6] - 2019-11-04
 
 ### Added

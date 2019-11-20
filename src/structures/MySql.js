@@ -5,7 +5,6 @@ const Types = require('../util/Types');
 
 class MySql {
   constructor(url) {
-    // TODO: Options
     /**
      * @name MySql#_models
      * @type {Array<Model>}
@@ -32,9 +31,9 @@ class MySql {
    */
   open(url) {
     if (!url) url = this.url;
-    if (typeof url !== 'string') {
-      throw new TypeError('MySql uri must be a string.');
-    }
+    // if (typeof url !== 'string') {
+    //   throw new TypeError('MySql uri must be a string.');
+    // }
     this.url = url;
     this.db = mysql.createConnection(this.url);
     return new Promise((res, rej) => {

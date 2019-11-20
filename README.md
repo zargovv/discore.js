@@ -847,7 +847,7 @@ Structure:
 ```js
 const { Core, MySql } = require('discore.js');
 
-const db = new MySql('url');
+const db = new MySql(/* connection url(string) or connection options(object) */);
 
 new Core({
   db,
