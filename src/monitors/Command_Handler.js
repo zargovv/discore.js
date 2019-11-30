@@ -41,7 +41,7 @@ module.exports = class extends Monitor {
     if (!matched && mentionPrefix) {
       matched = `<@${this.client.user.id}> `;
       if (message.mentions.users.first()) {
-        message.mentions.delete(message.mentions.users.keys().first());
+        message.mentions.delete(message.mentions.users.keys().next().value);
       }
     }
     if (!matched) return this.client.triggers.forEach(e => e._run(message));

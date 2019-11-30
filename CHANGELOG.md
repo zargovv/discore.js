@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.9.8] - 2019-11-30
+
+### Added
+
+### Fixed
+
+- Command handler fix.
+
+### Changed
+
 ## [0.9.7] - 2019-11-20
 
 ### Added
