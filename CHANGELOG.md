@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.10.1] - dev
+
+### Added
+
+- Store#search method.
+
+### Fixed
+
+- Minor bugs.
+
+### Changed
+
 ## [0.9.8] - 2019-11-30
 
 ### Added

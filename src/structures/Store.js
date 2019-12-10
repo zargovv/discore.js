@@ -33,6 +33,23 @@ function getFiles(filename, maindir, thisdir) {
   return files;
 }
 
+function match(text, query) {
+  text = String(text).toLowerCase();
+  query = String(query)
+    .toLowerCase()
+    .replace(/ /g, '');
+  let matches = 0;
+  let pos = 0;
+  text.split('').forEach(char => {
+    if (pos >= text.length) return;
+    if (char === query[pos]) {
+      matches += 1;
+      pos += 1;
+    }
+  });
+  return matches / text.length;
+}
+
 /**
  * @extends {Collection}
  */
@@ -49,6 +66,46 @@ module.exports = class Store extends Collection {
       this.init(defaults, path.basename(defaults));
     }
     this.init(this.filePath, this.folderName, _private);
+  }
+
+  /**
+   * @param {String} query
+   * @returns {Array} result
+   */
+  search(query) {
+    const data = [
+      ...this.filter(e => e.id !== e._id).map(e => ({
+        match: match(e.id, query),
+        [this.type]: e,
+      })),
+      ...this.map(e => ({
+        match: match(e.key, query),
+        [this.type]: e,
+      })),
+    ];
+    if (this.type === 'command') {
+      this.filter(
+        e => typeof e.aliases === 'object' && e.aliases instanceof Array
+      ).forEach(elem => {
+        data.push([
+          ...elem.aliases.map(e => ({
+            match: match(e, query),
+            [this.type]: e,
+          })),
+        ]);
+      });
+    }
+    return data
+      .sort((b, a) => a.match - b.match)
+      .map(e => ({
+        ...e,
+        match: Number(String(e.match).slice(0, 4)),
+      }))
+      .filter(
+        (e, i) =>
+          e.match > 0 &&
+          data.findIndex(elem => elem[this.type].id === e.id) === i
+      );
   }
 
   /**
