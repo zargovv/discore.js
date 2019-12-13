@@ -90,7 +90,7 @@ module.exports = class Store extends Collection {
         data.push(
           ...elem.aliases.map(e => ({
             match: match(e, query),
-            [this.type]: e,
+            [this.type]: elem,
           }))
         );
       });
@@ -104,7 +104,7 @@ module.exports = class Store extends Collection {
       .filter(
         (e, i) =>
           e.match > 0 &&
-          data.findIndex(elem => elem[this.type].id === e[this.type].id) === i
+          data.findIndex(elem => elem[this.type]._id === e[this.type]._id) === i
       );
   }
 
