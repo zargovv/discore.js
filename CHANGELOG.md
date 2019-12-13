@@ -5,12 +5,15 @@
 ### Added
 
 - Store#search method.
+- ClientOptions#mainPath option.
 
 ### Fixed
 
 - Minor bugs.
 
 ### Changed
+
+- Minor changes.
 
 ## [0.9.8] - 2019-11-30
 

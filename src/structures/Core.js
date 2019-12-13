@@ -1,29 +1,30 @@
 const { Client } = require('discord.js');
 const path = require('path');
 const Store = require('./Store');
-const PermissionLevels = require('./PermissionLevels');
-const Collection = require('../util/Collection');
 const Mongo = require('./Mongo');
 const MySql = require('./MySql');
-const UniqueId = require('../util/UniqueId');
 const Config = require('./Config');
+const UniqueId = require('../util/UniqueId');
+const Collection = require('../util/Collection');
+const PermissionLevels = require('./PermissionLevels');
 
 const defaultOptions = {
-  eventsFolder: 'events',
+  inhibitorsFolder: 'inhibitors',
+  spaceAfterPrefix: false,
+  ignorePrefixCase: true,
   commandsFolder: 'commands',
   monitorsFolder: 'monitors',
   triggersFolder: 'triggers',
-  inhibitorsFolder: 'inhibitors',
-  token: null,
-  prefix: undefined,
   mentionPrefix: false,
-  spaceAfterPrefix: false,
-  splitArgs: ' ',
-  ignoreCase: true,
-  ignorePrefixCase: true,
+  eventsFolder: 'events',
   permLevels: new PermissionLevels(),
+  ignoreCase: true,
   ignoreBots: true,
   ignoreSelf: true,
+  splitArgs: ' ',
+  mainPath: '.',
+  prefix: undefined,
+  token: null,
   db: null,
 };
 
@@ -34,21 +35,22 @@ module.exports = class extends Client {
   constructor(options = {}) {
     options = { ...defaultOptions, ...options };
     const thisOptions = {
-      eventsFolder: options.eventsFolder,
+      inhibitorsFolder: options.inhibitorsFolder,
+      spaceAfterPrefix: options.spaceAfterPrefix,
+      ignorePrefixCase: options.ignorePrefixCase,
       commandsFolder: options.commandsFolder,
       monitorsFolder: options.monitorsFolder,
       triggersFolder: options.triggersFolder,
-      inhibitorsFolder: options.inhibitorsFolder,
-      token: options.token,
-      prefix: options.prefix,
       mentionPrefix: options.mentionPrefix,
-      spaceAfterPrefix: options.spaceAfterPrefix,
-      splitArgs: options.splitArgs,
+      eventsFolder: options.eventsFolder,
       ignoreCase: options.ignoreCase,
-      ignorePrefixCase: options.ignorePrefixCase,
       permLevels: options.permLevels,
       ignoreBots: options.ignoreBots,
       ignoreSelf: options.ignoreSelf,
+      splitArgs: options.splitArgs,
+      mainPath: path.join(module.parent.parent.filename, options.mainPath),
+      prefix: options.prefix,
+      token: options.token,
       db: options.db,
     };
     delete options.eventsFolder;
@@ -105,24 +107,23 @@ module.exports = class extends Client {
      * @private
      */
     this._private = {};
-    this._private.sentPages = new Collection();
-    this._private.eventsFolder = thisOptions.eventsFolder;
+    this._private.inhibitorsFolder = thisOptions.inhibitorsFolder;
     this._private.commandsFolder = thisOptions.commandsFolder;
     this._private.monitorsFolder = thisOptions.monitorsFolder;
     this._private.triggersFolder = thisOptions.triggersFolder;
-    this._private.inhibitorsFolder = thisOptions.inhibitorsFolder;
-    this._private.fullpath = module.parent.parent.filename;
-    this._private.filepath = path.basename(this._private.fullpath);
+    this._private.eventsFolder = thisOptions.eventsFolder;
+    this._private.sentPages = new Collection();
+    this._private.fullpath = thisOptions.mainPath;
     this._private.dirpath = path.dirname(this._private.fullpath);
     this.config = {};
     this.config.guild = new Config(this, thisOptions);
     this.prefix = thisOptions.prefix;
     this.splitArgs = thisOptions.splitArgs;
     this.ignoreCase = thisOptions.ignoreCase;
-    this.ignorePrefixCase = thisOptions.ignorePrefixCase;
     this.permLevels = thisOptions.permLevels;
     this.ignoreBots = thisOptions.ignoreBots;
     this.ignoreSelf = thisOptions.ignoreSelf;
+    this.ignorePrefixCase = thisOptions.ignorePrefixCase;
     this.db = thisOptions.db;
     this.uniqid = new UniqueId();
 
