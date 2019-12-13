@@ -1,6 +1,6 @@
 {
   "name": "discore.js",
-  "version": "0.9.8",
+  "version": "0.10.1",
   "main": "./src/index.js",
   "scripts": {},
   "author": "Zargovv (Max Zargov)",
