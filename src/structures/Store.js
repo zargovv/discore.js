@@ -87,12 +87,12 @@ module.exports = class Store extends Collection {
       this.filter(
         e => typeof e.aliases === 'object' && e.aliases instanceof Array
       ).forEach(elem => {
-        data.push([
+        data.push(
           ...elem.aliases.map(e => ({
             match: match(e, query),
             [this.type]: e,
-          })),
-        ]);
+          }))
+        );
       });
     }
     return data
@@ -104,7 +104,7 @@ module.exports = class Store extends Collection {
       .filter(
         (e, i) =>
           e.match > 0 &&
-          data.findIndex(elem => elem[this.type].id === e.id) === i
+          data.findIndex(elem => elem[this.type].id === e[this.type].id) === i
       );
   }
 
