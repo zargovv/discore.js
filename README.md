@@ -68,26 +68,31 @@ new Core({
 ```js
 const { Core } = require('discore.js');
 new Core({
-  eventsFolder: 'events',
   commandsFolder: 'commands',
   monitorsFolder: 'monitors',
   triggersFolder: 'triggers',
-  token: null,
+  eventsFolder: 'events',
+
+  spaceAfterPrefix: false,
+  ignorePrefixCase: true,
+
+  // Set to true if you want to allow @mentioning the bot used as a prefix
+  mentionPrefix: false,
+
+  ignoreCase: true,
+  permLevels: new PermissionLevels(),
+  ignoreSelf: true,
+  ignoreBots: true,
+  splitArgs: ' ',
 
   // To make multiple prefixes you can make an array
   // Example: ['!', '.']
   prefix: undefined,
 
-  // Set to true if you want to allow @mentioning the bot used as a prefix
-  mentionPrefix: false,
+  // Path to the main bot folder
+  mainPath: '.',
 
-  spaceAfterPrefix: false,
-  splitArgs: ' ',
-  ignoreCase: true,
-  ignorePrefixCase: true,
-  permLevels: new PermissionLevels(),
-  ignoreSelf: true,
-  ignoreBots: true,
+  token: null,
   db: null,
 });
 ```
@@ -513,6 +518,7 @@ You can use load() method!
 
 - `load()`
 - `get()`
+- `search()`
 
 ##### Method Examples
 
@@ -526,6 +532,9 @@ this.client.events.get('event_name'); // Same as previous example
 this.client.commands.get('command_id');
 this.client.commands.get('command_name'); // Same as previous example
 this.client.commands.get('command_alias'); // Same as previous example
+
+this.client.commands.search('hlp');
+this.client.commands.search('hlep');
 ```
 
 ### Permission Levels

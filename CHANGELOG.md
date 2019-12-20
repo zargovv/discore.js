@@ -1,5 +1,20 @@
 # Change Log
 
+## [0.10.1] - 2019-12-20
+
+### Added
+
+- Store#search method.
+- ClientOptions#mainPath option.
+
+### Fixed
+
+- Minor bugs.
+
+### Changed
+
+- Minor changes.
+
 ## [0.9.8] - 2019-11-30
 
 ### Added
