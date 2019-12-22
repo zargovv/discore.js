@@ -130,6 +130,12 @@ For instance creating `.\events\Main\ready.js` will be an event `ready` in the `
 
 Their structure (options argument defined with default configuration):
 
+#### Custom Events
+
+- `voiceChannelJoin` (oldMember: GuildMember, newMember: GuildMember)
+- `voiceChannelSwitch` (oldMember: GuildMember, newMember: GuildMember)
+- `voiceChannelLeave` (oldMember: GuildMember, newMember: GuildMember)
+
 ```js
 const { Event } = require('discore.js');
 
