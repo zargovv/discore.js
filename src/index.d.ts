@@ -6,8 +6,9 @@ declare module 'discore.js' {
     Channel,
     MessageReaction,
     User,
-    RichEmbed,
+    RichEmbed as Embed,
   } from 'discord.js';
+  import * as Discord from 'discord.js';
   import { Schema as MongoSchema } from 'mongoose';
   import { EventEmitter } from 'events';
 
@@ -394,6 +395,5 @@ declare module 'discore.js' {
     public add(...msgs: PageResolvable[]): Pages;
     public send(channel: Channel): Promise<Message>;
   }
-  export const Discord: object;
-  export const Embed: RichEmbed;
+  export { Discord, Embed };
 }
