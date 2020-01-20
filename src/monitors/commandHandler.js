@@ -55,7 +55,11 @@ module.exports = class extends Monitor {
     let cmd = args.shift();
     if (!cmd && spaceAfterPrefix && args[0]) cmd = args.shift();
     if (ignoreCase) cmd = cmd.toLowerCase();
-    const filter = e => e.key === cmd || e.aliases.includes(cmd);
+    const filter = e =>
+      (ignoreCase ? e.key.toLowerCase() : e.key) === cmd ||
+      (ignoreCase ? e.aliases.map(e => e.toLowerCase()) : e.aliases).includes(
+        cmd
+      );
     const command = this.client.commands.find(filter);
     if (!command) return this.client.triggers.forEach(e => e._run(message));
     const permTest = await this.client.permLevels.test(

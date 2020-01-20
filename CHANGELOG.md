@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.10.3] - 2020-01-20
+
+### Added
+
+### Fixed
+
+- ClientOptions#ignoreCase option fixed.
+- Stores now ignore non-js files.
+
+### Changed
+
+- Minor changes.
+
 ## [0.10.1] - 2019-12-20
 
 ### Added
