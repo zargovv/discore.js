@@ -101,7 +101,11 @@ declare module 'discore.js' {
 
   type Aliases = string | string[];
   type QueryKey = any;
-  type QueryResolvable = object | Function | QueryKey;
+  type QueryResolvable =
+    | { [key: number]: any }
+    | { [key: string]: any }
+    | ((key: any, value: any) => boolean)
+    | QueryKey;
   type QueryValue = any;
   type MongoDocument = object;
   type Id = any;
