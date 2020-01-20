@@ -29,6 +29,7 @@ declare module 'discore.js' {
   type PageResolvable = any;
   type SqlCollection = Collection<string, any>;
   type MongoCollection = Collection<string, any>;
+  type Cooldowns = Collection<string, number>;
 
   interface MySqlTypes {
     Double: any;
@@ -334,7 +335,9 @@ declare module 'discore.js' {
     public permLevel: number;
     public description: any;
     public usage: any;
-    public cooldowns: Collection<string, number>;
+    public cooldowns: Cooldowns;
+
+    public resetCooldowns(...ids: string[]): Cooldowns;
   }
   export class Event extends Base {
     constructor(
