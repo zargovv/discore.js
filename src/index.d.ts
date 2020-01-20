@@ -10,7 +10,7 @@ declare module 'discore.js' {
   import { Schema as MongoSchema } from 'mongoose';
   import { EventEmitter } from 'events';
 
-  export enum MySqlTypes {
+  enum MySqlTypes {
     Double,
     Boolean,
     Date,
@@ -35,7 +35,7 @@ declare module 'discore.js' {
     Enum,
     Set,
   }
-  export enum MongoTypes {
+  enum MongoTypes {
     Number,
     Double,
     String,
@@ -47,13 +47,13 @@ declare module 'discore.js' {
     RegExp,
   }
 
-  export interface IMongoModelOptions {
+  interface IMongoModelOptions {
     [key: string]: { type: keyof typeof MongoTypes; default: any };
   }
-  export interface IMySqlModelOptions {
+  interface IMySqlModelOptions {
     [key: string]: { type: keyof typeof MySqlTypes; default: any };
   }
-  export interface IConfigOptions {
+  interface IConfigOptions {
     spaceAfterPrefix?: boolean;
     ignorePrefixCase?: boolean;
     mentionPrefix?: boolean;
@@ -64,7 +64,7 @@ declare module 'discore.js' {
     splitArgs?: SplitArgs;
     prefix?: Prefix;
   }
-  export interface ICoreOptions extends IConfigOptions {
+  interface ICoreOptions extends IConfigOptions {
     inhibitorsFolder?: string;
     commandsFolder?: string;
     monitorsFolder?: string;
@@ -74,42 +74,42 @@ declare module 'discore.js' {
     token?: string;
     db?: DB;
   }
-  export interface IBaseOptions {
+  interface IBaseOptions {
     enabled: boolean;
     key: any;
     name: any;
     id: any;
     once: boolean;
   }
-  export interface ICommandOptions extends IBaseOptions {
+  interface ICommandOptions extends IBaseOptions {
     cooldown: number;
     aliases: Aliases;
     permLevel: number;
     description: any;
     usage: any;
   }
-  export interface IEventOptions extends IBaseOptions {}
-  export interface IInhibitorOptions extends IBaseOptions {}
-  export interface IMonitorOptions extends IBaseOptions {}
-  export interface ITriggerOptions extends IBaseOptions {}
+  interface IEventOptions extends IBaseOptions {}
+  interface IInhibitorOptions extends IBaseOptions {}
+  interface IMonitorOptions extends IBaseOptions {}
+  interface ITriggerOptions extends IBaseOptions {}
 
-  export interface IPagesOptions {
+  interface IPagesOptions {
     filter(reaction: MessageReaction, user: User): boolean;
     prevPage: string;
     nextPage: string;
   }
 
-  export type Aliases = string | string[];
-  export type QueryKey = any;
-  export type QueryResolvable = object | Function | QueryKey;
-  export type QueryValue = any;
-  export type MongoDocument = object;
-  export type Id = any;
-  export type Level = number;
-  export type Prefix = string | string[] | RegExp | RegExp[];
-  export type DB = Mongo | MySql;
-  export type SplitArgs = string | RegExp;
-  export type PageResolvable = any;
+  type Aliases = string | string[];
+  type QueryKey = any;
+  type QueryResolvable = object | Function | QueryKey;
+  type QueryValue = any;
+  type MongoDocument = object;
+  type Id = any;
+  type Level = number;
+  type Prefix = string | string[] | RegExp | RegExp[];
+  type DB = Mongo | MySql;
+  type SplitArgs = string | RegExp;
+  type PageResolvable = any;
 
   export class SqlModel {
     constructor(db: any, name: string, options?: object, defaults?: object);
@@ -282,7 +282,7 @@ declare module 'discore.js' {
     public triggers: Store;
     public inhibitors: Store;
   }
-  export class Base {
+  class Base {
     constructor(
       client: Core,
       store: Store,
