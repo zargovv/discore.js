@@ -27,7 +27,7 @@ function getFiles(filename, maindir, thisdir) {
     data.forEach(e =>
       files.push(...getFiles(path.join(filename, e), maindir, file))
     );
-  } else {
+  } else if (file.name.endsWith('.js')) {
     files.push(file);
   }
   return files;
