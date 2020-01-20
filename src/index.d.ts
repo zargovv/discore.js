@@ -114,9 +114,9 @@ declare module 'discore.js' {
   interface ITriggerOptions extends IBaseOptions {}
 
   interface IPagesOptions {
-    filter(reaction: MessageReaction, user: User): boolean;
-    prevPage: string;
-    nextPage: string;
+    filter?(reaction: MessageReaction, user: User): boolean;
+    prevPage?: string;
+    nextPage?: string;
   }
 
   export class SqlModel {
