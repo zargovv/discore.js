@@ -12,48 +12,65 @@ declare module 'discore.js' {
   import { Schema as MongoSchema } from 'mongoose';
   import { EventEmitter } from 'events';
 
-  enum MySqlTypes {
-    Double,
-    Boolean,
-    Date,
-    Char,
-    VarChar,
-    TinyText,
-    Text,
-    Blob,
-    MediumText,
-    LongText,
-    LongBlob,
-    TinyInt,
-    SmallInt,
-    MediumInt,
-    Int,
-    BigInt,
-    Float,
-    Decimal,
-    DateTime,
-    Timestamp,
-    Time,
-    Enum,
-    Set,
-  }
-  enum MongoTypes {
-    Number,
-    Double,
-    String,
-    Object,
-    Array,
-    ObjectId,
-    Boolean,
-    Date,
-    RegExp,
-  }
+  type Aliases = string | string[];
+  type QueryKey = any;
+  type QueryResolvable =
+    | { [key: number]: any }
+    | { [key: string]: any }
+    | ((key: any, value: any) => boolean)
+    | QueryKey;
+  type QueryValue = any;
+  type MongoDocument = object;
+  type Id = any;
+  type Level = number;
+  type Prefix = string | string[] | RegExp | RegExp[];
+  type DB = Mongo | MySql;
+  type SplitArgs = string | RegExp;
+  type PageResolvable = any;
+  type SqlCollection = Collection<string, any>;
+  type MongoCollection = Collection<string, any>;
 
+  interface MySqlTypes {
+    Double: any;
+    Boolean: any;
+    Date: any;
+    Char: any;
+    VarChar: any;
+    TinyText: any;
+    Text: any;
+    Blob: any;
+    MediumText: any;
+    LongText: any;
+    LongBlob: any;
+    TinyInt: any;
+    SmallInt: any;
+    MediumInt: any;
+    Int: any;
+    BigInt: any;
+    Float: any;
+    Decimal: any;
+    DateTime: any;
+    Timestamp: any;
+    Time: any;
+    Enum: any;
+    Set: any;
+  }
+  interface MongoTypes {
+    Number: any;
+    Double: any;
+    String: any;
+    Object: any;
+    Array: any;
+    ObjectId: any;
+    Boolean: any;
+    Date: any;
+    RegExp: any;
+  }
   interface IMongoModelOptions {
-    [key: string]: { type: keyof typeof MongoTypes; default: any };
+    [key: string]: { type: any; default: any };
   }
   interface IMySqlModelOptions {
-    [key: string]: { type: keyof typeof MySqlTypes; default: any };
+    [key: string]: { type: any; default: any };
   }
   interface IConfigOptions {
     spaceAfterPrefix?: boolean;
@@ -101,24 +118,6 @@ declare module 'discore.js' {
     nextPage: string;
   }
 
-  type Aliases = string | string[];
-  type QueryKey = any;
-  type QueryResolvable =
-    | { [key: number]: any }
-    | { [key: string]: any }
-    | ((key: any, value: any) => boolean)
-    | QueryKey;
-  type QueryValue = any;
-  type MongoDocument = object;
-  type Id = any;
-  type Level = number;
-  type Prefix = string | string[] | RegExp | RegExp[];
-  type DB = Mongo | MySql;
-  type SplitArgs = string | RegExp;
-  type PageResolvable = any;
-  type SqlCollection = Collection<string, any>;
-  type MongoCollection = Collection<string, any>;
-
   export class SqlModel {
     constructor(db: any, name: string, options?: object, defaults?: object);
 
@@ -159,7 +158,7 @@ declare module 'discore.js' {
     public url: any;
     public emitter: EventEmitter;
 
-    public static readonly Types: keyof typeof MySqlTypes;
+    public static readonly Types: MySqlTypes;
 
     public close(): any;
     public open(url: any): Promise<any>;
@@ -207,7 +206,7 @@ declare module 'discore.js' {
     public defaultOptions: object;
     public options: object;
 
-    public static readonly Types: keyof typeof MongoTypes;
+    public static readonly Types: MongoTypes;
 
     public close(): any;
     public open(url?: string, options?: object): any;
