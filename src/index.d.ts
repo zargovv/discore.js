@@ -6,7 +6,9 @@ declare module 'discore.js' {
     Channel,
     MessageReaction,
     User,
+    RichEmbed as Embed,
   } from 'discord.js';
+  import * as Discord from 'discord.js';
   import { Schema as MongoSchema } from 'mongoose';
   import { EventEmitter } from 'events';
 
@@ -161,7 +163,7 @@ declare module 'discore.js' {
     public open(url: any): Promise<any>;
     public addModel(name: string, options: IMySqlModelOptions): MySql;
   }
-  export class MongoModel {
+  class MongoModel {
     constructor(name: string, options?: object, defaults?: object);
 
     private _modelName: string;
@@ -217,7 +219,7 @@ declare module 'discore.js' {
     public load(fileath: string): Store;
     public init(filepath: string, foldername: string, onlyfile?: string): Store;
   }
-  export class Config extends Collection {
+  class Config extends Collection {
     constructor(client: Core, defaults: ICoreOptions);
 
     public set(key: string, value: object): any;
@@ -391,4 +393,6 @@ declare module 'discore.js' {
     public add(...msgs: PageResolvable[]): Pages;
     public send(channel: Channel): Promise<Message>;
   }
+  export const Discord: Discord;
+  export const Embed: Embed;
 }
