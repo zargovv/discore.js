@@ -6,9 +6,8 @@ declare module 'discore.js' {
     Channel,
     MessageReaction,
     User,
-    RichEmbed as Embed,
+    RichEmbed,
   } from 'discord.js';
-  import * as Discord from 'discord.js';
   import { Schema as MongoSchema } from 'mongoose';
   import { EventEmitter } from 'events';
 
@@ -116,6 +115,8 @@ declare module 'discore.js' {
   type DB = Mongo | MySql;
   type SplitArgs = string | RegExp;
   type PageResolvable = any;
+  type SqlCollection = Collection<string, any>;
+  type MongoCollection = Collection<string, any>;
 
   export class SqlModel {
     constructor(db: any, name: string, options?: object, defaults?: object);
@@ -126,11 +127,11 @@ declare module 'discore.js' {
     public defaults: object;
     public name: string;
     public options: object;
-    public collection: Collection;
+    public collection: SqlCollection;
 
     private _toCollection(): Promise<void>;
 
-    public getAll(): Promise<Collection>;
+    public getAll(): Promise<SqlCollection>;
     public hasOne(query: QueryResolvable, value: QueryValue): boolean;
     public findOne(query: QueryResolvable, value: QueryValue): MongoDocument;
     public insertOne(data: MongoDocument): Promise<MongoDocument>;
@@ -171,13 +172,13 @@ declare module 'discore.js' {
 
     public defaults: object;
     public name: string;
-    public collection: Collection;
+    public collection: MongoCollection;
     public options: object;
     public Schema: MongoSchema;
 
     private _toCollection(): Promise<void>;
 
-    public getAll(): Promise<Collection>;
+    public getAll(): Promise<MongoCollection>;
     public hasOne(query: QueryResolvable, value: QueryValue): boolean;
     public findOne(query: QueryResolvable, value: QueryValue): MongoDocument;
     public insertOne(data: MongoDocument): Promise<MongoDocument>;
@@ -211,15 +212,15 @@ declare module 'discore.js' {
     public open(url?: string, options?: object): any;
     public addModel(name: string, options?: IMongoModelOptions): Mongo;
   }
-  export class Store extends Collection {
+  export class Store extends Collection<string, object> {
     constructor(client: Core, type: string, defaults?: string);
 
     public search(query: string): any[];
     public get(key: any): any;
-    public load(fileath: string): Store;
-    public init(filepath: string, foldername: string, onlyfile?: string): Store;
+    public load(fileath: string): this;
+    public init(filepath: string, foldername: string, onlyfile?: string): this;
   }
-  class Config extends Collection {
+  class Config extends Collection<string, object> {
     constructor(client: Core, defaults: ICoreOptions);
 
     public set(key: string, value: object): any;
@@ -266,7 +267,7 @@ declare module 'discore.js' {
       monitorsFolder: string;
       triggersFolder: string;
       eventsFolder: string;
-      sentPages: Collection;
+      sentPages: Collection<string, Pages>;
       fullpath: string;
       dirpath: string;
     };
@@ -333,7 +334,7 @@ declare module 'discore.js' {
     public permLevel: number;
     public description: any;
     public usage: any;
-    public cooldowns: Collection;
+    public cooldowns: Collection<string, number>;
   }
   export class Event extends Base {
     constructor(
@@ -393,6 +394,6 @@ declare module 'discore.js' {
     public add(...msgs: PageResolvable[]): Pages;
     public send(channel: Channel): Promise<Message>;
   }
-  export const Discord: Discord;
-  export const Embed: Embed;
+  export const Discord: object;
+  export const Embed: RichEmbed;
 }
