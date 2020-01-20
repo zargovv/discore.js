@@ -295,7 +295,6 @@ declare module 'discore.js' {
       options?: IBaseOptions
     );
 
-    public _options: IBaseOptions;
     public _id: Id;
 
     public readonly client: Core;
@@ -310,18 +309,12 @@ declare module 'discore.js' {
     public key: any;
     public name: any;
 
-    public _run(...args: any[]): void;
-    private _init(): any;
-
-    public run(): never;
-    public disabledRun(): void;
     public toggle(): Base;
     public unload(emit: boolean): Base;
     public reload(): Base;
     public disable(): Base;
     public enable(): Base;
     public toString(): string;
-    public init(): void;
   }
   export class Command extends Base {
     constructor(
@@ -331,7 +324,7 @@ declare module 'discore.js' {
       options?: ICommandOptions
     );
 
-    public _options: ICommandOptions;
+    private _options: ICommandOptions;
 
     public cooldown: number;
     public aliases: Aliases;
@@ -339,8 +332,6 @@ declare module 'discore.js' {
     public description: any;
     public usage: any;
     public cooldowns: Collection;
-
-    public noPermsRun(): void;
   }
   export class Event extends Base {
     constructor(
@@ -351,7 +342,7 @@ declare module 'discore.js' {
     );
 
     private _listener: Function;
-    public _options: IEventOptions;
+    private _options: IEventOptions;
 
     private _unload(): void;
   }
@@ -363,9 +354,9 @@ declare module 'discore.js' {
       options?: IInhibitorOptions
     );
 
-    public _options: IInhibitorOptions;
+    private _options: IInhibitorOptions;
 
-    public _run(): Promise<boolean>;
+    private _run(): Promise<boolean>;
   }
   export class Monitor extends Base {
     constructor(
@@ -375,7 +366,7 @@ declare module 'discore.js' {
       options?: IMonitorOptions
     );
 
-    public _options: IMonitorOptions;
+    private _options: IMonitorOptions;
   }
   export class Trigger extends Base {
     constructor(
@@ -385,7 +376,7 @@ declare module 'discore.js' {
       options?: ITriggerOptions
     );
 
-    public _options: ITriggerOptions;
+    private _options: ITriggerOptions;
   }
   export class Pages {
     constructor(client: Core, options: IPagesOptions);
