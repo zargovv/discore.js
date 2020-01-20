@@ -1,5 +1,21 @@
 # Change Log
 
+## [0.11.0] - dev
+
+### Added
+
+- Event: `voiceChannelJoin` (oldMember: GuildMember, newMember: GuildMember).
+- Event: `voiceChannelSwitch` (oldMember: GuildMember, newMember: GuildMember).
+- Event: `voiceChannelLeave` (oldMember: GuildMember, newMember: GuildMember).
+
+- Typings.
+
+- Command#resetCooldowns method.
+
+### Fixed
+
+### Changed
+
 ## [0.10.3] - 2020-01-20
 
 ### Added

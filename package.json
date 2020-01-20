@@ -1,6 +1,6 @@
 {
   "name": "discore.js",
-  "version": "0.10.3",
+  "version": "0.11.0",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "scripts": {},
