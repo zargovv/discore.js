@@ -85,12 +85,12 @@ new Core({
   ignoreBots: true,
   splitArgs: ' ',
 
-  // Path to the main bot folder
-  mainPath: '.',
-
   // To make multiple prefixes you can make an array
   // Example: ['!', '.']
   prefix: undefined,
+
+  // Path to the main bot folder
+  mainPath: '.',
 
   token: null,
   db: null,
