@@ -229,7 +229,7 @@ declare module 'discore.js' {
 
     public set(key: string, value: IConfigOptions): any;
     public add(key: string, value: IConfigAddOptions): any;
-    public get(key: string): any;
+    public get(key: string): IConfigOptions;
   }
   export class PermissionLevels {
     constructor();
