@@ -216,7 +216,10 @@ declare module 'discore.js' {
     public open(url?: string, options?: object): any;
     public addModel(name: string, options?: IMongoModelOptions): Mongo;
   }
-  export class Store extends Collection<string, object> {
+  export class Store extends Collection<
+    string,
+    Command | Event | Trigger | Inhibitor | object
+  > {
     constructor(client: Core, type: string, defaults?: string);
 
     public search(query: string): any[];
