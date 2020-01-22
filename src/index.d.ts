@@ -312,6 +312,7 @@ declare module 'discore.js' {
     public once: boolean;
     public key: any;
     public name: any;
+    public categories: string[];
 
     public toggle(): Base;
     public unload(emit: boolean): Base;
