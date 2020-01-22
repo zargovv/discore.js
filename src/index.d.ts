@@ -73,7 +73,10 @@ declare module 'discore.js' {
   interface IMySqlModelOptions {
     [key: string]: { type: any; default: any };
   }
-  interface IConfigOptions {
+  interface IConfigAddOptions {
+    prefix?: Prefix;
+  }
+  interface IConfigOptions extends IConfigAddOptions {
     spaceAfterPrefix?: boolean;
     ignorePrefixCase?: boolean;
     mentionPrefix?: boolean;
@@ -224,8 +227,8 @@ declare module 'discore.js' {
   class Config extends Collection<string, object> {
     constructor(client: Core, defaults: ICoreOptions);
 
-    public set(key: string, value: object): any;
-    public add(key: string, value: object): any;
+    public set(key: string, value: IConfigOptions): any;
+    public add(key: string, value: IConfigAddOptions): any;
     public get(key: string): any;
   }
   export class PermissionLevels {
