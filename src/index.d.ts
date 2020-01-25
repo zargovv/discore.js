@@ -76,6 +76,26 @@ declare module 'discore.js' {
   interface IConfigAddOptions {
     prefix?: Prefix;
   }
+  interface IMySql {
+    url: any;
+    emitter: EventEmitter;
+
+    close(): any;
+    open(url: any): Promise<any>;
+    addModel(name: string, options: IMySqlModelOptions): MySql;
+    [key: string]: any;
+  }
+  interface IMongo {
+    connection: any;
+    url: string;
+    defaultOptions: object;
+    options: object;
+
+    close(): any;
+    open(url?: string, options?: object): any;
+    addModel(name: string, options?: IMongoModelOptions): Mongo;
+    [key: string]: any;
+  }
   interface IConfigOptions extends IConfigAddOptions {
     spaceAfterPrefix?: boolean;
     ignorePrefixCase?: boolean;
@@ -154,7 +174,7 @@ declare module 'discore.js' {
       newData?: QueryValue
     ): Promise<MongoDocument>;
   }
-  export class MySql {
+  export class MySql implements IMySql {
     constructor(url: any);
 
     private _models: SqlModel[];
@@ -201,7 +221,7 @@ declare module 'discore.js' {
       newData?: QueryValue
     ): Promise<MongoDocument>;
   }
-  export class Mongo {
+  export class Mongo implements IMongo {
     constructor(url: string, options?: object);
 
     private _models: MongoModel[];
