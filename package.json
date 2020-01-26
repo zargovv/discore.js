@@ -29,5 +29,9 @@
     "url": "https://github.com/zargovv/discore.js/issues"
   },
   "homepage": "https://github.com/zargovv/discore.js#readme",
-  "description": "Discord.js-based powerful node.js module to interact with Discord API."
+  "description": "Discord.js-based powerful node.js module to interact with Discord API.",
+  "devDependencies": {
+    "@types/mongoose": "^5.5.43",
+    "@types/node": "^13.5.0"
+  }
 }
