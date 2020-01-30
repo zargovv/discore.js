@@ -23,7 +23,9 @@ module.exports = class extends Monitor {
     if (!(prefixes instanceof Array)) prefixes = [prefixes];
     if (ignorePrefixCase) {
       content = content.toLowerCase();
-      prefixes = prefixes.map(e => e.toLowerCase());
+      prefixes = prefixes.map(e =>
+        typeof e === 'string' ? e.toLowerCase() : e
+      );
     }
     for (const _prefix of prefixes) {
       if (matched) break;
@@ -41,7 +43,9 @@ module.exports = class extends Monitor {
     if (!matched && mentionPrefix) {
       matched = `<@${this.client.user.id}> `;
       if (message.mentions.users.first()) {
-        message.mentions.delete(message.mentions.users.keys().next().value);
+        message.mentions.users.delete(
+          message.mentions.users.keys().next().value
+        );
       }
     }
     if (!matched) return this.client.triggers.forEach(e => e._run(message));
