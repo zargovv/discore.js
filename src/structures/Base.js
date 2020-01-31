@@ -1,4 +1,5 @@
 const path = require('path');
+const UniqueId = require('../util/UniqueId');
 
 const defaultOptions = {
   enabled: true,
@@ -29,7 +30,7 @@ module.exports = class Base {
      * @private
      */
     this._options = options;
-    this._id = this.client.uniqid.gen();
+    this._id = new UniqueId();
     this.id = options.id;
     if (!this.id) this.id = this._id;
     if (this.store.find(e => e.id === this.id)) {
@@ -91,7 +92,6 @@ module.exports = class Base {
    */
   unload(emit = true) {
     if (typeof this._unload === 'function') this._unload();
-    this.client.uniqid.delete(this._id);
     this.store.delete(this.id);
     if (emit) this.client.emit(`${this.type}Unloaded`, this);
     return this;

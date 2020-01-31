@@ -147,7 +147,6 @@ declare module 'discore.js' {
 
     public emitter: EventEmitter;
     public db: any;
-    public uniqid: UniqueId;
     public defaults: object;
     public name: string;
     public options: object;
@@ -272,18 +271,15 @@ declare module 'discore.js' {
     ): Promise<boolean>;
   }
   export class UniqueId {
-    constructor(ids: Id[]);
+    public static readonly index: number;
+    public id?: String;
 
-    public ids: Set<Id[]>;
+    constructor();
 
-    public remove(id: Id): Id;
-    public delete(id: Id): Id;
-    public gen(length?: number): Id;
-    public generate(length?: number): Id;
-    public generateId(length?: number): Id;
-    public genId(length?: number): Id;
-
-    private _genId(length: number): Id;
+    public static randomBytes(size: number): Uint8Array;
+    public static getInc(): number;
+    public static generate(time?: number): Buffer;
+    public toString(): String;
   }
   export class Core extends DiscordClient {
     constructor(options?: ICoreOptions);
@@ -308,7 +304,6 @@ declare module 'discore.js' {
     public ignoreSelf: boolean;
     public ignorePrefixCase: boolean;
     public db: DB;
-    public uniqid: UniqueId;
 
     public events: Store;
     public monitors: Store;

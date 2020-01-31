@@ -1,49 +1,39 @@
-let _symbols = '';
-// _symbols = `${_symbols}abcdefghijklmnopqrstuvwxyz`;
-// _symbols = `${_symbols}${_symbols.toUpperCase()}`;
-_symbols = `${_symbols}0123456789`;
-
-const symbols = _symbols.split('');
-
 module.exports = class UniqueId {
-  constructor(ids) {
-    this.ids = new Set(ids);
+  constructor() {
+    this.id = UniqueId.generate().toString('hex');
   }
 
-  remove(id) {
-    if (!this.ids.has(id)) return null;
-    this.ids.delete(id);
-    return id;
+  static randomBytes(size) {
+    const result = new Uint8Array(size);
+    for (let i = 0; i < size; ++i) result[i] = Math.floor(Math.random() * 256);
+    return result;
   }
 
-  delete(...args) {
-    return this.remove(...args);
+  static getInc() {
+    return (UniqueId.index = (UniqueId.index + 1) % 0xffffff);
   }
 
-  gen(length = 16) {
-    let id = null;
-    while (!id || this.ids.has(id)) id = this._genId(length);
-    this.ids.add(id);
-    return id;
+  static generate(time) {
+    if (typeof time !== 'number') time = ~~(Date.now() / 1000);
+    const inc = UniqueId.getInc();
+    const buffer = Buffer.alloc(12);
+    buffer[3] = time & 0xff;
+    buffer[2] = (time >> 8) & 0xff;
+    buffer[1] = (time >> 16) & 0xff;
+    buffer[0] = (time >> 24) & 0xff;
+    const PROCESS_UNIQUE = this.randomBytes(5);
+    buffer[4] = PROCESS_UNIQUE[0];
+    buffer[5] = PROCESS_UNIQUE[1];
+    buffer[6] = PROCESS_UNIQUE[2];
+    buffer[7] = PROCESS_UNIQUE[3];
+    buffer[8] = PROCESS_UNIQUE[4];
+    buffer[11] = inc & 0xff;
+    buffer[10] = (inc >> 8) & 0xff;
+    buffer[9] = (inc >> 16) & 0xff;
+    return buffer;
   }
 
-  generate(...args) {
-    return this.gen(...args);
-  }
-
-  generateId(...args) {
-    return this.gen(...args);
-  }
-
-  genId(...args) {
-    return this.gen(...args);
-  }
-
-  _genId(length) {
-    let id = '';
-    for (let i = 0; i < length; i++) {
-      id = `${id}${symbols[Math.floor(Math.random() * symbols.length)]}`;
-    }
-    return id;
+  toString() {
+    return this.id;
   }
 };

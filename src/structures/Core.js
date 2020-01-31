@@ -4,7 +4,6 @@ const Store = require('./Store');
 const Mongo = require('./Mongo');
 const MySql = require('./MySql');
 const Config = require('./Config');
-const UniqueId = require('../util/UniqueId');
 const Collection = require('../util/Collection');
 const PermissionLevels = require('./PermissionLevels');
 
@@ -125,7 +124,6 @@ module.exports = class extends Client {
     this.ignoreSelf = thisOptions.ignoreSelf;
     this.ignorePrefixCase = thisOptions.ignorePrefixCase;
     this.db = thisOptions.db;
-    this.uniqid = new UniqueId();
 
     if (this.db) {
       if (this.db instanceof Mongo && this.db.connection) {

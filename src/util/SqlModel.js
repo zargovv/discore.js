@@ -11,7 +11,6 @@ module.exports = class SQLModel {
     name = name.toLowerCase();
     this.emitter = new EventEmitter();
     this.db = db;
-    this.uniqid = new UniqueId();
     this.defaults = defaults;
     this.name = name;
     const tableOptions = [];
@@ -109,7 +108,7 @@ module.exports = class SQLModel {
       throw new TypeError(text);
     }
     data = { ...this.defaults, ...data };
-    if (!data._id) data._id = this.uniqid.gen();
+    if (!data._id) data._id = new UniqueId().toString();
     this.collection.set(data._id, data);
     const insertData = [];
     const toInsert = { ...this.defaults, ...data };
