@@ -1,4 +1,5 @@
 const fs = require('fs');
+const Doc = require('./Document');
 const Collection = require('./Collection');
 
 module.exports = class JsonModel {
@@ -18,7 +19,7 @@ module.exports = class JsonModel {
       }
     }
     Object.keys(body).forEach(key =>
-      this.data.set(key, new Document(body[key]))
+      this.data.set(key, new Doc(body[key]))
     );
   }
 
@@ -71,11 +72,11 @@ module.exports = class JsonModel {
       ...this.defaults,
       ...(typeof query === 'object' ? query : {}),
     };
-    return this.findOne(query, value) || new Document(defaults);
+    return this.findOne(query, value) || new Doc(defaults);
   }
 
   insertOne(data) {
-    const document = new Document(data);
+    const document = new Doc(data);
     this.data.set(document._id, document);
     this.save();
     return document;
@@ -83,7 +84,7 @@ module.exports = class JsonModel {
 
   insertMany(data) {
     const documents = [];
-    for (const document of data) documents.push(new Document(document));
+    for (const document of data) documents.push(new Doc(document));
     for (const document of documents) this.data.set(document._id, document);
     this.save();
     return documents;
@@ -116,7 +117,7 @@ module.exports = class JsonModel {
     if (!key) return null;
     if (typeof query !== 'string') newData = value;
     const document = this.data.get(key);
-    const newDocument = new Document({ ...document, ...newData });
+    const newDocument = new Doc({ ...document, ...newData });
     this.data.set(key, newDocument);
     this.save();
     return newDocument;
