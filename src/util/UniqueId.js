@@ -1,4 +1,4 @@
-module.exports = class UniqueId {
+class UniqueId {
   constructor() {
     this.id = UniqueId.generate().toString('hex');
   }
@@ -36,4 +36,8 @@ module.exports = class UniqueId {
   toString() {
     return this.id;
   }
-};
+}
+
+UniqueId.index = ~~(Math.random() * 0xffffff);
+
+module.exports = UniqueId;
