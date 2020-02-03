@@ -1,11 +1,11 @@
 const { EventEmitter } = require('events');
 const Collection = require('./Collection');
-const UniqueId = require('./UniqueId');
+const SqlDocument = require('./Document');
 
-module.exports = class SQLModel {
+module.exports = class SqlModel {
   constructor(db, name, options = {}, defaults = {}) {
     if (typeof name !== 'string') {
-      const text = `First argument must be a string. Instead got ${typeof name}`;
+      const text = `Argument 'name' must be in type of string. Instead got ${typeof name}`;
       throw new TypeError(text);
     }
     name = name.toLowerCase();
@@ -23,95 +23,97 @@ module.exports = class SQLModel {
     }
     if (primary) tableOptions.push(`PRIMARY KEY (${primary})`);
     this.options = options;
-    new Promise((res, rej) => {
+    new Promise((resolve, reject) => {
       this.db
         .query(
           `CREATE TABLE IF NOT EXISTS ${this.name} (${tableOptions
             .map(e => `${e.key} ${e.type}`)
             .join(', ')})`
         )
-        .on('error', err => rej(err))
-        .on('end', () => res(this.emitter.emit('connected', this)));
+        .on('error', reject)
+        .on('end', () => resolve(this.emitter.emit('connected', this)));
     });
-    this.collection = new Collection();
-    this.emitter.on('connected', () => this._toCollection());
+    this.data = new Collection();
+    this.emitter.on('connected', () => this.fetch());
   }
 
-  /**
-   * @returns {Collection}
-   * @async
-   */
-  async getAll() {
-    const col = new Collection();
-    let data = [];
-    try {
-      data = await new Promise((res, rej) => {
+  fetch() {
+    return new Promise((resolve, reject) => {
+      new Promise((res, rej) => {
         const docs = [];
         this.db
           .query(`SELECT * FROM ${this.name}`)
           .on('result', doc => docs.push({ ...doc }))
           .on('error', err => rej(err))
           .on('end', () => res(docs));
-      });
-    } catch (err) {
-      throw new Error(err);
+      })
+        .then(docs => {
+          const data = new Collection();
+          if (!data) return resolve(data);
+          for (const val of docs) data.set(val._id, val);
+          resolve(data);
+        })
+        .catch(reject);
+    });
+  }
+
+  filterKeys(query, value) {
+    if (typeof query === 'string') query = { [query]: value };
+    if (typeof query === 'object') {
+      const q = query;
+      query = doc => Object.keys(q).every(k => doc[k] === q[k]);
     }
-    if (!data) return col;
-    for (const val of data) {
-      col.set(val._id, val);
+    const keys = [];
+    for (const [key, value] of this.data) {
+      if (query(value, key, this)) keys.push(key);
     }
-    return col;
+    return keys;
   }
 
-  /**
-   * @private
-   */
-  async _toCollection() {
-    this.collection = await this.getAll();
+  filter(query, value) {
+    const keys = this.filterKeys(query, value);
+    const documents = [];
+    for (const key of keys) documents.push(this.data.get(key));
+    return documents;
   }
 
-  /**
-   * @property {function|object|*} query
-   * @property {*} value
-   * @returns {Boolean}
-   * @example model.hasOne({ id: '1' });
-   * @example model.hasOne(value => value.id === '1');
-   * @example model.hasOne('id', '1');
-   */
-  hasOne(query, value) {
-    return !!this.collection.find(query, value);
+  findKey(query, value) {
+    if (typeof query === 'string') query = { [query]: value };
+    if (typeof query === 'object') {
+      const q = query;
+      query = doc => Object.keys(q).every(k => doc[k] === q[k]);
+    }
+    for (const [key, value] of this.data) {
+      if (query(value, key, this)) return key;
+    }
+    return null;
   }
 
-  /**
-   * @property {function|object|*} query
-   * @property {*} value
-   * @returns {*}
-   * @example model.findOne({ id: '1' });
-   * @example model.findOne(value => value.id === '1');
-   * @example model.findOne('id', '1');
-   */
   findOne(query, value) {
-    const data = this.collection.find(query, value);
-    if (data && data._id) data._id = data._id;
-    return data ? { ...this.defaults, ...data } : this.defaults;
+    const key = this.findKey(query, value);
+    return key ? this.data.get(key) : null;
   }
 
-  /**
-   * @property {*} data
-   * @returns {*} data
-   * @example model.insertOne({ id: '1' });
-   * @async
-   */
+  getOne(query, value) {
+    if (typeof query === 'string') {
+      query = { [query]: value };
+    }
+    const defaults = {
+      ...this.defaults,
+      ...(typeof query === 'object' ? query : {}),
+    };
+    return this.findOne(query, value) || new SqlDocument(defaults);
+  }
+
   insertOne(data) {
     if (typeof data !== 'object') {
       const text = `First argument must be an object. Instead got ${typeof data}`;
       throw new TypeError(text);
     }
-    data = { ...this.defaults, ...data };
-    if (!data._id) data._id = new UniqueId().toString();
-    this.collection.set(data._id, data);
+    const document = new SqlDocument({ ...this.defaults, ...data });
+    this.data.set(document._id, document);
     const insertData = [];
-    const toInsert = { ...this.defaults, ...data };
+    const toInsert = { ...document };
     const typeRegEx = /((^VARCHAR)|(^((TINY)|(LONG)|(MEDIUM))?TEXT))(\(.+\))?$/;
     for (const key in toInsert) {
       if ({}.hasOwnProperty.call(toInsert, key)) {
@@ -119,139 +121,78 @@ module.exports = class SQLModel {
         else if (new RegExp(typeRegEx.source, 'i').test(this.options[key])) {
           toInsert[key] = `'${toInsert[key]}'`;
         }
-        insertData.push({ key, value: data[key], name: key });
+        insertData.push({ key, value: document[key], name: key });
       }
     }
-    return new Promise((res, rej) => {
-      this.db
-        .query(
-          `INSERT INTO ${this.name} (${insertData
-            .map(e => `\`${e.key}\``)
-            .join(', ')}) VALUES (${insertData
-            .map(e => `'${e.value}'`)
-            .join(', ')})`
-        )
-        .on('error', err => rej(err))
-        .on('result', () => res(data));
-    });
+    this.db
+      .query(
+        `INSERT INTO ${this.name} (${insertData
+          .map(e => `\`${e.key}\``)
+          .join(', ')}) VALUES (${insertData
+          .map(e => `'${e.value}'`)
+          .join(', ')})`
+      )
+      .on('error', err => {})
+      .on('result', () => {});
+    return document;
   }
 
-  /**
-   * @property {function|object|*} query
-   * @property {*} value
-   * @returns {*} Deleted data.
-   * @example model.deleteOne({ id: '1' });
-   * @async
-   */
+  insertMany(data) {
+    const documents = [];
+    for (const document of data) documents.push(this.insertOne(document));
+    return documents;
+  }
+
   deleteOne(query, value) {
-    if (typeof query === 'string') {
-      if (typeof value === 'undefined') {
-        const text = 'Value must be specified.';
-        throw new Error(text);
-      }
-      const prop = query;
-      query = {};
-      query[prop] = value;
-    }
-    if (typeof query !== 'object' && typeof query !== 'function') {
-      const text = `First argument must be an object, function or string. Instead got ${typeof query}.`;
-      throw new TypeError(text);
-    }
-    if (!this.hasOne(query)) return null;
-    const data = this.findOne(query);
-    if (!data) return null;
-    this.collection.delete(data._id);
-    return new Promise((res, rej) => {
+    const key = this.findKey(query, value);
+    if (key) {
+      const document = this.data.get(key);
+      this.data.delete(key);
       this.db
-        .query(`DELETE FROM ${this.name} WHERE _id = '${data._id}'`)
-        .on('result', () => res(data))
-        .on('error', err => rej(err));
-    });
+        .query(`DELETE FROM ${this.name} WHERE _id = '${key}'`)
+        .on('result', () => {})
+        .on('error', err => {});
+      return document;
+    }
+    return null;
   }
 
-  /**
-   * @property {function|object|*} query
-   * @property {*} value Value or data.
-   * @property {*} newData
-   * @returns {*} Updated data.
-   * @example model.updateOne({ id: '1' }, { id: '2' });
-   * @example model.updateOne(value => value.id === '1', { id: '2' });
-   * @example model.updateOne('id', '1', { id: '2' });
-   * @async
-   */
-  updateOne(query, value, newData) {
-    if (typeof query === 'string') {
-      if (typeof value === 'undefined') {
-        const text = 'Value must be specified.';
-        throw new Error(text);
-      }
-      const prop = query;
-      query = {};
-      query[prop] = value;
-      value = newData;
-    }
-    if (typeof value !== 'object') {
-      const text = `Data must be an object. Instead got ${typeof value}`;
-      throw new TypeError(text);
-    }
-    if (typeof query !== 'object' && typeof query !== 'function') {
-      const text = `First argument must be an object, function or string. Instead got ${typeof query}`;
-      throw new TypeError(text);
-    }
-    if (!this.hasOne(query)) return null;
-    const data = this.findOne(query);
-    this.collection.set(data._id, {
-      ...data,
-      ...value,
-    });
+  updateOne(query, value, newData = {}) {
+    const key = this.findKey(query, value);
+    if (!key) return null;
+    if (typeof query !== 'string') newData = value;
+    const document = this.data.get(key);
+    const newDocument = new SqlDocument({ ...document, ...newData });
+    this.data.set(key, newDocument);
     const updateData = [];
     const typeRegEx = /((^VARCHAR)|(^((TINY)|(LONG)|(MEDIUM))?TEXT))(\(.+\))?$/;
-    for (const key in value) {
-      if ({}.hasOwnProperty.call(value, key)) {
-        if (!value[key]) value[key] = 'NULL';
-        else if (new RegExp(typeRegEx.source, 'i').test(this.options[key])) {
-          value[key] = `'${value[key]}'`;
-        }
-        updateData.push({ key, name: key, value: value[key] });
+    for (const okey of Object.keys(newDocument)) {
+      if (!newDocument[okey]) newDocument[okey] = 'NULL';
+      else if (new RegExp(typeRegEx.source, 'i').test(this.options[okey])) {
+        newDocument[okey] = `'${newDocument[okey]}'`;
       }
+      updateData.push({ key: okey, name: okey, value: newDocument[okey] });
     }
-    return new Promise((res, rej) => {
-      this.db
-        .query(
-          `UPDATE ${this.name} SET ${updateData
-            .map(e => `${e.key} = ${e.value}`)
-            .join(', ')} WHERE _id = '${data._id}'`
-        )
-        .on('result', () => res(data))
-        .on('error', err => rej(err));
-    });
+    this.db
+      .query(
+        `UPDATE ${this.name} SET ${updateData
+          .map(e => `${e.key} = ${e.value}`)
+          .join(', ')} WHERE _id = '${key}'`
+      )
+      .on('result', () => {})
+      .on('error', err => {});
+    return newDocument;
   }
 
-  /**
-   * @property {function|object|*} query
-   * @property {*} value Value or data.
-   * @property {*} newData
-   * @returns {*} Updated / Inserted data.
-   * @example model.upsertOne({ id: '1' }, { id: '2' });
-   * @example model.upsertOne(value => value.id === '1', { id: '2' });
-   * @example model.upsertOne('id', '1', { id: '2' });
-   * @async
-   */
-  async upsertOne(query, value, newData) {
-    const updated = await this.updateOne(query, value, newData);
-    if (updated) return updated;
-    if (typeof query === 'function') query = {};
-    if (typeof query === 'string') {
-      if (typeof value === 'undefined') {
-        const text = 'Value must be specified.';
-        throw new Error(text);
-      }
-      const prop = query;
-      query = {};
-      query[prop] = value;
-      value = newData;
+  upsertOne(query, value, newData = {}) {
+    const key = this.findKey(query, value);
+    if (typeof query === 'string') query = { [query]: value };
+    if (!key) {
+      return this.insertOne({
+        ...(typeof query === 'object' ? query : {}),
+        ...newData,
+      });
     }
-    await this.insertOne({ ...query, ...value });
-    return { ...this.defaults, ...query, ...value };
+    return this.updateOne(query, value, newData);
   }
 };

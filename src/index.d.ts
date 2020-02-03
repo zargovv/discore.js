@@ -20,12 +20,11 @@ declare module 'discore.js' {
     | ((key: any, value: any) => boolean)
     | QueryKey;
   type QueryValue = any;
-  type MongoDocument = object;
   type Id = any;
   type Level = number;
   type Prefix = string | string[] | RegExp | RegExp[];
   type DB = Mongo | MySql;
-  type SplitArgs = string | RegExp;
+  type ArgsSeparator = string | RegExp;
   type PageResolvable = any;
   type SqlCollection = Collection<string, any>;
   type MongoCollection = Collection<string, any>;
@@ -76,60 +75,50 @@ declare module 'discore.js' {
   interface IConfigAddOptions {
     prefix?: Prefix;
   }
-  interface IMySql {
-    url: any;
-    emitter: EventEmitter;
-
-    close(): any;
-    open(url: any): Promise<any>;
-    addModel(name: string, options: IMySqlModelOptions): MySql;
-    [key: string]: any;
+  interface IFolderOptions {
+    inhibitors?: string;
+    commands?: string;
+    monitors?: string;
+    triggers?: string;
+    events?: string;
   }
-  interface IMongo {
-    connection: any;
-    url: string;
-    defaultOptions: object;
-    options: object;
-
-    close(): any;
-    open(url?: string, options?: object): any;
-    addModel(name: string, options?: IMongoModelOptions): Mongo;
-    [key: string]: any;
+  interface IPrefixOptions {
+    spaceSeparator?: boolean;
+    ignoreCase?: boolean;
+    mention?: boolean;
   }
-  interface IConfigOptions extends IConfigAddOptions {
-    spaceAfterPrefix?: boolean;
-    ignorePrefixCase?: boolean;
-    mentionPrefix?: boolean;
+  interface ICommandConfig {
+    argsSeparator?: string;
     permLevels?: PermissionLevels;
     ignoreCase?: boolean;
     ignoreBots?: boolean;
     ignoreSelf?: boolean;
-    splitArgs?: SplitArgs;
+  }
+  interface IConfigOptions extends IConfigAddOptions {
+    prefixOptions: IPrefixOptions;
+    commandOptions?: ICommandConfig;
     prefix?: Prefix;
   }
   interface ICoreOptions extends IConfigOptions {
-    inhibitorsFolder?: string;
-    commandsFolder?: string;
-    monitorsFolder?: string;
-    triggersFolder?: string;
-    eventsFolder?: string;
     mainPath?: string;
+    folders?: IFolderOptions;
+    mobile?: boolean;
     token?: string;
     db?: DB;
   }
   interface IBaseOptions {
-    enabled: boolean;
-    key: any;
-    name: any;
-    id: any;
-    once: boolean;
+    enabled?: boolean;
+    key?: any;
+    name?: any;
+    id?: any;
+    once?: boolean;
   }
   interface ICommandOptions extends IBaseOptions {
-    cooldown: number;
-    aliases: Aliases;
-    permLevel: number;
-    description: any;
-    usage: any;
+    cooldown?: number;
+    aliases?: Aliases;
+    permLevel?: number;
+    description?: any;
+    usage?: any;
   }
   interface IEventOptions extends IBaseOptions {}
   interface IInhibitorOptions extends IBaseOptions {}
@@ -142,6 +131,26 @@ declare module 'discore.js' {
     nextPage?: string;
   }
 
+  interface ISqlDocument {
+    [key: string]: any;
+  }
+  class SqlDocument implements ISqlDocument {
+    [key: string]: any;
+
+    public populate(keys: string[], remove?: boolean): SqlDocument;
+    public json(keys: string[], remove?: boolean): object;
+  }
+
+  interface IMongoDocument {
+    [key: string]: any;
+  }
+  class MongoDocument implements IMongoDocument {
+    [key: string]: any;
+
+    public populate(keys: string[], remove?: boolean): SqlDocument;
+    public json(keys: string[], remove?: boolean): object;
+  }
+
   export class SqlModel {
     constructor(db: any, name: string, options?: object, defaults?: object);
 
@@ -150,34 +159,99 @@ declare module 'discore.js' {
     public defaults: object;
     public name: string;
     public options: object;
-    public collection: SqlCollection;
+    public data: SqlCollection;
 
-    private _toCollection(): Promise<void>;
+    public fetch(): Promise<SqlCollection>;
 
-    public getAll(): Promise<SqlCollection>;
-    public hasOne(query: QueryResolvable, value: QueryValue): boolean;
-    public findOne(query: QueryResolvable, value: QueryValue): MongoDocument;
-    public insertOne(data: MongoDocument): Promise<MongoDocument>;
+    public filterKeys(query: string, value: string): string[];
+    public filterKeys(query: { [key: string]: any }): string[];
+    public filterKeys(
+      query: (value: any, key: string, collection: SqlCollection) => boolean
+    ): string[];
+    public filterKeys(query: QueryResolvable, value?: QueryValue): string[];
+
+    public filter(query: string, value: string): SqlCollection;
+    public filter(query: { [key: string]: any }): SqlCollection;
+    public filter(
+      query: (value: any, key: string, collection: SqlCollection) => boolean
+    ): SqlCollection;
+    public filter(query: QueryResolvable, value?: QueryValue): SqlCollection;
+
+    public findKey(query: string, value: string): string | null;
+    public findKey(query: { [key: string]: any }): string | null;
+    public findKey(
+      query: (value: any, key: string, collection: SqlCollection) => boolean
+    ): string | null;
+    public findKey(query: QueryResolvable, value?: QueryValue): string | null;
+
+    public findOne(query: string, value: string): SqlDocument | null;
+    public findOne(query: { [key: string]: any }): SqlDocument | null;
+    public findOne(
+      query: (value: any, key: string, collection: SqlCollection) => boolean
+    ): SqlDocument | null;
+    public findOne(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): SqlDocument | null;
+
+    public getOne(query: string, value: string): SqlDocument;
+    public getOne(query: { [key: string]: any }): SqlDocument;
+    public getOne(
+      query: (value: any, key: string, collection: SqlCollection) => boolean
+    ): SqlDocument;
+    public getOne(query: QueryResolvable, value?: QueryValue): SqlDocument;
+
+    public insertOne(data: ISqlDocument): Promise<SqlDocument>;
+
+    public insertMany(data: ISqlDocument[]): Promise<SqlDocument>;
+
+    public deleteOne(query: string, value: string): SqlDocument | null;
+    public deleteOne(query: { [key: string]: any }): SqlDocument | null;
+    public deleteOne(
+      query: (value: any, key: string, collection: SqlCollection) => boolean
+    ): SqlDocument | null;
     public deleteOne(
       query: QueryResolvable,
-      value: QueryValue
-    ): Promise<MongoDocument | null>;
+      value?: QueryValue
+    ): SqlDocument | null;
+
+    public updateOne(
+      query: string,
+      value: string,
+      newData: ISqlDocument
+    ): SqlDocument | null;
+    public updateOne(
+      query: { [key: string]: any },
+      newData: ISqlDocument
+    ): SqlDocument | null;
+    public updateOne(
+      query: (value: any, key: string, collection: SqlCollection) => boolean,
+      newData: ISqlDocument
+    ): SqlDocument | null;
     public updateOne(
       query: QueryResolvable,
-      value: QueryValue,
-      newData?: QueryValue
-    ): Promise<MongoDocument | null>;
+      value?: QueryValue
+    ): SqlDocument | null;
+
     public upsertOne(
-      query: QueryResolvable,
-      value: QueryValue,
-      newData?: QueryValue
-    ): Promise<MongoDocument>;
+      query: string,
+      value: string,
+      newData: ISqlDocument
+    ): SqlDocument;
+    public upsertOne(
+      query: { [key: string]: any },
+      newData: ISqlDocument
+    ): SqlDocument;
+    public upsertOne(
+      query: (value: any, key: string, collection: SqlCollection) => boolean,
+      newData: ISqlDocument
+    ): SqlDocument;
+    public upsertOne(query: QueryResolvable, value?: QueryValue): SqlDocument;
   }
-  export class MySql implements IMySql {
+  export class MySql {
     constructor(url: any);
 
-    private _models: SqlModel[];
-
+    public collections: Collection<string, SqlModel>;
     public url: any;
     public emitter: EventEmitter;
 
@@ -186,44 +260,108 @@ declare module 'discore.js' {
     public close(): any;
     public open(url: any): Promise<any>;
     public addModel(name: string, options: IMySqlModelOptions): MySql;
+    public getCollection(name: string): SqlModel | undefined;
   }
   class MongoModel {
-    constructor(name: string, options?: object, defaults?: object);
+    constructor(db: any, name: string, options?: object, defaults?: object);
 
-    private _modelName: string;
-    private _db: any;
-
+    public data: MongoCollection;
     public defaults: object;
     public name: string;
-    public collection: MongoCollection;
     public options: object;
-    public Schema: MongoSchema;
+    public db: any;
 
-    private _toCollection(): Promise<void>;
+    public fetch(): Promise<MongoCollection>;
 
-    public getAll(): Promise<MongoCollection>;
-    public hasOne(query: QueryResolvable, value: QueryValue): boolean;
-    public findOne(query: QueryResolvable, value: QueryValue): MongoDocument;
-    public insertOne(data: MongoDocument): Promise<MongoDocument>;
+    public filterKeys(query: string, value: string): string[];
+    public filterKeys(query: { [key: string]: any }): string[];
+    public filterKeys(
+      query: (value: any, key: string, collection: MongoCollection) => boolean
+    ): string[];
+    public filterKeys(query: QueryResolvable, value?: QueryValue): string[];
+
+    public filter(query: string, value: string): MongoCollection;
+    public filter(query: { [key: string]: any }): MongoCollection;
+    public filter(
+      query: (value: any, key: string, collection: MongoCollection) => boolean
+    ): MongoCollection;
+    public filter(query: QueryResolvable, value?: QueryValue): MongoCollection;
+
+    public findKey(query: string, value: string): string | null;
+    public findKey(query: { [key: string]: any }): string | null;
+    public findKey(
+      query: (value: any, key: string, collection: MongoCollection) => boolean
+    ): string | null;
+    public findKey(query: QueryResolvable, value?: QueryValue): string | null;
+
+    public findOne(query: string, value: string): MongoDocument | null;
+    public findOne(query: { [key: string]: any }): MongoDocument | null;
+    public findOne(
+      query: (value: any, key: string, collection: MongoCollection) => boolean
+    ): MongoDocument | null;
+    public findOne(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): MongoDocument | null;
+
+    public getOne(query: string, value: string): MongoDocument;
+    public getOne(query: { [key: string]: any }): MongoDocument;
+    public getOne(
+      query: (value: any, key: string, collection: MongoCollection) => boolean
+    ): MongoDocument;
+    public getOne(query: QueryResolvable, value?: QueryValue): MongoDocument;
+
+    public insertOne(data: IMongoDocument): Promise<MongoDocument>;
+
+    public insertMany(data: IMongoDocument[]): Promise<MongoDocument>;
+
+    public deleteOne(query: string, value: string): MongoDocument | null;
+    public deleteOne(query: { [key: string]: any }): MongoDocument | null;
+    public deleteOne(
+      query: (value: any, key: string, collection: MongoCollection) => boolean
+    ): MongoDocument | null;
     public deleteOne(
       query: QueryResolvable,
-      value: QueryValue
-    ): Promise<MongoDocument | null>;
+      value?: QueryValue
+    ): MongoDocument | null;
+
+    public updateOne(
+      query: string,
+      value: string,
+      newData: IMongoDocument
+    ): MongoDocument | null;
+    public updateOne(
+      query: { [key: string]: any },
+      newData: IMongoDocument
+    ): MongoDocument | null;
+    public updateOne(
+      query: (value: any, key: string, collection: MongoCollection) => boolean,
+      newData: IMongoDocument
+    ): MongoDocument | null;
     public updateOne(
       query: QueryResolvable,
-      value: QueryValue,
-      newData?: QueryValue
-    ): Promise<MongoDocument | null>;
+      value?: QueryValue
+    ): MongoDocument | null;
+
     public upsertOne(
-      query: QueryResolvable,
-      value: QueryValue,
-      newData?: QueryValue
-    ): Promise<MongoDocument>;
+      query: string,
+      value: string,
+      newData: IMongoDocument
+    ): MongoDocument;
+    public upsertOne(
+      query: { [key: string]: any },
+      newData: IMongoDocument
+    ): MongoDocument;
+    public upsertOne(
+      query: (value: any, key: string, collection: MongoCollection) => boolean,
+      newData: IMongoDocument
+    ): MongoDocument;
+    public upsertOne(query: QueryResolvable, value?: QueryValue): MongoDocument;
   }
-  export class Mongo implements IMongo {
+  export class Mongo {
     constructor(url: string, options?: object);
 
-    private _models: MongoModel[];
+    public collections: Collection<string, MongoModel>;
     public connection: any;
     public url: string;
     public defaultOptions: object;
@@ -234,6 +372,7 @@ declare module 'discore.js' {
     public close(): any;
     public open(url?: string, options?: object): any;
     public addModel(name: string, options?: IMongoModelOptions): Mongo;
+    public getCollection(name: string): MongoModel | undefined;
   }
   export class Store extends Collection<
     string,
@@ -285,11 +424,7 @@ declare module 'discore.js' {
     constructor(options?: ICoreOptions);
 
     private _private: {
-      inhibitorsFolder: string;
-      commandsFolder: string;
-      monitorsFolder: string;
-      triggersFolder: string;
-      eventsFolder: string;
+      folders: IFolderOptions;
       sentPages: Collection<string, Pages>;
       fullpath: string;
       dirpath: string;
@@ -297,7 +432,7 @@ declare module 'discore.js' {
 
     public config: { guild: Config };
     public prefix: Prefix;
-    public splitArgs: SplitArgs;
+    public argsSeparator: ArgsSeparator;
     public ignoreCase: boolean;
     public permLevels: PermissionLevels;
     public ignoreBots: boolean;

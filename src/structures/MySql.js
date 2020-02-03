@@ -1,16 +1,12 @@
 const { EventEmitter } = require('events');
 const mysql = require('mysql');
-const Model = require('../util/SqlModel');
+const SqlModel = require('../util/SqlModel');
 const Types = require('../util/Types');
+const Collection = require('../util/Collection');
 
-class MySql {
+module.exports = class MySql {
   constructor(url) {
-    /**
-     * @name MySql#_models
-     * @type {Array<Model>}
-     * @private
-     */
-    this._models = [];
+    this.collections = new Collection();
     this.url = url;
     this.emitter = new EventEmitter();
     this.open(url);
@@ -61,7 +57,11 @@ class MySql {
     if (typeof name !== 'string') {
       throw new TypeError('Name argument must be a string.');
     }
-    if (this._models.find(e => e.toLowerCase() === name.toLowerCase())) {
+    if (
+      [...this.collections.keys()]
+        .map(k => k.toLowerCase())
+        .includes(name.toLowerCase())
+    ) {
       throw new ReferenceError(`Model with name ${name} already exists`);
     }
     if ({}.hasOwnProperty.call(this, name)) {
@@ -71,28 +71,27 @@ class MySql {
       throw new TypeError('Options argument must be an object.');
     }
     const defaultOptions = {};
-    for (const key in options) {
-      if ({}.hasOwnProperty.call(options, key)) {
-        if (typeof options[key].type === 'function') {
-          options[key].type = options[key].type();
-        }
-        if (!options[key].type.db.includes('mysql')) {
-          throw new Error('Used no-sql data type for sql.');
-        }
-        defaultOptions[key] = options[key].default;
-        options[key] = options[key].type.mySqlType;
+    for (const key of Object.keys(options)) {
+      if (typeof options[key].type === 'function') {
+        options[key].type = options[key].type();
       }
+      if (!options[key].type.db.includes('mysql')) {
+        throw new Error('No-sql data types are not allowed in sql.');
+      }
+      defaultOptions[key] = options[key].default;
+      options[key] = options[key].type.mySqlType;
     }
     options._id = 'VARCHAR(20)';
     defaultOptions._id = undefined;
-    this._models.push(name);
-    this[name] = new Model(
-      this.db,
-      name.toLowerCase(),
-      options,
-      defaultOptions
+    this.collections.set(
+      name,
+      new SqlModel(this.db, name.toLowerCase(), options, defaultOptions)
     );
     return this;
+  }
+
+  getCollection(name) {
+    return this.collections.get(name);
   }
 
   static get Types() {
@@ -103,6 +102,4 @@ class MySql {
     }
     return Types;
   }
-}
-
-module.exports = MySql;
+};

@@ -8,10 +8,10 @@ module.exports = class extends Monitor {
     const {
       ignoreCase,
       prefix,
-      splitArgs,
+      argsSeparator,
       ignoreBots,
       ignoreSelf,
-      spaceAfterPrefix,
+      spaceSeparator,
       mentionPrefix,
       ignorePrefixCase,
     } = this.client.config.guild.get(message.guild ? message.guild.id : null);
@@ -55,9 +55,9 @@ module.exports = class extends Monitor {
     }
     if (matched instanceof Array) matched = matched[0];
     let args = message.content.slice(matched.length);
-    if (splitArgs) args = args.split(splitArgs);
+    if (argsSeparator) args = args.split(argsSeparator);
     let cmd = args.shift();
-    if (!cmd && spaceAfterPrefix && args[0]) cmd = args.shift();
+    if (!cmd && spaceSeparator && args[0]) cmd = args.shift();
     if (ignoreCase) cmd = cmd.toLowerCase();
     const filter = e =>
       (ignoreCase ? e.key.toLowerCase() : e.key) === cmd ||

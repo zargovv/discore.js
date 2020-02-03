@@ -28,11 +28,6 @@
         <img alt="GitHub stars" src="https://img.shields.io/github/stars/zargovv/discore.js?logo=github">
       </a>
     </div>
-    <div>
-      <a href="https://twitter.com/intent/follow?screen_name=zargovv">
-        <img src="https://img.shields.io/twitter/follow/zargovv?style=flat&logo=twitter" alt="Follow On Twitter">
-      </a>
-    </div>
   </p>
   <p>
     <a href="https://nodei.co/npm/discore.js/">
@@ -68,29 +63,35 @@ new Core({
 ```js
 const { Core } = require('discore.js');
 new Core({
-  commandsFolder: 'commands',
-  monitorsFolder: 'monitors',
-  triggersFolder: 'triggers',
-  eventsFolder: 'events',
+  folders: {
+    inhibitors: 'inhibitors',
+    commands: 'commands',
+    monitors: 'monitors',
+    triggers: 'triggers',
+    events: 'events',
+  },
 
-  spaceAfterPrefix: false,
-  ignorePrefixCase: true,
+  prefixOptions: {
+    spaceSeparator: false, // Allow space after prefix
+    ignoreCase: false, // Ignore prefix case
+    mention: false, // Allow using @mention as prefix
+  },
 
-  // Set to true if you want to allow @mentioning the bot used as a prefix
-  mentionPrefix: false,
+  commandOptions: {
+    argsSeparator: ' ', // Regular expressions are allowed
+    permLevels: new PermissionLevels(),
+    ignoreCase: false,
+    ignoreBots: true, // Prevents bots from using commands.
+    ignoreSelf: true, // Prevents the bot from using commands on itself.
+  },
 
-  ignoreCase: true,
-  permLevels: new PermissionLevels(),
-  ignoreSelf: true,
-  ignoreBots: true,
-  splitArgs: ' ',
-
-  // To make multiple prefixes you can make an array
-  // Example: ['!', '.']
-  prefix: undefined,
-
-  // Path to the main bot folder
   mainPath: '.',
+
+  // Displays the bot as online from a mobile
+  mobile: false,
+
+  // Regular expressions and arrays (Strings, RegExps) are allowed.
+  prefix: undefined,
 
   token: null,
   db: null,
@@ -101,10 +102,9 @@ new Core({
 
 ```js
 this.client.config.guild.set('guild_id', {
-  // Default settings:
   prefix: undefined,
   mentionPrefix: false,
-  splitArgs: ' ',
+  argsSeparator: ' ',
   ignoreCase: true,
   ignorePrefixCase: true,
   permLevels: new PermissionLevels(),
@@ -119,10 +119,6 @@ this.client.config.guild.add('guild_id', {
 });
 ```
 
-#### Methods
-
-- `uniqid.gen()` // Generates unique identificator
-
 ### Events
 
 Events are placed in `.\events\`(**eventsFolder** option).
@@ -130,11 +126,18 @@ For instance creating `.\events\Main\ready.js` will be an event `ready` in the `
 
 Their structure (options argument defined with default configuration):
 
-#### Custom Events
+#### All Custom Events
+
+- `load` (Store).
+- `load:{type}s` (Store).
 
 - `voiceChannelJoin` (oldMember: GuildMember, newMember: GuildMember)
 - `voiceChannelSwitch` (oldMember: GuildMember, newMember: GuildMember)
 - `voiceChannelLeave` (oldMember: GuildMember, newMember: GuildMember)
+
+- `dbConnected`
+- `dbError`
+- `dbDisconnected`
 
 ```js
 const { Event } = require('discore.js');
@@ -142,21 +145,19 @@ const { Event } = require('discore.js');
 module.exports = class extends Event {
   get options() {
     return {
-      // Will run run() method if true, otherwise disabledRun() method.
       enabled: true,
-      key: null, // Same as name but more important.
-      name: null, // Key is going to be event name.
-      once: false, // Unloads after first use if true.
-      id: undefined, // UniqID if not defined. Used to get the event.
+      name: null, // Event name.
+      once: false, // Unloads after first use.
+      id: undefined, // Used to get the event.
     };
-    // If key and name are null then they will be defined as file name.
-    // For example, ready.js is gonna be 'ready'
+    // If name is not defined then it will be defined as file name.
+    // For example, ready.js will be 'ready'
   }
 
   get customOptions() {
     return {
       // You can put any options you want.
-      // And use it via this.custom.
+      // And use it via this.custom
     };
   }
 
@@ -170,6 +171,7 @@ module.exports = class extends Event {
     };
   }
 
+  // Params of the event
   run(...params) {
     // Event code.
     // Runs only if enabled.
@@ -182,7 +184,7 @@ module.exports = class extends Event {
   init() {
     // Optional method. Runs on 'ready'
     // event so you are able to use discord
-    // data via this.client.
+    // data via this.client
   }
 };
 ```
@@ -213,26 +215,24 @@ const { Command } = require('discore.js');
 module.exports = class extends Command {
   get options() {
     return {
-      // Will run run() method if true, otherwise disabledRun() method.
       enabled: true,
-      key: null, // Same as name but more important.
-      name: null, // Key is going to be command name.
-      id: undefined, // UniqID if not defined. Used to get the event.
+      name: null, // Command name.
+      id: undefined, // Used to get the command.
       cooldown: 0, // In milliseconds
       aliases: [],
       permLevel: 0, // Runs noPermsRun() method if tests not passed.
       description: undefined,
       usage: undefined,
-      once: false, // Unloads after first use if true.
+      once: false, // Unloads after first use.
     };
-    // If key and name are null then they will be defined as file name.
-    // For example, test.js is gonna be 'test'
+    // If name is not defined then it will be defined as file name.
+    // For example, test.js will be 'test'
   }
 
   get customOptions() {
     return {
       // You can put any options you want.
-      // And use it via this.custom.
+      // And use it via this.custom
     };
   }
 
@@ -263,7 +263,7 @@ module.exports = class extends Command {
   init() {
     // Optional method. Runs on 'ready'
     // event so you are able to use discord
-    // data via this.client.
+    // data via this.client
   }
 };
 ```
@@ -281,19 +281,6 @@ module.exports = class extends Command {
 
 - `categories`
 
-##### Method Examples
-
-```js
-const command = this.client.commands.get('command');
-command
-  .toggle()
-  .enable()
-  .disable()
-  .unload()
-  .reload()
-  .toString();
-```
-
 ### Monitors
 
 Monitors are placed in `.\monitors\`(**monitorsFolder** option).
@@ -308,21 +295,19 @@ const { Monitor } = require('discore.js');
 module.exports = class extends Monitor {
   get options() {
     return {
-      // Will run run() method if true, otherwise disabledRun() method.
       enabled: true,
-      key: null, // Same as name but more important.
-      name: null, // Key is going to be monitor name.
-      id: undefined, // UniqID if not defined. Used to get the monitor.
-      once: false, // Unloads after first use if true.
+      name: null, // Monitor name.
+      id: undefined, // Used to get the command.
+      once: false, // Unloads after first use.
     };
-    // If key and name are null then they will be defined as file name.
-    // For example, filter.js is gonna be 'filter'
+    // If name is not defined then it will be defined as file name.
+    // For example, filter.js will be 'filter'
   }
 
   get customOptions() {
     return {
       // You can put any options you want.
-      // And use it via this.custom.
+      // And use it via this.custom
     };
   }
 
@@ -348,7 +333,7 @@ module.exports = class extends Monitor {
   init() {
     // Optional method. Runs on 'ready'
     // event so you are able to use discord
-    // data via this.client.
+    // data via this.client
   }
 };
 ```
@@ -380,21 +365,19 @@ const { Trigger } = require('discore.js');
 module.exports = class extends Trigger {
   get options() {
     return {
-      // Will run run() method if true, otherwise disabledRun() method.
       enabled: true,
-      key: null, // Same as name but more important.
-      name: null, // Key is going to be trigger name.
-      id: undefined, // UniqID if not defined. Used to get the trigger.
-      once: false, // Unloads after first use if true.
+      name: null, // Monitor name.
+      id: undefined, // Used to get the command.
+      once: false, // Unloads after first use.
     };
-    // If key and name are null then they will be defined as file name.
-    // For example, xp.js is gonna be 'xp'
+    // If name is not defined then it will be defined as file name.
+    // For example, xp.js will be 'xp'
   }
 
   get customOptions() {
     return {
       // You can put any options you want.
-      // And use it via this.custom.
+      // And use it via this.custom
     };
   }
 
@@ -420,7 +403,7 @@ module.exports = class extends Trigger {
   init() {
     // Optional method. Runs on 'ready'
     // event so you are able to use discord
-    // data via this.client.
+    // data via this.client
   }
 };
 ```
@@ -453,21 +436,19 @@ const { Inhibitor } = require('discore.js');
 module.exports = class extends Inhibitor {
   get options() {
     return {
-      // Will run run() method if true, otherwise disabledRun() method.
       enabled: true,
-      key: null, // Same as name but more important.
-      name: null, // Key is going to be event name.
-      id: undefined, // UniqID if not defined. Used to get the event.
-      once: false, // Unloads after first use if true.
+      name: null, // Monitor name.
+      id: undefined, // Used to get the command.
+      once: false, // Unloads after first use.
     };
-    // If key and name are null then they will be defined as file name.
-    // For example, inhibit.js is gonna be 'inhibit'
+    // If name is not defined then it will be defined as file name.
+    // For example, server.js will be 'server'
   }
 
   get customOptions() {
     return {
       // You can put any options you want.
-      // And use it via this.custom.
+      // And use it via this.custom
     };
   }
 
@@ -495,7 +476,7 @@ module.exports = class extends Inhibitor {
   init() {
     // Optional method. Runs on 'ready'
     // event so you are able to use discord
-    // data via this.client.
+    // data via this.client
   }
 };
 ```
@@ -548,20 +529,21 @@ this.client.commands.search('hlep');
 Their structure:
 
 ```js
-const { Core, PermissionLevels } = require('discore.js');
-const config = require('./config');
+const { PermissionLevels } = require('discore.js');
 
 const permLevels = new PermissionLevels();
 permLevels
-  .add(0, true, msg => msg.author.id === '1') // Throws error.
-  // Permissions Level 1 is true only if message author id is '1'
+  .add(0, true, msg => msg.author.id === '1')
+
+  // Permissions Level 1 gives access only if message author id is equal to '1'
   .add(1, false, msg => msg.author.id === '1')
-  // Same as previous example
+
+  // Permissions Level 2 gives access only to the bot
   .addLevel(2, false, (msg, client) => {
     return msg.author.id === client.user.id;
   });
 
-// Test for a role.
+// Tests for a role.
 permLevels.add(3, true, msg => msg.member.roles.has('roleid'));
 
 // Testing. Returns boolean.
@@ -569,8 +551,6 @@ permLevels.test(3, msg);
 
 // You can define client as third argument if needed.
 permLevels.test(2, msg, this.client);
-
-new Core(config);
 ```
 
 #### Methods
@@ -706,21 +686,17 @@ new Core({
 });
 ```
 
-#### Events
-
-- `dbConnected`
-- `dbError`
-- `dbDisconnected`
-
 #### Methods
 
 - `addModel()`
 - `open()` ( Open connection )
 - `close()` ( Close connection )
+- `getCollection()`
 
 #### Properties
 
-- `collection`
+- `collections`
+- `connection`
 
 ### DB Models
 
@@ -751,27 +727,38 @@ db.addModel('modelName', data);
 
 #### Methods
 
-- `hasOne()`
+- `fetch()`
+- `filterKeys()`
+- `filter()`
+- `findKey()`
 - `findOne()`
+- `getOne()`
 - `insertOne()`
+- `insertMany()`
 - `deleteOne()`
 - `updateOne()`
 - `upsertOne()`
 
-##### hasOne()
+##### fetch()
 
 ```js
-// Working with model from previous example.
-// You can use `db['modelName']`
+// Fetches all documents from the database.
+// Returns Promise<Collection<string, MongoDocument>>
 
-// Searches for document with `id` of '123'.
-let res1 = db.modelName.hasOne({ id: '123' });
-let res2 = db.modelName.hasOne('id', '123'); // Same.
-let res3 = db.modelName.hasOne(val => val.id === '123'); // Same.
+const collection = db.getCollection('name');
 
-console.log(typeof res); // Returns true or false (Boolean).
-console.log(typeof res2); // Same.
-console.log(typeof res3); // Same.
+collection.fetch().then(data => {});
+```
+
+##### filterKeys()
+
+```js
+// Fetches all documents from the database.
+// Returns Collection<string, MongoDocument>
+
+const collection = db.getCollection('name');
+
+collection.filterKeys().then(data => {});
 ```
 
 ##### findOne()

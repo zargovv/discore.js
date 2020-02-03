@@ -1,8 +1,34 @@
 # Change Log
 
-## [0.11.0] - dev
+## [1.0.0] - dev
 
 ### Added
+
+- SqlModel#fetch() method.
+- SqlModel#filterKeys() method.
+- SqlModel#filter() method.
+- SqlModel#findKey() method.
+- SqlModel#getOne() method.
+- SqlModel#insertMany() method.
+- SqlModel#data property.
+
+- `Document` structure.
+
+- Mongo#collections property.
+- Mongo#getCollection() method.
+
+- MySql#collections property.
+- MySql#getCollection() method.
+
+- CoreOptions#commandOptions option.
+- CoreOptions#prefixOptions option.
+- CoreOptions#folders option.
+- CoreOptions#mobile option.
+
+- Event: `load` (Store).
+- Event: `load:{type}s` (Store).
+
+- CommandOptions#splitArgs option.
 
 - Event: `voiceChannelJoin` (oldMember: GuildMember, newMember: GuildMember).
 - Event: `voiceChannelSwitch` (oldMember: GuildMember, newMember: GuildMember).
@@ -12,9 +38,56 @@
 
 - Command#resetCooldowns method.
 
+### Removed
+
+- SqlModel#collection property.
+
+- Mongo#_models property.
+- MySql#_models property.
+
 ### Fixed
 
+- Minor fixes.
+
 ### Changed
+
+- SqlModel#findOne() method.
+- SqlModel#insertOne() method.
+- SqlModel#deleteOne() method.
+- SqlModel#updateOne() method.
+- SqlModel#upsertOne() method.
+
+- Model has been renamed into MongoModel.
+
+- CoreOptions#inhibitorsFolder has been put into CoreOptions#folders.
+- CoreOptions#commandsFolder has been put into CoreOptions#folders.
+- CoreOptions#monitorsFolder has been put into CoreOptions#folders.
+- CoreOptions#triggersFolder has been put into CoreOptions#folders.
+- CoreOptions#eventsFolder has been put into CoreOptions#folders.
+
+- CoreOptions#inhibitorsFolder has been renamed into inhibitors.
+- CoreOptions#commandsFolder has been renamed into commands.
+- CoreOptions#monitorsFolder has been renamed into monitors.
+- CoreOptions#triggersFolder has been renamed into triggers.
+- CoreOptions#eventsFolder has been renamed into events.
+
+- CoreOptions#spaceAfterPrefix has been put into CoreOptions#prefixOptions.
+- CoreOptions#ignorePrefixCase has been put into CoreOptions#prefixOptions.
+- CoreOptions#mentionPrefix has been put into CoreOptions#prefixOptions.
+
+- CoreOptions#spaceAfterPrefix has been renamed into spaceSeparator.
+- CoreOptions#ignorePrefixCase has been renamed into ignoreCase.
+- CoreOptions#mentionPrefix has been renamed into mention.
+
+- CoreOptions#splitArgs has been put into CoreOptions#commandOptions.
+- CoreOptions#permLevels has been put into CoreOptions#commandOptions.
+- CoreOptions#ignoreCase has been put into CoreOptions#commandOptions.
+- CoreOptions#ignoreBots has been put into CoreOptions#commandOptions.
+- CoreOptions#ignoreSelf has been put into CoreOptions#commandOptions.
+
+- CoreOptions#splitArgs has been renamed into argsSeparator.
+
+- Minor changes.
 
 ## [0.10.3] - 2020-01-20
 

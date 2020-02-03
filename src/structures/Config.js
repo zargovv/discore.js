@@ -14,7 +14,7 @@ module.exports = class Config extends Collection {
     if (typeof value !== 'object') {
       throw new TypeError('Value option must be an object.');
     }
-    const { prefix, splitArgs } = value;
+    const { prefix, argsSeparator } = value;
     if (prefix === undefined) value.prefix = this.get(key).prefix;
     if (
       typeof prefix === 'object' &&
@@ -26,15 +26,13 @@ module.exports = class Config extends Collection {
       );
     }
     if (
-      splitArgs !== undefined &&
-      splitArgs !== null &&
-      splitArgs !== 'string' &&
-      splitArgs !== 'object' &&
-      typeof splitArgs === 'object' &&
-      typeof splitArgs.test !== 'function'
+      argsSeparator !== undefined &&
+      argsSeparator !== null &&
+      typeof argsSeparator !== 'string' &&
+      !(argsSeparator instanceof RegExp)
     ) {
       throw new TypeError(
-        'SplitArgs option must be a string, undefined, null or regular expression.'
+        "'ArgsSeparator' option must be a string, undefined, null or regular expression."
       );
     }
     return super.set(key, { ...this.defaults, ...value, _settingKey: key });

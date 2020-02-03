@@ -201,6 +201,8 @@ module.exports = class Store extends Collection {
         }
       });
       this.client[`${this.type}s`] = this;
+      this.client.emit('load', this);
+      this.client.emit(`load:${this.type}s`, this);
       return this;
     } catch (err) {
       this.client.emit('error', err);

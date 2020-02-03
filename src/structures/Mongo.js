@@ -1,15 +1,11 @@
 const mongoose = require('mongoose');
-const Model = require('../util/Model');
+const MongoModel = require('../util/MongoModel');
 const Types = require('../util/Types');
+const Collection = require('../util/Collection');
 
-class Mongo {
+module.exports = class Mongo {
   constructor(url, options = {}) {
-    /**
-     * @name Mongo#_models
-     * @type {Array<Model>}
-     * @private
-     */
-    this._models = [];
+    this.collections = new Collection();
     this.connection = mongoose.connection;
     if (typeof url !== 'string') {
       const text = `First argument must be a string. Instead got ${typeof url}`;
@@ -23,8 +19,6 @@ class Mongo {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       autoIndex: false,
-      // reconnectTries: Number.MAX_VALUE,
-      // reconnectInterval: 500,
       poolSize: 5,
       connectTimeoutMS: 10000,
       family: 4,
@@ -73,7 +67,11 @@ class Mongo {
       const text = `First argument must be a string. Instead got ${typeof name}`;
       throw new TypeError(text);
     }
-    if (this._models.includes(name)) {
+    if (
+      [...this.collections.keys()]
+        .map(k => k.toLowerCase())
+        .includes(name.toLowerCase())
+    ) {
       const text = `Model with name ${name} already exists`;
       throw new ReferenceError(text);
     }
@@ -82,21 +80,30 @@ class Mongo {
       throw new TypeError(text);
     }
     const defaultOptions = {};
-    for (const key in options) {
-      if ({}.hasOwnProperty.call(options, key)) {
-        if (typeof options[key].type === 'function') {
-          options[key].type = options[key].type();
-        }
-        if (!options[key].type.db.includes('mongo')) {
-          throw new Error('Used sql data type for no-sql.');
-        }
-        defaultOptions[key] = options[key].default;
-        options[key] = options[key].type.mongoType;
+    for (const key of Object.keys(options)) {
+      if (typeof options[key].type === 'function') {
+        options[key].type = options[key].type();
       }
+      if (!options[key].type.db.includes('mongo')) {
+        throw new Error('Sql data types are not allowed for no-sql.');
+      }
+      defaultOptions[key] = options[key].default;
+      options[key] = options[key].type.mongoType;
     }
-    this._models.push(name);
-    this[name] = new Model(name.toLowerCase(), options, defaultOptions);
+    this.collections.set(
+      name,
+      new MongoModel(
+        this.connection,
+        name.toLowerCase(),
+        options,
+        defaultOptions
+      )
+    );
     return this;
+  }
+
+  getCollection(name) {
+    return this.collections.get(name);
   }
 
   static get Types() {
@@ -107,6 +114,4 @@ class Mongo {
     }
     return Types;
   }
-}
-
-module.exports = Mongo;
+};
