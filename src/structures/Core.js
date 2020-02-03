@@ -1,6 +1,6 @@
 const { Client } = require('discord.js');
 const path = require('path');
-const Json = require('../Json');
+const Json = require('./Json');
 const Store = require('./Store');
 const Mongo = require('./Mongo');
 const MySql = require('./MySql');
