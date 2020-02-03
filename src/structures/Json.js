@@ -28,7 +28,7 @@ module.exports = class Json {
   }
 
   getCollection(key) {
-    if (!this.collections.has(key)) this.add(key, {});
+    // if (!this.collections.has(key)) this.add(key, {});
     return this.collections.get(key);
   }
 
