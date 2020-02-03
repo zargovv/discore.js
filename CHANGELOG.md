@@ -4,6 +4,9 @@
 
 ### Added
 
+- `Json` structure.
+- `JsonModel` structure.
+
 - SqlModel#fetch() method.
 - SqlModel#filterKeys() method.
 - SqlModel#filter() method.
@@ -42,8 +45,8 @@
 
 - SqlModel#collection property.
 
-- Mongo#_models property.
-- MySql#_models property.
+- Mongo#\_models property.
+- MySql#\_models property.
 
 ### Fixed
 

@@ -1,5 +1,6 @@
 const { Client } = require('discord.js');
 const path = require('path');
+const Json = require('../Json');
 const Store = require('./Store');
 const Mongo = require('./Mongo');
 const MySql = require('./MySql');
@@ -95,9 +96,11 @@ module.exports = class extends Client {
       db !== undefined &&
       db !== null &&
       (typeof db !== 'object' ||
-        (!(db instanceof Mongo) && !(db instanceof MySql)))
+        (!(db instanceof Mongo) &&
+          !(db instanceof MySql) &&
+          !(db instanceof Json)))
     ) {
-      throw new Error('Db property must be instance of Mongo or MySql.');
+      throw new Error('Db property must be instance of Mongo, MySql or Json.');
     }
     if (prefix === undefined) thisOptions.prefix = '';
     if (

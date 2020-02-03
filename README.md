@@ -703,8 +703,8 @@ new Core({
 Their structure:
 
 ```js
-// Must define all default properties.
-// You can leave properties as undefined.
+// Must define all default values.
+// You can leave values as undefined.
 const data = {
   id: { type: Mongo.Types.String, default: undefined },
   messageCount: { type: Mongo.Types.Number, default: 0 },
@@ -753,93 +753,115 @@ collection.fetch().then(data => {});
 ##### filterKeys()
 
 ```js
-// Fetches all documents from the database.
+// Filters the collection and returns only keys.
+// Returns string[]
+
+const collection = db.getCollection('name');
+
+const keys = collection.filterKeys(value => value.username === 'zargovv');
+```
+
+##### filter()
+
+```js
+// Filters the collection.
 // Returns Collection<string, MongoDocument>
 
 const collection = db.getCollection('name');
 
-collection.filterKeys().then(data => {});
+const newCollection = collection.filter(value => value.username === 'zargovv');
+```
+
+##### findKey()
+
+```js
+// Finds document and returns key.
+// Returns string or null
+
+const collection = db.getCollection('name');
+
+const result = collection.findKey(value => value.username === 'zargovv');
 ```
 
 ##### findOne()
 
 ```js
-// Working with model from previous example.
-// You can use `db['modelName']` or `db.modelName`
+// Finds document.
+// Returns Document or null
 
-// Searches for document with `id` of '123'.
-let res1 = db.modelName.findOne({ id: '123' });
-let res2 = db.modelName.findOne('id', '123'); // Same.
-let res3 = db.modelName.findOne(val => val.id === '123'); // Same.
+const collection = db.getCollection('name');
 
-/*
-  Returns document. If there is no document
-  then you will getdefault settings which
-  were defined by yourself.
+const result = collection.findOne(value => value.username === 'zargovv');
+```
 
-  That means you can not get undefined or
-  null.
-*/
-console.log(typeof res);
-console.log(typeof res2); // Same.
-console.log(typeof res3); // Same.
+##### getOne()
+
+```js
+// Gets document
+// (Searches for it, if there is no one, then returns default values).
+// Returns Document or null
+
+const collection = db.getCollection('name');
+
+const document = collection.getOne(value => value.username === 'zargovv');
 ```
 
 ##### insertOne()
 
 ```js
-// **upsertOne() method is recommended to use!**
-db.modelName.insertOne({
-  id: '3213',
-  messageCount: 1, // If not defined, going to be 0.
-});
+// Creates new document
+// Returns Document
+
+const collection = db.getCollection('name');
+
+const result = collection.insertOne({ id: '1', username: 'zargovv' });
+```
+
+##### insertMany()
+
+```js
+// Creates new documents
+// Returns Document[]
+
+const collection = db.getCollection('name');
+
+const result = collection.insertOne([
+  { id: '1', username: 'zargovv' },
+  { id: '2', username: 'discore.js' },
+]);
 ```
 
 ##### deleteOne()
 
 ```js
-// returns null or document.
-db.modelName.deleteOne({ id: '3213' });
+// Deletes document
+// Returns Document or null
 
-/*
-  Does the same thing but returns null
-  because document is already deleted.
-*/
-db.modelName.deleteOne('id', '3212');
+const collection = db.getCollection('name');
 
-// Same as previous example.
-db.modelName.deleteOne(val => val.id === '3212');
+const result = collection.deleteOne({ username: 'zargovv' });
 ```
 
 ##### updateOne()
 
 ```js
-// **upsertOne() method is recommended to use!**
+// Updates document. Returns null if document wasn't found.
+// Returns Document or null
 
-/*
-  All of these examples are going to search
-  for `id` of '3213' and update 
-*/
-db.modelName.updateOne({ id: '3213' }, { messageCount: 2 });
-db.modelName.updateOne('id', '3212', { messageCount: 2 });
-db.modelName.updateOne(val => val.id === '3212', { messageCount: 2 });
+const collection = db.getCollection('name');
+
+const result = collection.updateOne({ username: 'zargovv' }, { id: '0' });
 ```
 
 ##### upsertOne()
 
 ```js
-/*
-  upsertOne() method is trying to update
-  a document. If document is not exists then
-  is going to insert it.
-*/
+// Updates document. Creates new one if not found.
+// Returns Document
 
-// All of these examples are going to search
-// for `id` of '3213' and update
-// messageCount to 2.
-db.modelName.upsertOne({ id: '3213' }, { messageCount: 2 });
-db.modelName.upsertOne('id', '3212', { messageCount: 2 });
-db.modelName.upsertOne(val => val.id === '3212', { messageCount: 2 });
+const collection = db.getCollection('name');
+
+const result = collection.updateOne({ username: 'zargovv' }, { id: '0' });
 ```
 
 ### MySQL
@@ -867,18 +889,19 @@ new Core({
 - `addModel()`
 - `open()` ( Open connection )
 - `close()` ( Close connection )
+- `getCollection()`
 
 #### Properties
 
-- `collection`
+- `collections`
 
 ### DB Models
 
 Their structure:
 
 ```js
-// Must define all default properties.
-// You can leave properties as undefined.
+// Must define all default values.
+// You can leave values as undefined.
 const data = {
   id: { type: MySql.Types.VarChar(18), default: undefined },
   messageCount: { type: MySql.Types.Int, default: 0 },
@@ -918,108 +941,320 @@ db.addModel('modelName', data);
 
 #### Methods
 
-- `hasOne()`
+- `fetch()`
+- `filterKeys()`
+- `filter()`
+- `findKey()`
 - `findOne()`
+- `getOne()`
 - `insertOne()`
+- `insertMany()`
 - `deleteOne()`
 - `updateOne()`
 - `upsertOne()`
 
-##### hasOne()
+##### fetch()
 
 ```js
-// Working with model from previous example.
-// You can use `db['modelName']`
+// Fetches all documents from the database.
+// Returns Promise<Collection<string, MongoDocument>>
 
-// Searches for document with `id` of '123'.
-let res1 = db.modelName.hasOne({ id: '123' });
-let res2 = db.modelName.hasOne('id', '123'); // Same.
-let res3 = db.modelName.hasOne(val => val.id === '123'); // Same.
+const collection = db.getCollection('name');
 
-console.log(typeof res); // Returns true or false (Boolean).
-console.log(typeof res2); // Same.
-console.log(typeof res3); // Same.
+collection.fetch().then(data => {});
+```
+
+##### filterKeys()
+
+```js
+// Filters the collection and returns only keys.
+// Returns string[]
+
+const collection = db.getCollection('name');
+
+const keys = collection.filterKeys(value => value.username === 'zargovv');
+```
+
+##### filter()
+
+```js
+// Filters the collection.
+// Returns Collection<string, MongoDocument>
+
+const collection = db.getCollection('name');
+
+const newCollection = collection.filter(value => value.username === 'zargovv');
+```
+
+##### findKey()
+
+```js
+// Finds document and returns key.
+// Returns string or null
+
+const collection = db.getCollection('name');
+
+const result = collection.findKey(value => value.username === 'zargovv');
 ```
 
 ##### findOne()
 
 ```js
-// Working with model from previous example.
-// You can use `db['modelName']` or `db.modelName`
+// Finds document.
+// Returns Document or null
 
-// Searches for document with `id` of '123'.
-let res1 = db.modelName.findOne({ id: '123' });
-let res2 = db.modelName.findOne('id', '123'); // Same.
-let res3 = db.modelName.findOne(val => val.id === '123'); // Same.
+const collection = db.getCollection('name');
 
-/*
-  Returns document. If there is no document
-  then you will getdefault settings which
-  were defined by yourself.
+const result = collection.findOne(value => value.username === 'zargovv');
+```
 
-  That means you can not get undefined or
-  null.
-*/
-console.log(typeof res);
-console.log(typeof res2); // Same.
-console.log(typeof res3); // Same.
+##### getOne()
+
+```js
+// Gets document
+// (Searches for it, if there is no one, then returns default values).
+// Returns Document or null
+
+const collection = db.getCollection('name');
+
+const document = collection.getOne(value => value.username === 'zargovv');
 ```
 
 ##### insertOne()
 
 ```js
-// **upsertOne() method is recommended to use!**
-db.modelName.insertOne({
-  id: '3213',
-  messageCount: 1, // If not defined, going to be 0.
-});
+// Creates new document
+// Returns Document
+
+const collection = db.getCollection('name');
+
+const result = collection.insertOne({ id: '1', username: 'zargovv' });
+```
+
+##### insertMany()
+
+```js
+// Creates new documents
+// Returns Document[]
+
+const collection = db.getCollection('name');
+
+const result = collection.insertOne([
+  { id: '1', username: 'zargovv' },
+  { id: '2', username: 'discore.js' },
+]);
 ```
 
 ##### deleteOne()
 
 ```js
-// returns null or document.
-db.modelName.deleteOne({ id: '3213' });
+// Deletes document
+// Returns Document or null
 
-/*
-  Does the same thing but returns null
-  because document is already deleted.
-*/
-db.modelName.deleteOne('id', '3212');
+const collection = db.getCollection('name');
 
-// Same as previous example.
-db.modelName.deleteOne(val => val.id === '3212');
+const result = collection.deleteOne({ username: 'zargovv' });
 ```
 
 ##### updateOne()
 
 ```js
-// **upsertOne() method is recommended to use!**
+// Updates document. Returns null if document wasn't found.
+// Returns Document or null
 
-/*
-  All of these examples are going to search
-  for `id` of '3213' and update 
-*/
-db.modelName.updateOne({ id: '3213' }, { messageCount: 2 });
-db.modelName.updateOne('id', '3212', { messageCount: 2 });
-db.modelName.updateOne(val => val.id === '3212', { messageCount: 2 });
+const collection = db.getCollection('name');
+
+const result = collection.updateOne({ username: 'zargovv' }, { id: '0' });
 ```
 
 ##### upsertOne()
 
 ```js
-/*
-  upsertOne() method is trying to update
-  a document. If document is not exists then
-  is going to insert it.
-*/
+// Updates document. Creates new one if not found.
+// Returns Document
 
-// All of these examples are going to search
-// for `id` of '3213' and update
-// messageCount to 2.
-db.modelName.upsertOne({ id: '3213' }, { messageCount: 2 });
-db.modelName.upsertOne('id', '3212', { messageCount: 2 });
-db.modelName.upsertOne(val => val.id === '3212', { messageCount: 2 });
+const collection = db.getCollection('name');
+
+const result = collection.updateOne({ username: 'zargovv' }, { id: '0' });
+```
+
+### Json
+
+Structure:
+
+```js
+const { Core, Json } = require('discore.js');
+
+const db = new Json(/* path to the directory */);
+
+new Core({
+  db,
+});
+```
+
+#### Methods
+
+- `addModel()`
+- `getCollection()`
+- `save()`
+
+#### Properties
+
+- `collections`
+
+### DB Models
+
+Their structure:
+
+```js
+// Default values.
+// You can leave values as undefined.
+const data = {
+  id: undefined,
+  messageCount: 0,
+  rowId: 0,
+};
+
+db.addModel('modelName', data);
+```
+
+#### Methods
+
+- `fetch()`
+- `filterKeys()`
+- `filter()`
+- `findKey()`
+- `findOne()`
+- `getOne()`
+- `insertOne()`
+- `insertMany()`
+- `deleteOne()`
+- `updateOne()`
+- `upsertOne()`
+
+##### fetch()
+
+```js
+// Fetches all documents from the database.
+// Returns Promise<Collection<string, MongoDocument>>
+
+const collection = db.getCollection('name');
+
+collection.fetch().then(data => {});
+```
+
+##### filterKeys()
+
+```js
+// Filters the collection and returns only keys.
+// Returns string[]
+
+const collection = db.getCollection('name');
+
+const keys = collection.filterKeys(value => value.username === 'zargovv');
+```
+
+##### filter()
+
+```js
+// Filters the collection.
+// Returns Collection<string, MongoDocument>
+
+const collection = db.getCollection('name');
+
+const newCollection = collection.filter(value => value.username === 'zargovv');
+```
+
+##### findKey()
+
+```js
+// Finds document and returns key.
+// Returns string or null
+
+const collection = db.getCollection('name');
+
+const result = collection.findKey(value => value.username === 'zargovv');
+```
+
+##### findOne()
+
+```js
+// Finds document.
+// Returns Document or null
+
+const collection = db.getCollection('name');
+
+const result = collection.findOne(value => value.username === 'zargovv');
+```
+
+##### getOne()
+
+```js
+// Gets document
+// (Searches for it, if there is no one, then returns default values).
+// Returns Document or null
+
+const collection = db.getCollection('name');
+
+const document = collection.getOne(value => value.username === 'zargovv');
+```
+
+##### insertOne()
+
+```js
+// Creates new document
+// Returns Document
+
+const collection = db.getCollection('name');
+
+const result = collection.insertOne({ id: '1', username: 'zargovv' });
+```
+
+##### insertMany()
+
+```js
+// Creates new documents
+// Returns Document[]
+
+const collection = db.getCollection('name');
+
+const result = collection.insertOne([
+  { id: '1', username: 'zargovv' },
+  { id: '2', username: 'discore.js' },
+]);
+```
+
+##### deleteOne()
+
+```js
+// Deletes document
+// Returns Document or null
+
+const collection = db.getCollection('name');
+
+const result = collection.deleteOne({ username: 'zargovv' });
+```
+
+##### updateOne()
+
+```js
+// Updates document. Returns null if document wasn't found.
+// Returns Document or null
+
+const collection = db.getCollection('name');
+
+const result = collection.updateOne({ username: 'zargovv' }, { id: '0' });
+```
+
+##### upsertOne()
+
+```js
+// Updates document. Creates new one if not found.
+// Returns Document
+
+const collection = db.getCollection('name');
+
+const result = collection.updateOne({ username: 'zargovv' }, { id: '0' });
 ```
 
 ## License
