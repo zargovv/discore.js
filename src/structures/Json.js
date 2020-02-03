@@ -8,7 +8,10 @@ module.exports = class Json {
     if (typeof dirPath !== 'string') {
       throw new TypeError("'DirPath' argument must be a string.");
     }
-    this.path = path.join(path.dirname(module.parent.parent.filename), dirPath);
+    this.path = path.join(
+      path.dirname(module.parent.parent.parent.filename),
+      dirPath
+    );
     this.collections = new Collection();
     this.savingQueue = new Collection();
   }
