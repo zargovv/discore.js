@@ -59,7 +59,7 @@ module.exports = class Store extends Collection {
 
     this.client = client;
     this.type = type;
-    this.folderName = this.client._private[`${this.type}sFolder`];
+    this.folderName = this.client._private.folders[`${this.type}s`];
     this.filePath = this.client._private.fullpath;
 
     if (defaults) {
