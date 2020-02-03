@@ -46,9 +46,9 @@ module.exports = class Json {
   }
 
   processQueue() {
+    if (!fs.existsSync(this.path)) fs.mkdirSync(this.path);
     for (const [key, value] of this.savingQueue) {
       this.savingQueue.delete(key);
-      if (!fs.existsSync(this.path)) fs.mkdirSync(this.path);
       fs.writeFileSync(value.path, value.data, 'utf8');
     }
     if ([...this.savingQueue.keys()].length > 0) return this.processQueue();
