@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const JsonModel = require('../util/JsonModel');
-const Collection = require('./Collection');
+const Collection = require('../util/Collection');
 
 module.exports = class Json {
   constructor(dirPath) {
