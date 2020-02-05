@@ -8,7 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "discord.js": "11.5.1",
-    "mongoose": "5.8.10",
+    "mongoose": "5.8.11",
     "mysql": "2.18.1"
   },
   "repository": {
