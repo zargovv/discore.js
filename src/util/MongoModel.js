@@ -83,7 +83,7 @@ module.exports = class MongoModel {
   insertOne(data) {
     const document = new MongoDocument(data);
     this.data.set(document._id, document);
-    this.db.collection(this.name).insertOne(data);
+    this.db.collection(this.name).insertOne({ ...document });
     return document;
   }
 
