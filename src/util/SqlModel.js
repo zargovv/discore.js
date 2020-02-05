@@ -190,7 +190,7 @@ module.exports = class SqlModel {
     if (!key) {
       return this.insertOne({
         ...(typeof query === 'object' ? query : {}),
-        ...newData,
+        ...(typeof query !== 'string' ? value : newData),
       });
     }
     return this.updateOne(query, value, newData);
