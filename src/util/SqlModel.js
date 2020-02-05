@@ -162,7 +162,11 @@ module.exports = class SqlModel {
     if (!key) return null;
     if (typeof query !== 'string') newData = value;
     const document = this.data.get(key);
-    const newDocument = new SqlDocument({ ...document, ...newData });
+    const newDocument = new SqlDocument({
+      ...this.defaults,
+      ...document,
+      ...newData,
+    });
     this.data.set(key, newDocument);
     const updateData = [];
     const typeRegEx = /((^VARCHAR)|(^((TINY)|(LONG)|(MEDIUM))?TEXT))(\(.+\))?$/;

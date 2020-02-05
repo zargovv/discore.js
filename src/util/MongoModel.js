@@ -81,7 +81,7 @@ module.exports = class MongoModel {
   }
 
   insertOne(data) {
-    const document = new MongoDocument(data);
+    const document = new MongoDocument({ ...this.defaults, ...data });
     this.data.set(document._id, document);
     this.db.collection(this.name).insertOne({ ...document });
     return document;
@@ -89,9 +89,11 @@ module.exports = class MongoModel {
 
   insertMany(data) {
     const documents = [];
-    for (const document of data) documents.push(new MongoDocument(document));
+    for (const document of data) {
+      documents.push(new MongoDocument({ ...this.defaults, ...document }));
+    }
     for (const document of documents) this.data.set(document._id, document);
-    this.db.collection(this.name).insertMany(data);
+    this.db.collection(this.name).insertMany(documents.map(d => ({ ...d })));
     return documents;
   }
 
@@ -111,7 +113,11 @@ module.exports = class MongoModel {
     if (!key) return null;
     if (typeof query !== 'string') newData = value;
     const document = this.data.get(key);
-    const newDocument = new MongoDocument({ ...document, ...newData });
+    const newDocument = new MongoDocument({
+      ...this.defaults,
+      ...document,
+      ...newData,
+    });
     this.data.set(key, newDocument);
     this.db
       .collection(this.name)

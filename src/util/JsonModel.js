@@ -18,9 +18,7 @@ module.exports = class JsonModel {
         body = {};
       }
     }
-    Object.keys(body).forEach(key =>
-      this.data.set(key, new Doc(body[key]))
-    );
+    Object.keys(body).forEach(key => this.data.set(key, new Doc(body[key])));
   }
 
   save() {
@@ -76,7 +74,7 @@ module.exports = class JsonModel {
   }
 
   insertOne(data) {
-    const document = new Doc(data);
+    const document = new Doc({ ...this.defaults, ...data });
     this.data.set(document._id, document);
     this.save();
     return document;
@@ -84,7 +82,9 @@ module.exports = class JsonModel {
 
   insertMany(data) {
     const documents = [];
-    for (const document of data) documents.push(new Doc(document));
+    for (const document of data) {
+      documents.push(new Doc({ ...this.defaults, ...document }));
+    }
     for (const document of documents) this.data.set(document._id, document);
     this.save();
     return documents;
@@ -117,7 +117,7 @@ module.exports = class JsonModel {
     if (!key) return null;
     if (typeof query !== 'string') newData = value;
     const document = this.data.get(key);
-    const newDocument = new Doc({ ...document, ...newData });
+    const newDocument = new Doc({ ...this.defaults, ...document, ...newData });
     this.data.set(key, newDocument);
     this.save();
     return newDocument;
