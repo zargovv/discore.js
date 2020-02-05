@@ -113,7 +113,9 @@ module.exports = class MongoModel {
     const document = this.data.get(key);
     const newDocument = new MongoDocument({ ...document, ...newData });
     this.data.set(key, newDocument);
-    this.db.collection(this.name).updateOne({ _id: key }, { ...newDocument });
+    this.db
+      .collection(this.name)
+      .updateOne({ _id: key }, { $set: { ...newDocument } });
     return newDocument;
   }
 
