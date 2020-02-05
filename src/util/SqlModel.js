@@ -99,10 +99,12 @@ module.exports = class SqlModel {
       query = { [query]: value };
     }
     const defaults = {
-      ...this.defaults,
       ...(typeof query === 'object' ? query : {}),
     };
-    return this.findOne(query, value) || new SqlDocument(defaults);
+    return {
+      ...this.defaults,
+      ...(this.findOne(query, value) || new SqlDocument(defaults)),
+    };
   }
 
   insertOne(data) {

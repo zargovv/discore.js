@@ -74,10 +74,12 @@ module.exports = class MongoModel {
       query = { [query]: value };
     }
     const defaults = {
-      ...this.defaults,
       ...(typeof query === 'object' ? query : {}),
     };
-    return this.findOne(query, value) || new MongoDocument(defaults);
+    return {
+      ...this.defaults,
+      ...(this.findOne(query, value) || new MongoDocument(defaults)),
+    };
   }
 
   insertOne(data) {
