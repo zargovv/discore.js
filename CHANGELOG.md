@@ -43,6 +43,9 @@
 
 ### Removed
 
+- CommandOptions#usage option.
+- CommandOptions#description option.
+
 - SqlModel#collection property.
 
 - Mongo#\_models property.

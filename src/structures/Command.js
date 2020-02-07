@@ -5,8 +5,6 @@ const defaultOptions = {
   cooldown: 0,
   aliases: [],
   permLevel: 0,
-  description: undefined,
-  usage: undefined,
 };
 
 /**
@@ -38,8 +36,6 @@ module.exports = class Command extends Base {
     this.cooldown = this._options.cooldown;
     this.aliases = this._options.aliases;
     this.permLevel = this._options.permLevel;
-    this.description = this._options.description;
-    this.usage = this._options.usage;
     this.cooldowns = new Collection();
   }
 

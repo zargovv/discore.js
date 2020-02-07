@@ -221,8 +221,6 @@ module.exports = class extends Command {
       cooldown: 0, // In milliseconds
       aliases: [],
       permLevel: 0, // Runs noPermsRun() method if tests not passed.
-      description: undefined,
-      usage: undefined,
       once: false, // Unloads after first use.
     };
     // If name is not defined then it will be defined as file name.
@@ -825,7 +823,7 @@ const result = collection.insertOne({ id: '1', username: 'zargovv' });
 
 const collection = db.getCollection('name');
 
-const result = collection.insertOne([
+const result = collection.insertMany([
   { id: '1', username: 'zargovv' },
   { id: '2', username: 'discore.js' },
 ]);
@@ -1039,7 +1037,7 @@ const result = collection.insertOne({ id: '1', username: 'zargovv' });
 
 const collection = db.getCollection('name');
 
-const result = collection.insertOne([
+const result = collection.insertMany([
   { id: '1', username: 'zargovv' },
   { id: '2', username: 'discore.js' },
 ]);
@@ -1218,7 +1216,7 @@ const result = collection.insertOne({ id: '1', username: 'zargovv' });
 
 const collection = db.getCollection('name');
 
-const result = collection.insertOne([
+const result = collection.insertMany([
   { id: '1', username: 'zargovv' },
   { id: '2', username: 'discore.js' },
 ]);
