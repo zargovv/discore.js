@@ -95,7 +95,7 @@ declare module 'discore.js' {
     ignoreSelf?: boolean;
   }
   interface IConfigOptions extends IConfigAddOptions {
-    prefixOptions: IPrefixOptions;
+    prefixOptions?: IPrefixOptions;
     commandOptions?: ICommandConfig;
     prefix?: Prefix;
   }
