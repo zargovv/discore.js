@@ -451,10 +451,7 @@ declare module 'discore.js' {
 
     private processQueue(): void;
   }
-  export class Store extends Collection<
-    string,
-    Command | Event | Trigger | Inhibitor | object
-  > {
+  export class Store<K> extends Collection<string, K> {
     constructor(client: Core, type: string, defaults?: string);
 
     public search(query: string): any[];
@@ -517,16 +514,16 @@ declare module 'discore.js' {
     public ignorePrefixCase: boolean;
     public db: DB;
 
-    public events: Store;
-    public monitors: Store;
-    public commands: Store;
-    public triggers: Store;
-    public inhibitors: Store;
+    public events: Store<Event>;
+    public monitors: Store<Monitor>;
+    public commands: Store<Command>;
+    public triggers: Store<Trigger>;
+    public inhibitors: Store<Inhibitor>;
   }
   class Base {
     constructor(
       client: Core,
-      store: Store,
+      store: Store<any>,
       type: string,
       fullpath: string,
       options?: IBaseOptions
@@ -535,7 +532,7 @@ declare module 'discore.js' {
     public _id: Id;
 
     public readonly client: Core;
-    public readonly store: Store;
+    public readonly store: Store<any>;
     public custom: object;
     public id: any;
     public dir: string;
@@ -557,7 +554,7 @@ declare module 'discore.js' {
   export class Command extends Base {
     constructor(
       client: Core,
-      store: Store,
+      store: Store<Command>,
       fullpath: string,
       options?: ICommandOptions
     );
@@ -576,7 +573,7 @@ declare module 'discore.js' {
   export class Event extends Base {
     constructor(
       client: Core,
-      store: Store,
+      store: Store<Event>,
       fullpath: string,
       options?: IEventOptions
     );
@@ -589,7 +586,7 @@ declare module 'discore.js' {
   export class Inhibitor extends Base {
     constructor(
       client: Core,
-      store: Store,
+      store: Store<Inhibitor>,
       fullpath: string,
       options?: IInhibitorOptions
     );
@@ -601,7 +598,7 @@ declare module 'discore.js' {
   export class Monitor extends Base {
     constructor(
       client: Core,
-      store: Store,
+      store: Store<Monitor>,
       fullpath: string,
       options?: IMonitorOptions
     );
@@ -611,7 +608,7 @@ declare module 'discore.js' {
   export class Trigger extends Base {
     constructor(
       client: Core,
-      store: Store,
+      store: Store<Trigger>,
       fullpath: string,
       options?: ITriggerOptions
     );
