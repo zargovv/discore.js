@@ -63,7 +63,7 @@ module.exports = class Store extends Collection {
     this.filePath = this.client._private.fullpath;
 
     if (defaults) {
-      this.init(defaults, path.basename(defaults));
+      this.init(defaults, path.basename(defaults), null, true);
     }
     this.init(this.filePath, this.folderName, _private);
   }
@@ -190,19 +190,21 @@ module.exports = class Store extends Collection {
               const prop = new Prop[key](this.client, this, file.path);
               prop._private = { parents };
               prop.categories = parents.reverse();
-              this.set(prop.id, prop);
+              if (!_private) this.set(prop.id, prop);
             }
           }
         } else {
           const prop = new Prop(this.client, this, file.path);
           prop._private = { parents };
           prop.categories = parents.reverse();
-          this.set(prop.id, prop);
+          if (!_private) this.set(prop.id, prop);
         }
       });
-      this.client[`${this.type}s`] = this;
-      this.client.emit('load', this);
-      this.client.emit(`load:${this.type}s`, this);
+      if (!_private) {
+        this.client[`${this.type}s`] = this;
+        this.client.emit('load', this);
+        this.client.emit(`load:${this.type}s`, this);
+      }
       return this;
     } catch (err) {
       this.client.emit('error', err);
