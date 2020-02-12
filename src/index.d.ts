@@ -533,7 +533,7 @@ declare module 'discore.js' {
 
     public readonly client: Core;
     public readonly store: Store<any>;
-    public custom: object;
+    public custom: { [key: string]: any };
     public id: any;
     public dir: string;
     public file: string;
