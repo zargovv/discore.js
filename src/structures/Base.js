@@ -34,7 +34,7 @@ module.exports = class Base {
     this.id = options.id;
     if (!this.id) this.id = this._id;
     if (this.store.find(e => e.id === this.id)) {
-      const err = `Event with id ${this.id} is already exists`;
+      const err = `${this.store.type} with id ${this.id} already exists`;
       return this.client.emit('error', err);
     }
     this.dir = path.dirname(fullpath);
