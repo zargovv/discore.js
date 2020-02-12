@@ -1,6 +1,10 @@
-const Monitor = require('../structures/Monitor');
+const Event = require('../structures/Event');
 
-module.exports = class extends Monitor {
+module.exports = class extends Event {
+  get options() {
+    return { key: 'message' };
+  }
+
   async run(message) {
     if (!message) return;
     if (!message.channel) return;
