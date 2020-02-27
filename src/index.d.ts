@@ -23,7 +23,7 @@ declare module 'discore.js' {
   type Id = any;
   type Level = number;
   type Prefix = string | string[] | RegExp | RegExp[];
-  type DB = Mongo | MySql;
+  type DB = Mongo | MySql | Json;
   type ArgsSeparator = string | RegExp;
   type PageResolvable = any;
   type SqlCollection = Collection<string, any>;
