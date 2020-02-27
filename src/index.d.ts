@@ -438,7 +438,7 @@ declare module 'discore.js' {
       newData?: TQueryValue
     ): Doc;
   }
-  export default class Json {
+  export class Json {
     public path: string;
     public collections: TCollections;
     public savingQueue: Collection<string, IQueueIterator>;
