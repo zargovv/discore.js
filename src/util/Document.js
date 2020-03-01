@@ -2,7 +2,7 @@ const UniqueId = require('./UniqueId');
 
 module.exports = class Document {
   constructor(entries = {}) {
-    if (!entries._id) entries._id = new UniqueId();
+    if (!entries._id) entries._id = new UniqueId().id;
     Object.keys(entries).forEach(key => (this[key] = entries[key]));
   }
 
