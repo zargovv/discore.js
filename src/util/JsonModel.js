@@ -14,8 +14,8 @@ module.exports = class JsonModel {
   
   load() {
     let body = {};
-    if (fs.existsSync(path)) {
-      const content = fs.readFileSync(path, 'utf8');
+    if (fs.existsSync(this.path)) {
+      const content = fs.readFileSync(this.path, 'utf8');
       try {
         body = JSON.parse(content);
       } catch (e) {
