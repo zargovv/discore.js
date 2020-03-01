@@ -359,6 +359,8 @@ declare module 'discore.js' {
 
     constructor(worker: Worker, name: string, path: string, defaults: object);
 
+    public load(): void;
+    
     public save(): void;
 
     public filterKeys(query: IDocument): string[];
