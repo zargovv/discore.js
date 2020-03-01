@@ -9,6 +9,10 @@ module.exports = class JsonModel {
     this.path = path;
     this.defaults = defaults;
     this.data = new Collection();
+    this.load();
+  }
+  
+  load() {
     let body = {};
     if (fs.existsSync(path)) {
       const content = fs.readFileSync(path, 'utf8');
