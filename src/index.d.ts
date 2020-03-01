@@ -504,6 +504,7 @@ declare module 'discore.js' {
       dirpath: string;
     };
 
+    public public: { [key: string]: any };
     public config: { guild: Config };
     public prefix: Prefix;
     public argsSeparator: ArgsSeparator;
