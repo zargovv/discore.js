@@ -357,7 +357,7 @@ declare module 'discore.js' {
     public path: string;
     public defaults: object;
 
-    constructor(worker: Worker, name: string, path: string, defaults: object);
+    constructor(db: Json, name: string, path: string, defaults: object);
 
     public load(): void;
     
