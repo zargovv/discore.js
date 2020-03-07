@@ -128,15 +128,18 @@ module.exports = class SqlModel {
   }
 
   getOne(query, value) {
-    function action() {
+    return new Promise((resolve, reject) => {
       if (typeof query === 'string') query = { [query]: value };
       const defaults = { ...(typeof query === 'object' ? query : {}) };
-      return {
-        ...this.defaults,
-        ...(this.findOne(query, value) || new SqlDocument(defaults)),
-      };
-    }
-    return this.queue(action);
+      this.findOne(query, value)
+        .then(data => {
+          resolve({
+            ...this.defaults,
+            ...(data || new SqlDocument(defaults)),
+          });
+        })
+        .catch(reject);
+    });
   }
 
   insertOne(data) {
