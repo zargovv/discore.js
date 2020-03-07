@@ -167,77 +167,105 @@ declare module 'discore.js' {
     public name: string;
     public options: object;
     public data: SqlCollection;
+    public state: 0 | 1;
+
+    private queue(action: () => any): Promise<any>;
 
     public fetch(): Promise<SqlCollection>;
 
-    public filterKeys(query: string, value: string): string[];
-    public filterKeys(query: { [key: string]: any }): string[];
+    public filterKeys(query: string, value: string): Promise<string[]>;
+    public filterKeys(query: { [key: string]: any }): Promise<string[]>;
     public filterKeys(
       query: (value: any, key: string, collection: SqlCollection) => boolean
-    ): string[];
-    public filterKeys(query: QueryResolvable, value?: QueryValue): string[];
+    ): Promise<string[]>;
+    public filterKeys(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): Promise<string[]>;
 
-    public filter(query: string, value: string): SqlCollection;
-    public filter(query: { [key: string]: any }): SqlCollection;
+    public filter(query: string, value: string): Promise<SqlCollection>;
+    public filter(query: { [key: string]: any }): Promise<SqlCollection>;
     public filter(
       query: (value: any, key: string, collection: SqlCollection) => boolean
-    ): SqlCollection;
-    public filter(query: QueryResolvable, value?: QueryValue): SqlCollection;
+    ): Promise<SqlCollection>;
+    public filter(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): Promise<SqlCollection>;
 
-    public findKey(query: string, value: string): string | null;
-    public findKey(query: { [key: string]: any }): string | null;
+    public findKey(query: string, value: string): Promise<string | undefined>;
+    public findKey(query: { [key: string]: any }): Promise<string | undefined>;
     public findKey(
       query: (value: any, key: string, collection: SqlCollection) => boolean
-    ): string | null;
-    public findKey(query: QueryResolvable, value?: QueryValue): string | null;
+    ): Promise<string | undefined>;
+    public findKey(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): Promise<string | undefined>;
 
-    public findOne(query: string, value: string): Doc | null;
-    public findOne(query: { [key: string]: any }): Doc | null;
+    public findOne(query: string, value: string): Promise<Doc | undefined>;
+    public findOne(query: { [key: string]: any }): Promise<Doc | undefined>;
     public findOne(
       query: (value: any, key: string, collection: SqlCollection) => boolean
-    ): Doc | null;
-    public findOne(query: QueryResolvable, value?: QueryValue): Doc | null;
+    ): Promise<Doc | undefined>;
+    public findOne(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): Promise<Doc | undefined>;
 
-    public getOne(query: string, value: string): Doc;
-    public getOne(query: { [key: string]: any }): Doc;
+    public getOne(query: string, value: string): Promise<Doc>;
+    public getOne(query: { [key: string]: any }): Promise<Doc>;
     public getOne(
       query: (value: any, key: string, collection: SqlCollection) => boolean
-    ): Doc;
-    public getOne(query: QueryResolvable, value?: QueryValue): Doc;
+    ): Promise<Doc>;
+    public getOne(query: QueryResolvable, value?: QueryValue): Promise<Doc>;
 
     public insertOne(data: IDocument): Doc;
 
     public insertMany(data: IDocument[]): Doc;
 
-    public deleteOne(query: string, value: string): Doc | null;
-    public deleteOne(query: { [key: string]: any }): Doc | null;
+    public deleteOne(query: string, value: string): Promise<Doc | undefined>;
+    public deleteOne(query: { [key: string]: any }): Promise<Doc | undefined>;
     public deleteOne(
       query: (value: any, key: string, collection: SqlCollection) => boolean
-    ): Doc | null;
-    public deleteOne(query: QueryResolvable, value?: QueryValue): Doc | null;
+    ): Promise<Doc | undefined>;
+    public deleteOne(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): Promise<Doc | undefined>;
 
     public updateOne(
       query: string,
       value: string,
       newData: IDocument
-    ): Doc | null;
+    ): Promise<Doc | undefined>;
     public updateOne(
       query: { [key: string]: any },
       newData: IDocument
-    ): Doc | null;
+    ): Promise<Doc | undefined>;
     public updateOne(
       query: (value: any, key: string, collection: SqlCollection) => boolean,
       newData: IDocument
-    ): Doc | null;
-    public updateOne(query: QueryResolvable, value?: QueryValue): Doc | null;
+    ): Promise<Doc | undefined>;
+    public updateOne(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): Promise<Doc | undefined>;
 
-    public upsertOne(query: string, value: string, newData: IDocument): Doc;
-    public upsertOne(query: { [key: string]: any }, newData: IDocument): Doc;
+    public upsertOne(
+      query: string,
+      value: string,
+      newData: IDocument
+    ): Promise<Doc>;
+    public upsertOne(
+      query: { [key: string]: any },
+      newData: IDocument
+    ): Promise<Doc>;
     public upsertOne(
       query: (value: any, key: string, collection: SqlCollection) => boolean,
       newData: IDocument
-    ): Doc;
-    public upsertOne(query: QueryResolvable, value?: QueryValue): Doc;
+    ): Promise<Doc>;
+    public upsertOne(query: QueryResolvable, value?: QueryValue): Promise<Doc>;
   }
   export class MySql {
     constructor(url: any);
@@ -261,77 +289,106 @@ declare module 'discore.js' {
     public name: string;
     public options: object;
     public db: any;
+    public emitter: EventEmitter;
+    public state: 0 | 1;
+
+    private queue(action: () => any): Promise<any>;
 
     public fetch(): Promise<MongoCollection>;
 
-    public filterKeys(query: string, value: string): string[];
-    public filterKeys(query: { [key: string]: any }): string[];
+    public filterKeys(query: string, value: string): Promise<string[]>;
+    public filterKeys(query: { [key: string]: any }): Promise<string[]>;
     public filterKeys(
       query: (value: any, key: string, collection: MongoCollection) => boolean
-    ): string[];
-    public filterKeys(query: QueryResolvable, value?: QueryValue): string[];
+    ): Promise<string[]>;
+    public filterKeys(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): Promise<string[]>;
 
-    public filter(query: string, value: string): MongoCollection;
-    public filter(query: { [key: string]: any }): MongoCollection;
+    public filter(query: string, value: string): Promise<MongoCollection>;
+    public filter(query: { [key: string]: any }): Promise<MongoCollection>;
     public filter(
       query: (value: any, key: string, collection: MongoCollection) => boolean
-    ): MongoCollection;
-    public filter(query: QueryResolvable, value?: QueryValue): MongoCollection;
+    ): Promise<MongoCollection>;
+    public filter(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): Promise<MongoCollection>;
 
-    public findKey(query: string, value: string): string | null;
-    public findKey(query: { [key: string]: any }): string | null;
+    public findKey(query: string, value: string): Promise<string | null>;
+    public findKey(query: { [key: string]: any }): Promise<string | null>;
     public findKey(
       query: (value: any, key: string, collection: MongoCollection) => boolean
-    ): string | null;
-    public findKey(query: QueryResolvable, value?: QueryValue): string | null;
+    ): Promise<string | null>;
+    public findKey(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): Promise<string | null>;
 
-    public findOne(query: string, value: string): Doc | null;
-    public findOne(query: { [key: string]: any }): Doc | null;
+    public findOne(query: string, value: string): Promise<Doc | null>;
+    public findOne(query: { [key: string]: any }): Promise<Doc | null>;
     public findOne(
       query: (value: any, key: string, collection: MongoCollection) => boolean
-    ): Doc | null;
-    public findOne(query: QueryResolvable, value?: QueryValue): Doc | null;
+    ): Promise<Doc | null>;
+    public findOne(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): Promise<Doc | null>;
 
-    public getOne(query: string, value: string): Doc;
-    public getOne(query: { [key: string]: any }): Doc;
+    public getOne(query: string, value: string): Promise<Doc>;
+    public getOne(query: { [key: string]: any }): Promise<Doc>;
     public getOne(
       query: (value: any, key: string, collection: MongoCollection) => boolean
-    ): Doc;
-    public getOne(query: QueryResolvable, value?: QueryValue): Doc;
+    ): Promise<Doc>;
+    public getOne(query: QueryResolvable, value?: QueryValue): Promise<Doc>;
 
     public insertOne(data: IDocument): Doc;
 
     public insertMany(data: IDocument[]): Doc;
 
-    public deleteOne(query: string, value: string): Doc | null;
-    public deleteOne(query: { [key: string]: any }): Doc | null;
+    public deleteOne(query: string, value: string): Promise<Doc | null>;
+    public deleteOne(query: { [key: string]: any }): Promise<Doc | null>;
     public deleteOne(
       query: (value: any, key: string, collection: MongoCollection) => boolean
-    ): Doc | null;
-    public deleteOne(query: QueryResolvable, value?: QueryValue): Doc | null;
+    ): Promise<Doc | null>;
+    public deleteOne(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): Promise<Doc | null>;
 
     public updateOne(
       query: string,
       value: string,
       newData: IDocument
-    ): Doc | null;
+    ): Promise<Doc | null>;
     public updateOne(
       query: { [key: string]: any },
       newData: IDocument
-    ): Doc | null;
+    ): Promise<Doc | null>;
     public updateOne(
       query: (value: any, key: string, collection: MongoCollection) => boolean,
       newData: IDocument
-    ): Doc | null;
-    public updateOne(query: QueryResolvable, value?: QueryValue): Doc | null;
+    ): Promise<Doc | null>;
+    public updateOne(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): Promise<Doc | null>;
 
-    public upsertOne(query: string, value: string, newData: IDocument): Doc;
-    public upsertOne(query: { [key: string]: any }, newData: IDocument): Doc;
+    public upsertOne(
+      query: string,
+      value: string,
+      newData: IDocument
+    ): Promise<Doc>;
+    public upsertOne(
+      query: { [key: string]: any },
+      newData: IDocument
+    ): Promise<Doc>;
     public upsertOne(
       query: (value: any, key: string, collection: MongoCollection) => boolean,
       newData: IDocument
-    ): Doc;
-    public upsertOne(query: QueryResolvable, value?: QueryValue): Doc;
+    ): Promise<Doc>;
+    public upsertOne(query: QueryResolvable, value?: QueryValue): Promise<Doc>;
   }
   export class Mongo {
     constructor(url: string, options?: object);
@@ -359,7 +416,7 @@ declare module 'discore.js' {
 
     constructor(db: Json, name: string, path: string, defaults: object);
 
-    public load(): void;
+    public fetch(): Collection<string, Doc>;
 
     public save(): void;
 
@@ -377,19 +434,25 @@ declare module 'discore.js' {
     ): Doc[];
     public filter(query: TQueryResolvable, value?: TQueryValue): Doc[];
 
-    public findKey(query: IDocument): string | null;
-    public findKey(query: string, value: any): string | null;
+    public findKey(query: IDocument): string | undefined;
+    public findKey(query: string, value: any): string | undefined;
     public findKey(
       query: (value: Doc, key: string, model: JsonModel) => boolean
-    ): string | null;
-    public findKey(query: TQueryResolvable, value?: TQueryValue): string | null;
+    ): string | undefined;
+    public findKey(
+      query: TQueryResolvable,
+      value?: TQueryValue
+    ): string | undefined;
 
-    public findOne(query: IDocument): Doc | null;
-    public findOne(query: string, value: any): Doc | null;
+    public findOne(query: IDocument): Doc | undefined;
+    public findOne(query: string, value: any): Doc | undefined;
     public findOne(
       query: (value: Doc, key: string, model: JsonModel) => boolean
-    ): Doc | null;
-    public findOne(query: TQueryResolvable, value?: TQueryValue): Doc | null;
+    ): Doc | undefined;
+    public findOne(
+      query: TQueryResolvable,
+      value?: TQueryValue
+    ): Doc | undefined;
 
     public getOne(query: IDocument): Doc;
     public getOne(query: string, value: any): Doc;
@@ -402,31 +465,41 @@ declare module 'discore.js' {
 
     public insertMany(data: Doc[] | IDocument[]): Doc[];
 
-    public deleteOne(query: IDocument): Doc | null;
-    public deleteOne(query: string, value: any): Doc | null;
+    public deleteOne(query: IDocument): Doc | undefined;
+    public deleteOne(query: string, value: any): Doc | undefined;
     public deleteOne(
       query: (value: Doc, key: string, model: JsonModel) => boolean
-    ): Doc | null;
-    public deleteOne(query: TQueryResolvable, value?: TQueryValue): Doc | null;
+    ): Doc | undefined;
+    public deleteOne(
+      query: TQueryResolvable,
+      value?: TQueryValue
+    ): Doc | undefined;
 
-    public deleteMany(query: IDocument): Doc | null;
-    public deleteMany(query: string, value: any): Doc | null;
+    public deleteMany(query: IDocument): Doc | undefined;
+    public deleteMany(query: string, value: any): Doc | undefined;
     public deleteMany(
       query: (value: Doc, key: string, model: JsonModel) => boolean
-    ): Doc | null;
-    public deleteMany(query: TQueryResolvable, value?: TQueryValue): Doc | null;
+    ): Doc | undefined;
+    public deleteMany(
+      query: TQueryResolvable,
+      value?: TQueryValue
+    ): Doc | undefined;
 
-    public updateOne(query: IDocument, newData: IDocument): Doc | null;
-    public updateOne(query: string, value: any, newData: IDocument): Doc | null;
+    public updateOne(query: IDocument, newData: IDocument): Doc | undefined;
+    public updateOne(
+      query: string,
+      value: any,
+      newData: IDocument
+    ): Doc | undefined;
     public updateOne(
       query: (value: Doc, key: string, model: JsonModel) => boolean,
       newData: IDocument
-    ): Doc | null;
+    ): Doc | undefined;
     public updateOne(
       query: TQueryResolvable,
       value: TQueryValue,
       newData?: TQueryValue
-    ): Doc | null;
+    ): Doc | undefined;
 
     public upsertOne(query: IDocument, newData: IDocument): Doc;
     public upsertOne(query: string, value: any, newData: IDocument): Doc;

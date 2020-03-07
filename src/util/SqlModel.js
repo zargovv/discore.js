@@ -35,6 +35,18 @@ module.exports = class SqlModel {
     });
     this.data = new Collection();
     this.emitter.on('connected', () => this.fetch());
+    this.state = 0;
+  }
+
+  queue(action) {
+    return new Promise((resolve, reject) => {
+      if (this.state !== 1) {
+        this.emitter.on('ready', () => resolve(action()));
+        this.emitter.on('error', reject);
+        return;
+      }
+      resolve(action());
+    });
   }
 
   fetch() {
@@ -51,6 +63,11 @@ module.exports = class SqlModel {
           const data = new Collection();
           if (!data) return resolve(data);
           for (const val of docs) data.set(val._id, val);
+          this.data = data;
+          if (this.state !== 1) {
+            this.state = 1;
+            this.emitter.emit('ready');
+          }
           resolve(data);
         })
         .catch(reject);
@@ -58,53 +75,68 @@ module.exports = class SqlModel {
   }
 
   filterKeys(query, value) {
-    if (typeof query === 'string') query = { [query]: value };
-    if (typeof query === 'object') {
-      const q = query;
-      query = doc => Object.keys(q).every(k => doc[k] === q[k]);
+    function action() {
+      if (typeof query === 'string') query = { [query]: value };
+      if (typeof query === 'object') {
+        const q = query;
+        query = doc => Object.keys(q).every(k => doc[k] === q[k]);
+      }
+      const keys = [];
+      for (const [key, value] of this.data) {
+        if (query(value, key, this)) keys.push(key);
+      }
+      return keys;
     }
-    const keys = [];
-    for (const [key, value] of this.data) {
-      if (query(value, key, this)) keys.push(key);
-    }
-    return keys;
+    return this.queue(action);
   }
 
   filter(query, value) {
-    const keys = this.filterKeys(query, value);
-    const documents = [];
-    for (const key of keys) documents.push(this.data.get(key));
-    return documents;
+    return new Promise((resolve, reject) => {
+      this.filterKeys(query, value)
+        .then(keys => {
+          const documents = [];
+          for (const key of keys) documents.push(this.data.get(key));
+          resolve(documents);
+        })
+        .catch(reject);
+    });
   }
 
   findKey(query, value) {
-    if (typeof query === 'string') query = { [query]: value };
-    if (typeof query === 'object') {
-      const q = query;
-      query = doc => Object.keys(q).every(k => doc[k] === q[k]);
+    function action() {
+      if (typeof query === 'string') query = { [query]: value };
+      if (typeof query === 'object') {
+        const q = query;
+        query = doc => Object.keys(q).every(k => doc[k] === q[k]);
+      }
+      for (const [key, value] of this.data) {
+        if (query(value, key, this)) return key;
+      }
+      return undefined;
     }
-    for (const [key, value] of this.data) {
-      if (query(value, key, this)) return key;
-    }
-    return null;
+    return this.queue(action);
   }
 
   findOne(query, value) {
-    const key = this.findKey(query, value);
-    return key ? this.data.get(key) : null;
+    return new Promise((resolve, reject) => {
+      this.findKey(query, value)
+        .then(key => {
+          resolve(key ? this.data.get(key) : undefined);
+        })
+        .catch(reject);
+    });
   }
 
   getOne(query, value) {
-    if (typeof query === 'string') {
-      query = { [query]: value };
+    function action() {
+      if (typeof query === 'string') query = { [query]: value };
+      const defaults = { ...(typeof query === 'object' ? query : {}) };
+      return {
+        ...this.defaults,
+        ...(this.findOne(query, value) || new SqlDocument(defaults)),
+      };
     }
-    const defaults = {
-      ...(typeof query === 'object' ? query : {}),
-    };
-    return {
-      ...this.defaults,
-      ...(this.findOne(query, value) || new SqlDocument(defaults)),
-    };
+    return this.queue(action);
   }
 
   insertOne(data) {
@@ -146,59 +178,82 @@ module.exports = class SqlModel {
   }
 
   deleteOne(query, value) {
-    const key = this.findKey(query, value);
-    if (key) {
-      const document = this.data.get(key);
-      this.data.delete(key);
-      this.db
-        .query(`DELETE FROM ${this.name} WHERE _id = '${key}'`)
-        .on('result', () => {})
-        .on('error', err => {});
-      return document;
-    }
-    return null;
+    return new Promise((resolve, reject) => {
+      this.findKey(query, value)
+        .then(key => {
+          if (key) {
+            const document = this.data.get(key);
+            this.data.delete(key);
+            this.db
+              .query(`DELETE FROM ${this.name} WHERE _id = '${key}'`)
+              .on('result', () => {})
+              .on('error', err => {});
+            return resolve(document);
+          }
+          resolve(undefined);
+        })
+        .catch(reject);
+    });
   }
 
   updateOne(query, value, newData = {}) {
-    const key = this.findKey(query, value);
-    if (!key) return null;
-    if (typeof query !== 'string') newData = value;
-    const document = this.data.get(key);
-    const newDocument = new SqlDocument({
-      ...this.defaults,
-      ...document,
-      ...newData,
+    return new Promise((resolve, reject) => {
+      this.findKey(query, value)
+        .then(key => {
+          if (!key) return resolve(undefined);
+          if (typeof query !== 'string') newData = value;
+          const document = this.data.get(key);
+          const newDocument = new SqlDocument({
+            ...this.defaults,
+            ...document,
+            ...newData,
+          });
+          this.data.set(key, newDocument);
+          const updateData = [];
+          const typeRegEx = /((^VARCHAR)|(^((TINY)|(LONG)|(MEDIUM))?TEXT))(\(.+\))?$/;
+          for (const okey of Object.keys(newDocument)) {
+            if (!newDocument[okey]) newDocument[okey] = 'NULL';
+            else if (
+              new RegExp(typeRegEx.source, 'i').test(this.options[okey])
+            ) {
+              newDocument[okey] = `'${newDocument[okey]}'`;
+            }
+            updateData.push({
+              key: okey,
+              name: okey,
+              value: newDocument[okey],
+            });
+          }
+          this.db
+            .query(
+              `UPDATE ${this.name} SET ${updateData
+                .map(e => `${e.key} = ${e.value}`)
+                .join(', ')} WHERE _id = '${key}'`
+            )
+            .on('result', () => {})
+            .on('error', err => {});
+          resolve(newDocument);
+        })
+        .catch(reject);
     });
-    this.data.set(key, newDocument);
-    const updateData = [];
-    const typeRegEx = /((^VARCHAR)|(^((TINY)|(LONG)|(MEDIUM))?TEXT))(\(.+\))?$/;
-    for (const okey of Object.keys(newDocument)) {
-      if (!newDocument[okey]) newDocument[okey] = 'NULL';
-      else if (new RegExp(typeRegEx.source, 'i').test(this.options[okey])) {
-        newDocument[okey] = `'${newDocument[okey]}'`;
-      }
-      updateData.push({ key: okey, name: okey, value: newDocument[okey] });
-    }
-    this.db
-      .query(
-        `UPDATE ${this.name} SET ${updateData
-          .map(e => `${e.key} = ${e.value}`)
-          .join(', ')} WHERE _id = '${key}'`
-      )
-      .on('result', () => {})
-      .on('error', err => {});
-    return newDocument;
   }
 
   upsertOne(query, value, newData = {}) {
-    const key = this.findKey(query, value);
-    if (typeof query === 'string') query = { [query]: value };
-    if (!key) {
-      return this.insertOne({
-        ...(typeof query === 'object' ? query : {}),
-        ...(typeof query !== 'string' ? value : newData),
-      });
-    }
-    return this.updateOne(query, value, newData);
+    return new Promise((resolve, reject) => {
+      this.findKey(query, value)
+        .then(key => {
+          if (typeof query === 'string') query = { [query]: value };
+          if (!key) {
+            return resolve(
+              this.insertOne({
+                ...(typeof query === 'object' ? query : {}),
+                ...(typeof query !== 'string' ? value : newData),
+              })
+            );
+          }
+          resolve(this.updateOne(query, value, newData));
+        })
+        .catch(reject);
+    });
   }
 };

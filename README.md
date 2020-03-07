@@ -752,44 +752,46 @@ collection.fetch().then(data => {});
 
 ```js
 // Filters the collection and returns only keys.
-// Returns string[]
+// Returns Promise<string[]>
 
 const collection = db.getCollection('name');
 
-const keys = collection.filterKeys(value => value.username === 'zargovv');
+const keys = await collection.filterKeys(value => value.username === 'zargovv');
 ```
 
 ##### filter()
 
 ```js
 // Filters the collection.
-// Returns Collection<string, MongoDocument>
+// Returns Promise<Collection<string, MongoDocument>>
 
 const collection = db.getCollection('name');
 
-const newCollection = collection.filter(value => value.username === 'zargovv');
+const newCollection = await collection.filter(
+  value => value.username === 'zargovv'
+);
 ```
 
 ##### findKey()
 
 ```js
 // Finds document and returns key.
-// Returns string or null
+// Returns Promise<string | undefined>
 
 const collection = db.getCollection('name');
 
-const result = collection.findKey(value => value.username === 'zargovv');
+const result = await collection.findKey(value => value.username === 'zargovv');
 ```
 
 ##### findOne()
 
 ```js
 // Finds document.
-// Returns Document or null
+// Returns Promise<Document | undefined>
 
 const collection = db.getCollection('name');
 
-const result = collection.findOne(value => value.username === 'zargovv');
+const result = await collection.findOne(value => value.username === 'zargovv');
 ```
 
 ##### getOne()
@@ -797,11 +799,11 @@ const result = collection.findOne(value => value.username === 'zargovv');
 ```js
 // Gets document
 // (Searches for it, if there is no one, then returns default values).
-// Returns Document or null
+// Returns Promise<Document | undefined>
 
 const collection = db.getCollection('name');
 
-const document = collection.getOne(value => value.username === 'zargovv');
+const document = await collection.getOne(value => value.username === 'zargovv');
 ```
 
 ##### insertOne()
@@ -833,33 +835,33 @@ const result = collection.insertMany([
 
 ```js
 // Deletes document
-// Returns Document or null
+// Returns Promise<Document | undefined>
 
 const collection = db.getCollection('name');
 
-const result = collection.deleteOne({ username: 'zargovv' });
+const result = await collection.deleteOne({ username: 'zargovv' });
 ```
 
 ##### updateOne()
 
 ```js
-// Updates document. Returns null if document wasn't found.
-// Returns Document or null
+// Updates document. Returns undefined if document wasn't found.
+// Returns Promise<Document | undefined>
 
 const collection = db.getCollection('name');
 
-const result = collection.updateOne({ username: 'zargovv' }, { id: '0' });
+const result = await collection.updateOne({ username: 'zargovv' }, { id: '0' });
 ```
 
 ##### upsertOne()
 
 ```js
 // Updates document. Creates new one if not found.
-// Returns Document
+// Returns Promise<Document>
 
 const collection = db.getCollection('name');
 
-const result = collection.updateOne({ username: 'zargovv' }, { id: '0' });
+const result = await collection.updateOne({ username: 'zargovv' }, { id: '0' });
 ```
 
 ### MySQL
@@ -966,44 +968,46 @@ collection.fetch().then(data => {});
 
 ```js
 // Filters the collection and returns only keys.
-// Returns string[]
+// Returns Promise<string[]>
 
 const collection = db.getCollection('name');
 
-const keys = collection.filterKeys(value => value.username === 'zargovv');
+const keys = await collection.filterKeys(value => value.username === 'zargovv');
 ```
 
 ##### filter()
 
 ```js
 // Filters the collection.
-// Returns Collection<string, MongoDocument>
+// Returns Promise<Collection<string, MongoDocument>>
 
 const collection = db.getCollection('name');
 
-const newCollection = collection.filter(value => value.username === 'zargovv');
+const newCollection = await collection.filter(
+  value => value.username === 'zargovv'
+);
 ```
 
 ##### findKey()
 
 ```js
 // Finds document and returns key.
-// Returns string or null
+// Returns Promise<string | undefined>
 
 const collection = db.getCollection('name');
 
-const result = collection.findKey(value => value.username === 'zargovv');
+const result = await collection.findKey(value => value.username === 'zargovv');
 ```
 
 ##### findOne()
 
 ```js
 // Finds document.
-// Returns Document or null
+// Returns Promise<Document | undefined>
 
 const collection = db.getCollection('name');
 
-const result = collection.findOne(value => value.username === 'zargovv');
+const result = await collection.findOne(value => value.username === 'zargovv');
 ```
 
 ##### getOne()
@@ -1011,11 +1015,11 @@ const result = collection.findOne(value => value.username === 'zargovv');
 ```js
 // Gets document
 // (Searches for it, if there is no one, then returns default values).
-// Returns Document or null
+// Returns Promise<Document | undefined>
 
 const collection = db.getCollection('name');
 
-const document = collection.getOne(value => value.username === 'zargovv');
+const document = await collection.getOne(value => value.username === 'zargovv');
 ```
 
 ##### insertOne()
@@ -1047,7 +1051,7 @@ const result = collection.insertMany([
 
 ```js
 // Deletes document
-// Returns Document or null
+// Returns Promise<Document | undefined>
 
 const collection = db.getCollection('name');
 
@@ -1057,23 +1061,23 @@ const result = collection.deleteOne({ username: 'zargovv' });
 ##### updateOne()
 
 ```js
-// Updates document. Returns null if document wasn't found.
-// Returns Document or null
+// Updates document. Returns undefined if document wasn't found.
+// Returns Promise<Document | undefined>
 
 const collection = db.getCollection('name');
 
-const result = collection.updateOne({ username: 'zargovv' }, { id: '0' });
+const result = await collection.updateOne({ username: 'zargovv' }, { id: '0' });
 ```
 
 ##### upsertOne()
 
 ```js
 // Updates document. Creates new one if not found.
-// Returns Document
+// Returns Promise<Document>
 
 const collection = db.getCollection('name');
 
-const result = collection.updateOne({ username: 'zargovv' }, { id: '0' });
+const result = await collection.updateOne({ username: 'zargovv' }, { id: '0' });
 ```
 
 ### Json
@@ -1134,7 +1138,7 @@ db.addModel('modelName', data);
 
 ```js
 // Fetches all documents from the database.
-// Returns Promise<Collection<string, MongoDocument>>
+// Returns Promise<Collection<string, Document>>
 
 const collection = db.getCollection('name');
 
@@ -1156,7 +1160,7 @@ const keys = collection.filterKeys(value => value.username === 'zargovv');
 
 ```js
 // Filters the collection.
-// Returns Collection<string, MongoDocument>
+// Returns Collection<string, Document>
 
 const collection = db.getCollection('name');
 
@@ -1167,7 +1171,7 @@ const newCollection = collection.filter(value => value.username === 'zargovv');
 
 ```js
 // Finds document and returns key.
-// Returns string or null
+// Returns string | undefined
 
 const collection = db.getCollection('name');
 
@@ -1178,7 +1182,7 @@ const result = collection.findKey(value => value.username === 'zargovv');
 
 ```js
 // Finds document.
-// Returns Document or null
+// Returns Document | undefined
 
 const collection = db.getCollection('name');
 
@@ -1190,7 +1194,7 @@ const result = collection.findOne(value => value.username === 'zargovv');
 ```js
 // Gets document
 // (Searches for it, if there is no one, then returns default values).
-// Returns Document or null
+// Returns Document | undefined
 
 const collection = db.getCollection('name');
 
@@ -1226,7 +1230,7 @@ const result = collection.insertMany([
 
 ```js
 // Deletes document
-// Returns Document or null
+// Returns Document | undefined
 
 const collection = db.getCollection('name');
 
@@ -1236,8 +1240,8 @@ const result = collection.deleteOne({ username: 'zargovv' });
 ##### updateOne()
 
 ```js
-// Updates document. Returns null if document wasn't found.
-// Returns Document or null
+// Updates document. Returns undefined if document wasn't found.
+// Returns Document | undefined
 
 const collection = db.getCollection('name');
 

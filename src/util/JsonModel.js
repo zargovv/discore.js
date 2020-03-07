@@ -9,10 +9,10 @@ module.exports = class JsonModel {
     this.path = path;
     this.defaults = defaults;
     this.data = new Collection();
-    this.load();
+    this.fetch();
   }
-  
-  load() {
+
+  fetch() {
     let body = {};
     if (fs.existsSync(this.path)) {
       const content = fs.readFileSync(this.path, 'utf8');
@@ -23,6 +23,7 @@ module.exports = class JsonModel {
       }
     }
     Object.keys(body).forEach(key => this.data.set(key, new Doc(body[key])));
+    return this.data;
   }
 
   save() {
@@ -58,12 +59,12 @@ module.exports = class JsonModel {
     for (const [key, value] of this.data) {
       if (query(value, key, this)) return key;
     }
-    return null;
+    return undefined;
   }
 
   findOne(query, value) {
     const key = this.findKey(query, value);
-    return key ? this.data.get(key) : null;
+    return key ? this.data.get(key) : undefined;
   }
 
   getOne(query, value) {
@@ -104,7 +105,7 @@ module.exports = class JsonModel {
       this.save();
       return document;
     }
-    return null;
+    return undefined;
   }
 
   deleteMany(query, value) {
@@ -115,12 +116,12 @@ module.exports = class JsonModel {
       this.save();
       return document;
     }
-    return null;
+    return undefined;
   }
 
   updateOne(query, value, newData = {}) {
     const key = this.findKey(query, value);
-    if (!key) return null;
+    if (!key) return undefined;
     if (typeof query !== 'string') newData = value;
     const document = this.data.get(key);
     const newDocument = new Doc({ ...this.defaults, ...document, ...newData });
