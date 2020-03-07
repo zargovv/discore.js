@@ -21,19 +21,19 @@ const reactionControl = class extends Event {
       if (!event.d.emoji) return;
       if (!event.d.user_id) return;
       if (event.d.user_id === this.client.user.id) return;
-      const user = this.client.users.get(event.d.user_id);
+      const user = this.client.users.resolve(event.d.user_id);
       if (!user) return;
       const emoji = event.d.emoji.id
         ? `${event.d.emoji.name}:${event.d.emoji.id}`
         : event.d.emoji.name;
       if (!emoji) return;
-      const channel = this.client.channels.get(event.d.channel_id);
+      const channel = this.client.channels.resolve(event.d.channel_id);
       if (!channel) return;
       const pages = this.client._private.sentPages.get(event.d.message_id);
       if (!pages) return;
       const message = pages.message;
       if (!message) return;
-      const reaction = message.reactions.get(emoji);
+      const reaction = message.reactions.resolve(emoji);
       if (!reaction) return;
       reaction.users.set(user.id, user);
       if (pages.filter(reaction, user) !== true) return;

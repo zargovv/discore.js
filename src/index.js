@@ -13,8 +13,8 @@ module.exports = {
   MySql: require('./structures/MySql'),
   Pages: require('./structures/Pages'),
   UniqueId: require('./util/UniqueId'),
-  Collection: require('./util/Collection'),
   PermissionLevels: require('./structures/PermissionLevels'),
+  Collection: Discord.Collection,
   Embed: Discord.RichEmbed,
   Discord,
 };

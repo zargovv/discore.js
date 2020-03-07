@@ -131,9 +131,9 @@ Their structure (options argument defined with default configuration):
 - `load` (Store).
 - `load:{type}s` (Store).
 
-- `voiceChannelJoin` (oldMember: GuildMember, newMember: GuildMember)
-- `voiceChannelSwitch` (oldMember: GuildMember, newMember: GuildMember)
-- `voiceChannelLeave` (oldMember: GuildMember, newMember: GuildMember)
+- `voiceChannelJoin` (oldState: VoiceState, newState: VoiceState)
+- `voiceChannelSwitch` (oldState: VoiceState, newState: VoiceState)
+- `voiceChannelLeave` (oldState: VoiceState, newState: VoiceState)
 
 - `dbConnected`
 - `dbError`

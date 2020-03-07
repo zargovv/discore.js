@@ -360,7 +360,7 @@ declare module 'discore.js' {
     constructor(db: Json, name: string, path: string, defaults: object);
 
     public load(): void;
-    
+
     public save(): void;
 
     public filterKeys(query: IDocument): string[];

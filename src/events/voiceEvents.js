@@ -5,18 +5,18 @@ module.exports = class extends Event {
     return { key: 'voiceStateUpdate' };
   }
 
-  run(oldMember, newMember) {
-    if (!oldMember.voiceChannel && !newMember.voiceChannel) return;
+  run(oldState, newState) {
+    if (!oldState.channel && !newState.channel) return;
     let ev;
-    if (!oldMember.voiceChannel) ev = 'Join';
+    if (!newState.channel) ev = 'Join';
     if (
-      oldMember.voiceChannel &&
-      newMember.voiceChannel &&
-      oldMember.voiceChannelID !== newMember.voiceChannelID
+      oldState.channel &&
+      newState.channel &&
+      oldState.channelID !== newState.channelID
     ) {
       ev = 'Switch';
     }
-    if (!newMember.voiceChannel) ev = 'Leave';
-    if (ev) this.client.emit(`voiceChannel${ev}`, oldMember, newMember);
+    if (!newState.channel) ev = 'Leave';
+    if (ev) this.client.emit(`voiceChannel${ev}`, oldState, newState);
   }
 };
