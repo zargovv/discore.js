@@ -258,6 +258,11 @@ module.exports = class extends Command {
     // but runs only if Permission Level test is not passed.
   }
 
+  cdRun(message, args) {
+    // Same as run
+    // but runs only if user has active cooldown.
+  }
+
   init() {
     // Optional method. Runs on 'ready'
     // event so you are able to use discord

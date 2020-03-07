@@ -4,6 +4,8 @@
 
 ### Added
 
+- Command#cdRun() method.
+
 - `Json` structure.
 - `JsonModel` structure.
 

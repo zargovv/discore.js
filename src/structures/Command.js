@@ -41,6 +41,8 @@ module.exports = class Command extends Base {
 
   noPermsRun() {}
 
+  cdRun() {}
+
   resetCooldowns(...ids) {
     if (ids.length > 0) ids.forEach(id => this.cooldowns.delete(id));
     else this.cooldowns.clear();

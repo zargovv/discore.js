@@ -76,7 +76,9 @@ module.exports = class extends Event {
       this.client
     );
     if (!permTest) return command.noPermsRun(message, args);
-    if (command.cooldowns.get(message.author.id) > Date.now()) return;
+    if (command.cooldowns.get(message.author.id) > Date.now()) {
+      return command.cdRun(message, args);
+    }
     let bool = true;
     for (const inhibitor of this.client.inhibitors.values()) {
       if (!bool) return;
