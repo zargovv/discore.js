@@ -45,7 +45,7 @@ module.exports = class SqlModel {
         this.emitter.on('error', reject);
         return;
       }
-      resolve(action());
+      resolve(action.bind(this)());
     });
   }
 

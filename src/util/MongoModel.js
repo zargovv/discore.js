@@ -27,7 +27,7 @@ module.exports = class MongoModel {
         this.emitter.on('error', reject);
         return;
       }
-      resolve(action());
+      resolve(action.bind(this)());
     });
   }
 
