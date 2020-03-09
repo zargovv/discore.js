@@ -49,6 +49,13 @@ module.exports = class SqlModel {
     });
   }
 
+  getData() {
+    function action() {
+      return this.data;
+    }
+    return this.queue(action);
+  }
+
   fetch() {
     return new Promise((resolve, reject) => {
       new Promise((res, rej) => {

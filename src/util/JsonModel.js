@@ -26,6 +26,10 @@ module.exports = class JsonModel {
     return this.data;
   }
 
+  getData() {
+    return this.data;
+  }
+
   save() {
     this.db.save(this.name);
   }

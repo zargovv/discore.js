@@ -731,6 +731,7 @@ db.addModel('modelName', data);
 #### Methods
 
 - `fetch()`
+- `getData()`
 - `filterKeys()`
 - `filter()`
 - `findKey()`
@@ -750,7 +751,18 @@ db.addModel('modelName', data);
 
 const collection = db.getCollection('name');
 
-collection.fetch().then(data => {});
+const data = await collection.fetch();
+```
+
+##### getData()
+
+```js
+// Returns data from local storage.
+// Returns Promise<Collection<string, MongoDocument>>
+
+const collection = db.getCollection('name');
+
+const data = await collection.getData();
 ```
 
 ##### filterKeys()
@@ -947,6 +959,7 @@ db.addModel('modelName', data);
 #### Methods
 
 - `fetch()`
+- `getData()`
 - `filterKeys()`
 - `filter()`
 - `findKey()`
@@ -967,6 +980,17 @@ db.addModel('modelName', data);
 const collection = db.getCollection('name');
 
 collection.fetch().then(data => {});
+```
+
+##### getData()
+
+```js
+// Returns data from local storage.
+// Returns Promise<Collection<string, MongoDocument>>
+
+const collection = db.getCollection('name');
+
+const data = await collection.getData();
 ```
 
 ##### filterKeys()
@@ -1128,6 +1152,7 @@ db.addModel('modelName', data);
 #### Methods
 
 - `fetch()`
+- `getData()`
 - `filterKeys()`
 - `filter()`
 - `findKey()`
@@ -1148,6 +1173,17 @@ db.addModel('modelName', data);
 const collection = db.getCollection('name');
 
 collection.fetch().then(data => {});
+```
+
+##### getData()
+
+```js
+// Returns data from local storage.
+// Returns Promise<Collection<string, MongoDocument>>
+
+const collection = db.getCollection('name');
+
+const data = await collection.getData();
 ```
 
 ##### filterKeys()

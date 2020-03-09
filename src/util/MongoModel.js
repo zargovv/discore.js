@@ -31,6 +31,13 @@ module.exports = class MongoModel {
     });
   }
 
+  getData() {
+    function action() {
+      return this.data;
+    }
+    return this.queue(action);
+  }
+
   fetch() {
     return new Promise((resolve, reject) => {
       this.db.collection(this.name).find({}, (err, res) => {

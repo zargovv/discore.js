@@ -4,6 +4,10 @@
 
 ### Added
 
+- SqlModel#getData() method.
+- MongoModel#getData() method.
+- JsonModel#getData() method.
+
 - Command#cdRun() method.
 
 - `Json` structure.
@@ -42,6 +46,8 @@
 - Typings.
 
 - Command#resetCooldowns method.
+
+- And much more.
 
 ### Removed
 
@@ -98,6 +104,8 @@
 - CoreOptions#splitArgs has been renamed into argsSeparator.
 
 - Minor changes.
+
+- And more.
 
 ## [0.10.3] - 2020-01-20
 
