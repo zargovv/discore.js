@@ -65,7 +65,7 @@
 
 ### Changed
 
-- Moved from discord.js v11.5.1 to v12.0.1
+- Moved from discord.js v11.5.1 to v12.0.2
 
 - SqlModel#findOne() method.
 - SqlModel#insertOne() method.
