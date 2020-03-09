@@ -24,7 +24,7 @@ module.exports = class MongoModel {
     const self = this;
     return new Promise((resolve, reject) => {
       if (self.state !== 1) {
-        self.emitter.on('ready', () => resolve(action()));
+        self.emitter.on('ready', () => resolve(action.call(self)));
         self.emitter.on('error', reject);
         return;
       }
