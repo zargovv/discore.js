@@ -740,6 +740,7 @@ db.addModel('modelName', data);
 - `insertOne()`
 - `insertMany()`
 - `deleteOne()`
+- `deleteMany()`
 - `updateOne()`
 - `upsertOne()`
 
@@ -859,6 +860,17 @@ const collection = db.getCollection('name');
 const result = await collection.deleteOne({ username: 'zargovv' });
 ```
 
+##### deleteMany()
+
+```js
+// Deletes document
+// Returns Promise<Document[]>
+
+const collection = db.getCollection('messages');
+
+const result = collection.deleteMany(doc => doc.messageCount < 1);
+```
+
 ##### updateOne()
 
 ```js
@@ -968,6 +980,7 @@ db.addModel('modelName', data);
 - `insertOne()`
 - `insertMany()`
 - `deleteOne()`
+- `deleteMany()`
 - `updateOne()`
 - `upsertOne()`
 
@@ -1087,6 +1100,17 @@ const collection = db.getCollection('name');
 const result = collection.deleteOne({ username: 'zargovv' });
 ```
 
+##### deleteMany()
+
+```js
+// Deletes document
+// Returns Promise<Document[]>
+
+const collection = db.getCollection('messages');
+
+const result = collection.deleteMany(doc => doc.messageCount < 1);
+```
+
 ##### updateOne()
 
 ```js
@@ -1161,6 +1185,7 @@ db.addModel('modelName', data);
 - `insertOne()`
 - `insertMany()`
 - `deleteOne()`
+- `deleteMany()`
 - `updateOne()`
 - `upsertOne()`
 
@@ -1276,6 +1301,17 @@ const result = collection.insertMany([
 const collection = db.getCollection('name');
 
 const result = collection.deleteOne({ username: 'zargovv' });
+```
+
+##### deleteMany()
+
+```js
+// Deletes document
+// Returns Promise<Document[]>
+
+const collection = db.getCollection('messages');
+
+const result = collection.deleteMany(doc => doc.messageCount < 1);
 ```
 
 ##### updateOne()

@@ -20,7 +20,7 @@ module.exports = class MongoModel {
     this.state = 0;
   }
 
-  queue(action) {
+  enqueue(action) {
     const self = this;
     return new Promise((resolve, reject) => {
       if (self.state !== 1) {
@@ -36,7 +36,7 @@ module.exports = class MongoModel {
     function action() {
       return this.data;
     }
-    return this.queue(action);
+    return this.enqueue(action);
   }
 
   fetch() {
@@ -77,7 +77,7 @@ module.exports = class MongoModel {
       }
       return keys;
     }
-    return this.queue(action);
+    return this.enqueue(action);
   }
 
   filter(query, value) {
@@ -104,7 +104,7 @@ module.exports = class MongoModel {
       }
       return undefined;
     }
-    return this.queue(action);
+    return this.enqueue(action);
   }
 
   findOne(query, value) {
@@ -160,6 +160,17 @@ module.exports = class MongoModel {
             return resolve(document);
           }
           resolve(undefined);
+        })
+        .catch(reject);
+    });
+  }
+
+  deleteMany(query, value) {
+    return new Promise((resolve, reject) => {
+      this.filterKeys(query, value)
+        .then(keys => {
+          const deleted = keys.map(key => this.deleteOne({ _id: key }));
+          resolve(Promise.all(deleted));
         })
         .catch(reject);
     });

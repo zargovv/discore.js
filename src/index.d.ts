@@ -169,9 +169,11 @@ declare module 'discore.js' {
     public data: SqlCollection;
     public state: 0 | 1;
 
-    private queue(action: () => any): Promise<any>;
+    private enqueue(action: () => any): Promise<any>;
 
     public fetch(): Promise<SqlCollection>;
+
+    public getData(): Promise<SqlCollection>;
 
     public filterKeys(query: string, value: string): Promise<string[]>;
     public filterKeys(query: { [key: string]: any }): Promise<string[]>;
@@ -234,6 +236,16 @@ declare module 'discore.js' {
       value?: QueryValue
     ): Promise<Doc | undefined>;
 
+    public deleteMany(query: string, value: string): Promise<Doc[]>;
+    public deleteMany(query: { [key: string]: any }): Promise<Doc[]>;
+    public deleteMany(
+      query: (value: any, key: string, collection: SqlCollection) => boolean
+    ): Promise<Doc[]>;
+    public deleteMany(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): Promise<Doc[]>;
+
     public updateOne(
       query: string,
       value: string,
@@ -292,7 +304,7 @@ declare module 'discore.js' {
     public emitter: EventEmitter;
     public state: 0 | 1;
 
-    private queue(action: () => any): Promise<any>;
+    private enqueue(action: () => any): Promise<any>;
 
     public fetch(): Promise<MongoCollection>;
 
@@ -316,25 +328,25 @@ declare module 'discore.js' {
       value?: QueryValue
     ): Promise<MongoCollection>;
 
-    public findKey(query: string, value: string): Promise<string | null>;
-    public findKey(query: { [key: string]: any }): Promise<string | null>;
+    public findKey(query: string, value: string): Promise<string | undefined>;
+    public findKey(query: { [key: string]: any }): Promise<string | undefined>;
     public findKey(
       query: (value: any, key: string, collection: MongoCollection) => boolean
-    ): Promise<string | null>;
+    ): Promise<string | undefined>;
     public findKey(
       query: QueryResolvable,
       value?: QueryValue
-    ): Promise<string | null>;
+    ): Promise<string | undefined>;
 
-    public findOne(query: string, value: string): Promise<Doc | null>;
-    public findOne(query: { [key: string]: any }): Promise<Doc | null>;
+    public findOne(query: string, value: string): Promise<Doc | undefined>;
+    public findOne(query: { [key: string]: any }): Promise<Doc | undefined>;
     public findOne(
       query: (value: any, key: string, collection: MongoCollection) => boolean
-    ): Promise<Doc | null>;
+    ): Promise<Doc | undefined>;
     public findOne(
       query: QueryResolvable,
       value?: QueryValue
-    ): Promise<Doc | null>;
+    ): Promise<Doc | undefined>;
 
     public getOne(query: string, value: string): Promise<Doc>;
     public getOne(query: { [key: string]: any }): Promise<Doc>;
@@ -347,33 +359,43 @@ declare module 'discore.js' {
 
     public insertMany(data: IDocument[]): Doc;
 
-    public deleteOne(query: string, value: string): Promise<Doc | null>;
-    public deleteOne(query: { [key: string]: any }): Promise<Doc | null>;
+    public deleteOne(query: string, value: string): Promise<Doc | undefined>;
+    public deleteOne(query: { [key: string]: any }): Promise<Doc | undefined>;
     public deleteOne(
       query: (value: any, key: string, collection: MongoCollection) => boolean
-    ): Promise<Doc | null>;
+    ): Promise<Doc | undefined>;
     public deleteOne(
       query: QueryResolvable,
       value?: QueryValue
-    ): Promise<Doc | null>;
+    ): Promise<Doc | undefined>;
+
+    public deleteMany(query: string, value: string): Promise<Doc[]>;
+    public deleteMany(query: { [key: string]: any }): Promise<Doc[]>;
+    public deleteMany(
+      query: (value: any, key: string, collection: MongoCollection) => boolean
+    ): Promise<Doc[]>;
+    public deleteMany(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): Promise<Doc[]>;
 
     public updateOne(
       query: string,
       value: string,
       newData: IDocument
-    ): Promise<Doc | null>;
+    ): Promise<Doc | undefined>;
     public updateOne(
       query: { [key: string]: any },
       newData: IDocument
-    ): Promise<Doc | null>;
+    ): Promise<Doc | undefined>;
     public updateOne(
       query: (value: any, key: string, collection: MongoCollection) => boolean,
       newData: IDocument
-    ): Promise<Doc | null>;
+    ): Promise<Doc | undefined>;
     public updateOne(
       query: QueryResolvable,
       value?: QueryValue
-    ): Promise<Doc | null>;
+    ): Promise<Doc | undefined>;
 
     public upsertOne(
       query: string,
@@ -475,6 +497,13 @@ declare module 'discore.js' {
       value?: TQueryValue
     ): Doc | undefined;
 
+    public deleteMany(query: IDocument): Doc[];
+    public deleteMany(query: string, value: any): Doc[];
+    public deleteMany(
+      query: (value: Doc, key: string, model: JsonModel) => boolean
+    ): Doc[];
+    public deleteMany(query: TQueryResolvable, value?: TQueryValue): Doc[];
+
     public deleteMany(query: IDocument): Doc | undefined;
     public deleteMany(query: string, value: any): Doc | undefined;
     public deleteMany(
@@ -522,7 +551,7 @@ declare module 'discore.js' {
 
     public addModel(key: string, modelBody: IModelBody): Json;
     public getCollection(key: string): JsonModel;
-    public save(collection?: string | null): boolean;
+    public save(collection?: string): boolean;
 
     private processQueue(): void;
   }

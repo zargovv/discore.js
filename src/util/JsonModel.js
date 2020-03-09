@@ -109,14 +109,9 @@ module.exports = class JsonModel {
   }
 
   deleteMany(query, value) {
-    const key = this.findKey(query, value);
-    if (key) {
-      const document = this.data.get(key);
-      this.data.delete(key);
-      this.save();
-      return document;
-    }
-    return undefined;
+    const keys = this.filterKeys(query, value);
+    const deleted = keys.map(key => this.deleteOne({ _id: key }));
+    return deleted;
   }
 
   updateOne(query, value, newData = {}) {

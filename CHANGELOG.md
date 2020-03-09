@@ -4,6 +4,10 @@
 
 ### Added
 
+- SqlModel#deleteMany() method.
+- MongoModel#deleteMany() method.
+- JsonModel#deleteMany() method.
+
 - SqlModel#getData() method.
 - MongoModel#getData() method.
 - JsonModel#getData() method.
