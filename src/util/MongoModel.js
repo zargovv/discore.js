@@ -21,13 +21,14 @@ module.exports = class MongoModel {
   }
 
   queue(action) {
+    const self = this;
     return new Promise((resolve, reject) => {
-      if (this.state !== 1) {
-        this.emitter.on('ready', () => resolve(action()));
-        this.emitter.on('error', reject);
+      if (self.state !== 1) {
+        self.emitter.on('ready', () => resolve(action()));
+        self.emitter.on('error', reject);
         return;
       }
-      resolve(action.bind(this)());
+      resolve(action.bind(self)());
     });
   }
 
