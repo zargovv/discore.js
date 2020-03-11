@@ -15,6 +15,6 @@ module.exports = {
   UniqueId: require('./util/UniqueId'),
   PermissionLevels: require('./structures/PermissionLevels'),
   Collection: Discord.Collection,
-  Embed: Discord.RichEmbed,
+  Embed: Discord.MessageEmbed,
   Discord,
 };

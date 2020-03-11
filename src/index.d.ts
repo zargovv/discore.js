@@ -6,7 +6,7 @@ declare module 'discore.js' {
     Channel,
     MessageReaction,
     User,
-    RichEmbed as Embed,
+    MessageEmbed as Embed,
   } from 'discord.js';
   import * as Discord from 'discord.js';
   import { Schema as MongoSchema } from 'mongoose';
