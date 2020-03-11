@@ -22,6 +22,7 @@ module.exports = class JsonModel {
         body = {};
       }
     }
+    this.data.clear();
     Object.keys(body).forEach(key => this.data.set(key, new Doc(body[key])));
     return this.data;
   }

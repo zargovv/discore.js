@@ -9,7 +9,6 @@ declare module 'discore.js' {
     MessageEmbed as Embed,
   } from 'discord.js';
   import * as Discord from 'discord.js';
-  import { Schema as MongoSchema } from 'mongoose';
   import { EventEmitter } from 'events';
 
   type Aliases = string | string[];
