@@ -87,7 +87,7 @@ declare module 'discore.js' {
     mention?: boolean;
   }
   interface ICommandConfig {
-    argsSeparator?: string;
+    argsSeparator?: string | RegExp;
     permLevels?: PermissionLevels;
     ignoreCase?: boolean;
     ignoreBots?: boolean;
@@ -137,7 +137,7 @@ declare module 'discore.js' {
     [key: string]: any;
 
     public populate(keys: string[], remove?: boolean): Doc;
-    public json(keys: string[], remove?: boolean): object;
+    public json(): object;
   }
 
   type TCollections = Collection<string, JsonModel>;

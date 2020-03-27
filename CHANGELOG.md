@@ -1,6 +1,18 @@
 # Change Log
 
-## [1.0.2] - 2020-03-11
+## [1.0.2] - Dev
+
+### Added
+
+### Removed
+
+### Fixed
+
+- Minor fixes.
+
+### Changed
+
+## [1.0.1] - 2020-03-11
 
 ### Added
 
