@@ -724,10 +724,10 @@ new Core({
 Their structure:
 
 ```js
-// Must define all default values.
+// If default value is not defined, it will be set to undefined.
 // You can leave values as undefined.
 const data = {
-  id: { type: Mongo.Types.String, default: undefined },
+  id: Mongo.Types.String,
   messageCount: { type: Mongo.Types.Number, default: 0 },
 };
 
@@ -955,10 +955,10 @@ new Core({
 Their structure:
 
 ```js
-// Must define all default values.
+// If default value is not defined, it will be set to undefined.
 // You can leave values as undefined.
 const data = {
-  id: { type: MySql.Types.VarChar(18), default: undefined },
+  id: MySql.Types.VarChar(18),
   messageCount: { type: MySql.Types.Int, default: 0 },
   rowId: {
     type: MySql.Types.Int(null, 'NOT NULL', 'AUTO_INCREMENT', 'PRIMARY'),

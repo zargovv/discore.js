@@ -14,6 +14,8 @@
 
 ### Changed
 
+- Including `default` property isn't necessary when adding a model. It'll be set to `undefined`.
+
 ## [1.0.1] - 2020-03-11
 
 ### Added
