@@ -1,14 +1,14 @@
 {
   "name": "discore.js",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "scripts": {},
   "author": "Zargovv (Max Zargov)",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "12.0.2",
-    "mongoose": "5.9.4",
+    "discord.js": "12.1.1",
+    "mongoose": "5.9.7",
     "mysql": "2.18.1"
   },
   "repository": {

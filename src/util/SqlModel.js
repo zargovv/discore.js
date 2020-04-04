@@ -27,7 +27,7 @@ module.exports = class SqlModel {
       this.db
         .query(
           `CREATE TABLE IF NOT EXISTS ${this.name} (${tableOptions
-            .map(e => `${e.key} ${e.type}`)
+            .map((e) => `${e.key} ${e.type}`)
             .join(', ')})`
         )
         .on('error', reject)
@@ -63,11 +63,11 @@ module.exports = class SqlModel {
         const docs = [];
         this.db
           .query(`SELECT * FROM ${this.name}`)
-          .on('result', doc => docs.push({ ...doc }))
-          .on('error', err => rej(err))
+          .on('result', (doc) => docs.push({ ...doc }))
+          .on('error', (err) => rej(err))
           .on('end', () => res(docs));
       })
-        .then(docs => {
+        .then((docs) => {
           const data = new Collection();
           if (!data) return resolve(data);
           for (const val of docs) data.set(val._id, val);
@@ -87,7 +87,7 @@ module.exports = class SqlModel {
       if (typeof query === 'string') query = { [query]: value };
       if (typeof query === 'object') {
         const q = query;
-        query = doc => Object.keys(q).every(k => doc[k] === q[k]);
+        query = (doc) => Object.keys(q).every((k) => doc[k] === q[k]);
       }
       const keys = [];
       for (const [key, value] of this.data) {
@@ -101,7 +101,7 @@ module.exports = class SqlModel {
   filter(query, value) {
     return new Promise((resolve, reject) => {
       this.filterKeys(query, value)
-        .then(keys => {
+        .then((keys) => {
           const documents = [];
           for (const key of keys) documents.push(this.data.get(key));
           resolve(documents);
@@ -115,7 +115,7 @@ module.exports = class SqlModel {
       if (typeof query === 'string') query = { [query]: value };
       if (typeof query === 'object') {
         const q = query;
-        query = doc => Object.keys(q).every(k => doc[k] === q[k]);
+        query = (doc) => Object.keys(q).every((k) => doc[k] === q[k]);
       }
       for (const [key, value] of this.data) {
         if (query(value, key, this)) return key;
@@ -128,7 +128,7 @@ module.exports = class SqlModel {
   findOne(query, value) {
     return new Promise((resolve, reject) => {
       this.findKey(query, value)
-        .then(key => {
+        .then((key) => {
           resolve(key ? this.data.get(key) : undefined);
         })
         .catch(reject);
@@ -140,10 +140,10 @@ module.exports = class SqlModel {
       if (typeof query === 'string') query = { [query]: value };
       const defaults = { ...(typeof query === 'object' ? query : {}) };
       this.findOne(query, value)
-        .then(data => {
+        .then((data) => {
           resolve({
             ...this.defaults,
-            ...(data || new SqlDocument(defaults)),
+            ...(data || new SqlDocument(this, defaults)),
           });
         })
         .catch(reject);
@@ -155,7 +155,7 @@ module.exports = class SqlModel {
       const text = `First argument must be an object. Instead got ${typeof data}`;
       throw new TypeError(text);
     }
-    const document = new SqlDocument({ ...this.defaults, ...data });
+    const document = new SqlDocument(this, { ...this.defaults, ...data });
     this.data.set(document._id, document);
     const insertData = [];
     const toInsert = { ...document };
@@ -172,12 +172,12 @@ module.exports = class SqlModel {
     this.db
       .query(
         `INSERT INTO ${this.name} (${insertData
-          .map(e => `\`${e.key}\``)
+          .map((e) => `\`${e.key}\``)
           .join(', ')}) VALUES (${insertData
-          .map(e => `'${e.value}'`)
+          .map((e) => `'${e.value}'`)
           .join(', ')})`
       )
-      .on('error', err => {})
+      .on('error', (err) => {})
       .on('result', () => {});
     return document;
   }
@@ -191,14 +191,14 @@ module.exports = class SqlModel {
   deleteOne(query, value) {
     return new Promise((resolve, reject) => {
       this.findKey(query, value)
-        .then(key => {
+        .then((key) => {
           if (key) {
             const document = this.data.get(key);
             this.data.delete(key);
             this.db
               .query(`DELETE FROM ${this.name} WHERE _id = '${key}'`)
               .on('result', () => {})
-              .on('error', err => {});
+              .on('error', (err) => {});
             return resolve(document);
           }
           resolve(undefined);
@@ -210,8 +210,8 @@ module.exports = class SqlModel {
   deleteMany(query, value) {
     return new Promise((resolve, reject) => {
       this.filterKeys(query, value)
-        .then(keys => {
-          const deleted = keys.map(key => this.deleteOne({ _id: key }));
+        .then((keys) => {
+          const deleted = keys.map((key) => this.deleteOne({ _id: key }));
           resolve(Promise.all(deleted));
         })
         .catch(reject);
@@ -221,11 +221,11 @@ module.exports = class SqlModel {
   updateOne(query, value, newData = {}) {
     return new Promise((resolve, reject) => {
       this.findKey(query, value)
-        .then(key => {
+        .then((key) => {
           if (!key) return resolve(undefined);
           if (typeof query !== 'string') newData = value;
           const document = this.data.get(key);
-          const newDocument = new SqlDocument({
+          const newDocument = new SqlDocument(this, {
             ...this.defaults,
             ...document,
             ...newData,
@@ -249,11 +249,11 @@ module.exports = class SqlModel {
           this.db
             .query(
               `UPDATE ${this.name} SET ${updateData
-                .map(e => `${e.key} = ${e.value}`)
+                .map((e) => `${e.key} = ${e.value}`)
                 .join(', ')} WHERE _id = '${key}'`
             )
             .on('result', () => {})
-            .on('error', err => {});
+            .on('error', (err) => {});
           resolve(newDocument);
         })
         .catch(reject);
@@ -263,7 +263,7 @@ module.exports = class SqlModel {
   upsertOne(query, value, newData = {}) {
     return new Promise((resolve, reject) => {
       this.findKey(query, value)
-        .then(key => {
+        .then((key) => {
           if (typeof query === 'string') query = { [query]: value };
           if (!key) {
             return resolve(

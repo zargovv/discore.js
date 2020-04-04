@@ -69,7 +69,7 @@ module.exports = class Mongo {
     }
     if (
       [...this.collections.keys()]
-        .map(k => k.toLowerCase())
+        .map((k) => k.toLowerCase())
         .includes(name.toLowerCase())
     ) {
       const text = `Model with name ${name} already exists`;
@@ -87,8 +87,8 @@ module.exports = class Mongo {
       if (!options[key].type.db.includes('mongo')) {
         throw new Error('Sql data types are not allowed for no-sql.');
       }
-      defaultOptions[key] = options[key].default;
-      options[key] = options[key].type.mongoType;
+      defaultOptions[key] = options[key].default || undefined;
+      options[key] = options[key].type.mongoType || options[key].mongoType;
     }
     this.collections.set(
       name,

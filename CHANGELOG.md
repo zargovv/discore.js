@@ -1,8 +1,10 @@
 # Change Log
 
-## [1.0.2] - Dev
+## [1.1.0] - Dev
 
 ### Added
+
+- Document#save() method.
 
 ### Removed
 

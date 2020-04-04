@@ -33,7 +33,7 @@ module.exports = class MySql {
     this.url = url;
     this.db = mysql.createConnection(this.url);
     return new Promise((res, rej) => {
-      this.db.connect(err => {
+      this.db.connect((err) => {
         if (err) {
           this.emitter.emit('error', err);
           return rej(err);
@@ -59,7 +59,7 @@ module.exports = class MySql {
     }
     if (
       [...this.collections.keys()]
-        .map(k => k.toLowerCase())
+        .map((k) => k.toLowerCase())
         .includes(name.toLowerCase())
     ) {
       throw new ReferenceError(`Model with name ${name} already exists`);
@@ -78,8 +78,8 @@ module.exports = class MySql {
       if (!options[key].type.db.includes('mysql')) {
         throw new Error('No-sql data types are not allowed in sql.');
       }
-      defaultOptions[key] = options[key].default;
-      options[key] = options[key].type.mySqlType;
+      defaultOptions[key] = options[key].default || undefined;
+      options[key] = options[key].type.mySqlType || options[key].mongoType;
     }
     options._id = 'VARCHAR(20)';
     defaultOptions._id = undefined;

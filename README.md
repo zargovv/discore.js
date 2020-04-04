@@ -536,10 +536,10 @@ const { PermissionLevels } = require('discore.js');
 
 const permLevels = new PermissionLevels();
 permLevels
-  .add(0, true, msg => msg.author.id === '1')
+  .add(0, true, (msg) => msg.author.id === '1')
 
   // Permissions Level 1 gives access only if message author id is equal to '1'
-  .add(1, false, msg => msg.author.id === '1')
+  .add(1, false, (msg) => msg.author.id === '1')
 
   // Permissions Level 2 gives access only to the bot
   .addLevel(2, false, (msg, client) => {
@@ -547,7 +547,7 @@ permLevels
   });
 
 // Tests for a role.
-permLevels.add(3, true, msg => msg.member.roles.has('roleid'));
+permLevels.add(3, true, (msg) => msg.member.roles.has('roleid'));
 
 // Testing. Returns boolean.
 permLevels.test(3, msg);
@@ -673,6 +673,24 @@ const embed = new Embed()
 
 ## Databases
 
+### Document
+
+#### Methods
+
+- `save()`
+- `populate()`
+- `json()`
+
+#### Examples
+
+```js
+const doc = await db.getCollection('users').findOne({ id: 'some id' });
+
+doc.someProp = 'some value';
+
+doc.save().then(() => console.log('Saved!'));
+```
+
 ### MongoDB
 
 Structure:
@@ -774,7 +792,9 @@ const data = await collection.getData();
 
 const collection = db.getCollection('name');
 
-const keys = await collection.filterKeys(value => value.username === 'zargovv');
+const keys = await collection.filterKeys(
+  (value) => value.username === 'zargovv'
+);
 ```
 
 ##### filter()
@@ -786,7 +806,7 @@ const keys = await collection.filterKeys(value => value.username === 'zargovv');
 const collection = db.getCollection('name');
 
 const newCollection = await collection.filter(
-  value => value.username === 'zargovv'
+  (value) => value.username === 'zargovv'
 );
 ```
 
@@ -798,7 +818,9 @@ const newCollection = await collection.filter(
 
 const collection = db.getCollection('name');
 
-const result = await collection.findKey(value => value.username === 'zargovv');
+const result = await collection.findKey(
+  (value) => value.username === 'zargovv'
+);
 ```
 
 ##### findOne()
@@ -809,7 +831,9 @@ const result = await collection.findKey(value => value.username === 'zargovv');
 
 const collection = db.getCollection('name');
 
-const result = await collection.findOne(value => value.username === 'zargovv');
+const result = await collection.findOne(
+  (value) => value.username === 'zargovv'
+);
 ```
 
 ##### getOne()
@@ -821,7 +845,9 @@ const result = await collection.findOne(value => value.username === 'zargovv');
 
 const collection = db.getCollection('name');
 
-const document = await collection.getOne(value => value.username === 'zargovv');
+const document = await collection.getOne(
+  (value) => value.username === 'zargovv'
+);
 ```
 
 ##### insertOne()
@@ -868,7 +894,7 @@ const result = await collection.deleteOne({ username: 'zargovv' });
 
 const collection = db.getCollection('messages');
 
-const result = collection.deleteMany(doc => doc.messageCount < 1);
+const result = collection.deleteMany((doc) => doc.messageCount < 1);
 ```
 
 ##### updateOne()
@@ -992,7 +1018,7 @@ db.addModel('modelName', data);
 
 const collection = db.getCollection('name');
 
-collection.fetch().then(data => {});
+collection.fetch().then((data) => {});
 ```
 
 ##### getData()
@@ -1014,7 +1040,9 @@ const data = await collection.getData();
 
 const collection = db.getCollection('name');
 
-const keys = await collection.filterKeys(value => value.username === 'zargovv');
+const keys = await collection.filterKeys(
+  (value) => value.username === 'zargovv'
+);
 ```
 
 ##### filter()
@@ -1026,7 +1054,7 @@ const keys = await collection.filterKeys(value => value.username === 'zargovv');
 const collection = db.getCollection('name');
 
 const newCollection = await collection.filter(
-  value => value.username === 'zargovv'
+  (value) => value.username === 'zargovv'
 );
 ```
 
@@ -1038,7 +1066,9 @@ const newCollection = await collection.filter(
 
 const collection = db.getCollection('name');
 
-const result = await collection.findKey(value => value.username === 'zargovv');
+const result = await collection.findKey(
+  (value) => value.username === 'zargovv'
+);
 ```
 
 ##### findOne()
@@ -1049,7 +1079,9 @@ const result = await collection.findKey(value => value.username === 'zargovv');
 
 const collection = db.getCollection('name');
 
-const result = await collection.findOne(value => value.username === 'zargovv');
+const result = await collection.findOne(
+  (value) => value.username === 'zargovv'
+);
 ```
 
 ##### getOne()
@@ -1061,7 +1093,9 @@ const result = await collection.findOne(value => value.username === 'zargovv');
 
 const collection = db.getCollection('name');
 
-const document = await collection.getOne(value => value.username === 'zargovv');
+const document = await collection.getOne(
+  (value) => value.username === 'zargovv'
+);
 ```
 
 ##### insertOne()
@@ -1108,7 +1142,7 @@ const result = collection.deleteOne({ username: 'zargovv' });
 
 const collection = db.getCollection('messages');
 
-const result = collection.deleteMany(doc => doc.messageCount < 1);
+const result = collection.deleteMany((doc) => doc.messageCount < 1);
 ```
 
 ##### updateOne()
@@ -1197,7 +1231,7 @@ db.addModel('modelName', data);
 
 const collection = db.getCollection('name');
 
-collection.fetch().then(data => {});
+collection.fetch().then((data) => {});
 ```
 
 ##### getData()
@@ -1219,7 +1253,7 @@ const data = await collection.getData();
 
 const collection = db.getCollection('name');
 
-const keys = collection.filterKeys(value => value.username === 'zargovv');
+const keys = collection.filterKeys((value) => value.username === 'zargovv');
 ```
 
 ##### filter()
@@ -1230,7 +1264,9 @@ const keys = collection.filterKeys(value => value.username === 'zargovv');
 
 const collection = db.getCollection('name');
 
-const newCollection = collection.filter(value => value.username === 'zargovv');
+const newCollection = collection.filter(
+  (value) => value.username === 'zargovv'
+);
 ```
 
 ##### findKey()
@@ -1241,7 +1277,7 @@ const newCollection = collection.filter(value => value.username === 'zargovv');
 
 const collection = db.getCollection('name');
 
-const result = collection.findKey(value => value.username === 'zargovv');
+const result = collection.findKey((value) => value.username === 'zargovv');
 ```
 
 ##### findOne()
@@ -1252,7 +1288,7 @@ const result = collection.findKey(value => value.username === 'zargovv');
 
 const collection = db.getCollection('name');
 
-const result = collection.findOne(value => value.username === 'zargovv');
+const result = collection.findOne((value) => value.username === 'zargovv');
 ```
 
 ##### getOne()
@@ -1264,7 +1300,7 @@ const result = collection.findOne(value => value.username === 'zargovv');
 
 const collection = db.getCollection('name');
 
-const document = collection.getOne(value => value.username === 'zargovv');
+const document = collection.getOne((value) => value.username === 'zargovv');
 ```
 
 ##### insertOne()
@@ -1311,7 +1347,7 @@ const result = collection.deleteOne({ username: 'zargovv' });
 
 const collection = db.getCollection('messages');
 
-const result = collection.deleteMany(doc => doc.messageCount < 1);
+const result = collection.deleteMany((doc) => doc.messageCount < 1);
 ```
 
 ##### updateOne()

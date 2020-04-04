@@ -23,7 +23,9 @@ module.exports = class JsonModel {
       }
     }
     this.data.clear();
-    Object.keys(body).forEach(key => this.data.set(key, new Doc(body[key])));
+    Object.keys(body).forEach((key) =>
+      this.data.set(key, new Doc(this, body[key]))
+    );
     return this.data;
   }
 
@@ -39,7 +41,7 @@ module.exports = class JsonModel {
     if (typeof query === 'string') query = { [query]: value };
     if (typeof query === 'object') {
       const q = query;
-      query = doc => Object.keys(q).every(k => doc[k] === q[k]);
+      query = (doc) => Object.keys(q).every((k) => doc[k] === q[k]);
     }
     const keys = [];
     for (const [key, value] of this.data) {
@@ -59,7 +61,7 @@ module.exports = class JsonModel {
     if (typeof query === 'string') query = { [query]: value };
     if (typeof query === 'object') {
       const q = query;
-      query = doc => Object.keys(q).every(k => doc[k] === q[k]);
+      query = (doc) => Object.keys(q).every((k) => doc[k] === q[k]);
     }
     for (const [key, value] of this.data) {
       if (query(value, key, this)) return key;
@@ -77,12 +79,12 @@ module.exports = class JsonModel {
     const defaults = { ...(typeof query === 'object' ? query : {}) };
     return {
       ...this.defaults,
-      ...(this.findOne(query, value) || new Doc(defaults)),
+      ...(this.findOne(query, value) || new Doc(this, defaults)),
     };
   }
 
   insertOne(data) {
-    const document = new Doc({ ...this.defaults, ...data });
+    const document = new Doc(this, { ...this.defaults, ...data });
     this.data.set(document._id, document);
     this.save();
     return document;
@@ -91,7 +93,7 @@ module.exports = class JsonModel {
   insertMany(data) {
     const documents = [];
     for (const document of data) {
-      documents.push(new Doc({ ...this.defaults, ...document }));
+      documents.push(new Doc(this, { ...this.defaults, ...document }));
     }
     for (const document of documents) this.data.set(document._id, document);
     this.save();
@@ -111,7 +113,7 @@ module.exports = class JsonModel {
 
   deleteMany(query, value) {
     const keys = this.filterKeys(query, value);
-    const deleted = keys.map(key => this.deleteOne({ _id: key }));
+    const deleted = keys.map((key) => this.deleteOne({ _id: key }));
     return deleted;
   }
 
@@ -120,7 +122,11 @@ module.exports = class JsonModel {
     if (!key) return undefined;
     if (typeof query !== 'string') newData = value;
     const document = this.data.get(key);
-    const newDocument = new Doc({ ...this.defaults, ...document, ...newData });
+    const newDocument = new Doc(this, {
+      ...this.defaults,
+      ...document,
+      ...newData,
+    });
     this.data.set(key, newDocument);
     this.save();
     return newDocument;

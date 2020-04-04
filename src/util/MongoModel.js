@@ -69,7 +69,7 @@ module.exports = class MongoModel {
       if (typeof query === 'string') query = { [query]: value };
       if (typeof query === 'object') {
         const q = query;
-        query = doc => Object.keys(q).every(k => doc[k] === q[k]);
+        query = (doc) => Object.keys(q).every((k) => doc[k] === q[k]);
       }
       const keys = [];
       for (const [key, value] of this.data) {
@@ -83,7 +83,7 @@ module.exports = class MongoModel {
   filter(query, value) {
     return new Promise((resolve, reject) => {
       this.filterKeys(query, value)
-        .then(keys => {
+        .then((keys) => {
           const documents = [];
           for (const key of keys) documents.push(this.data.get(key));
           resolve(documents);
@@ -97,7 +97,7 @@ module.exports = class MongoModel {
       if (typeof query === 'string') query = { [query]: value };
       if (typeof query === 'object') {
         const q = query;
-        query = doc => Object.keys(q).every(k => doc[k] === q[k]);
+        query = (doc) => Object.keys(q).every((k) => doc[k] === q[k]);
       }
       for (const [key, value] of this.data) {
         if (query(value, key, this)) return key;
@@ -110,7 +110,7 @@ module.exports = class MongoModel {
   findOne(query, value) {
     return new Promise((resolve, reject) => {
       this.findKey(query, value)
-        .then(key => {
+        .then((key) => {
           resolve(key ? this.data.get(key) : undefined);
         })
         .catch(reject);
@@ -122,10 +122,10 @@ module.exports = class MongoModel {
       if (typeof query === 'string') query = { [query]: value };
       const defaults = { ...(typeof query === 'object' ? query : {}) };
       this.findOne(query, value)
-        .then(data => {
+        .then((data) => {
           resolve({
             ...this.defaults,
-            ...(data || new MongoDocument(defaults)),
+            ...(data || new MongoDocument(this, defaults)),
           });
         })
         .catch(reject);
@@ -133,7 +133,7 @@ module.exports = class MongoModel {
   }
 
   insertOne(data) {
-    const document = new MongoDocument({ ...this.defaults, ...data });
+    const document = new MongoDocument(this, { ...this.defaults, ...data });
     this.data.set(document._id, document);
     this.db.collection(this.name).insertOne({ ...document });
     return document;
@@ -142,17 +142,19 @@ module.exports = class MongoModel {
   insertMany(data) {
     const documents = [];
     for (const document of data) {
-      documents.push(new MongoDocument({ ...this.defaults, ...document }));
+      documents.push(
+        new MongoDocument(this, { ...this.defaults, ...document })
+      );
     }
     for (const document of documents) this.data.set(document._id, document);
-    this.db.collection(this.name).insertMany(documents.map(d => ({ ...d })));
+    this.db.collection(this.name).insertMany(documents.map((d) => ({ ...d })));
     return documents;
   }
 
   deleteOne(query, value) {
     return new Promise((resolve, reject) => {
       this.findKey(query, value)
-        .then(key => {
+        .then((key) => {
           if (key) {
             const document = this.data.get(key);
             this.data.delete(key);
@@ -168,8 +170,8 @@ module.exports = class MongoModel {
   deleteMany(query, value) {
     return new Promise((resolve, reject) => {
       this.filterKeys(query, value)
-        .then(keys => {
-          const deleted = keys.map(key => this.deleteOne({ _id: key }));
+        .then((keys) => {
+          const deleted = keys.map((key) => this.deleteOne({ _id: key }));
           resolve(Promise.all(deleted));
         })
         .catch(reject);
@@ -179,11 +181,11 @@ module.exports = class MongoModel {
   updateOne(query, value, newData = {}) {
     return new Promise((resolve, reject) => {
       this.findKey(query, value)
-        .then(key => {
+        .then((key) => {
           if (!key) return resolve(undefined);
           if (typeof query !== 'string') newData = value;
           const document = this.data.get(key);
-          const newDocument = new MongoDocument({
+          const newDocument = new MongoDocument(this, {
             ...this.defaults,
             ...document,
             ...newData,
@@ -201,7 +203,7 @@ module.exports = class MongoModel {
   upsertOne(query, value, newData = {}) {
     return new Promise((resolve, reject) => {
       this.findKey(query, value)
-        .then(key => {
+        .then((key) => {
           if (typeof query === 'string') query = { [query]: value };
           if (!key) {
             return resolve(
