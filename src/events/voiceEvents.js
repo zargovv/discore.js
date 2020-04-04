@@ -8,7 +8,7 @@ module.exports = class extends Event {
   run(oldState, newState) {
     if (!oldState.channel && !newState.channel) return;
     let ev;
-    if (!newState.channel) ev = 'Join';
+    if (!oldState.channel) ev = 'Join';
     if (
       oldState.channel &&
       newState.channel &&

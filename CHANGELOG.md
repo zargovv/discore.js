@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.1.0] - Dev
+## [1.1.1] - Dev
 
 ### Added
 
@@ -9,6 +9,8 @@
 ### Removed
 
 ### Fixed
+
+- `voiceChannelJoin` event.
 
 - Minor fixes.
 
