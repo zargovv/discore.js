@@ -677,11 +677,11 @@ declare module 'discore.js' {
     get options(): ICommandOptions;
     get cOptions(): { [key: string]: any };
 
-    public noPermsRun(): any;
-    public cdRun(): any;
-    public run(): any;
+    public noPermsRun(message: Discord.Message, args: string[]): any;
+    public cdRun(message: Discord.Message, args: string[]): any;
+    public run(message: Discord.Message, args: string[]): any;
 
-    _run(): Promise<boolean>;
+    _run(message: Discord.Message, args: string[]): Promise<boolean>;
 
     private _options: ICommandOptions;
 
@@ -720,7 +720,7 @@ declare module 'discore.js' {
 
     private _options: IInhibitorOptions;
 
-    _run(): Promise<boolean>;
+    _run(message: Discord.Message, cmd: Command): Promise<boolean>;
   }
   export class Monitor extends Base {
     constructor(
