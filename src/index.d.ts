@@ -28,6 +28,7 @@ declare module 'discore.js' {
   type SqlCollection = Collection<string, any>;
   type MongoCollection = Collection<string, any>;
   type Cooldowns = Collection<string, number>;
+  type CoreOptions = ICoreOptions & { prefix?: Prefix };
 
   interface MySqlTypes {
     Double: any;
@@ -606,7 +607,7 @@ declare module 'discore.js' {
     public toString(): String;
   }
   export class Core extends DiscordClient {
-    constructor(options?: ICoreOptions & { prefix: Prefix });
+    constructor(options?: CoreOptions);
 
     private _private: {
       folders: IFolderOptions;
