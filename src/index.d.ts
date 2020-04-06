@@ -642,7 +642,7 @@ declare module 'discore.js' {
     );
 
     get options(): IBaseOptions;
-    get cOptions(): IBaseOptions;
+    get cOptions(): { [key: string]: any };
 
     public _id: Id;
 
@@ -675,7 +675,7 @@ declare module 'discore.js' {
     );
 
     get options(): ICommandOptions;
-    get cOptions(): ICommandOptions;
+    get cOptions(): { [key: string]: any };
 
     private _options: ICommandOptions;
 
@@ -697,7 +697,7 @@ declare module 'discore.js' {
     );
 
     get options(): IEventOptions;
-    get cOptions(): IEventOptions;
+    get cOptions(): { [key: string]: any };
 
     private _listener: Function;
     private _options: IEventOptions;
@@ -725,7 +725,7 @@ declare module 'discore.js' {
     );
 
     get options(): IMonitorOptions;
-    get cOptions(): IMonitorOptions;
+    get cOptions(): { [key: string]: any };
 
     private _options: IMonitorOptions;
   }
@@ -738,7 +738,7 @@ declare module 'discore.js' {
     );
 
     get options(): ITriggerOptions;
-    get cOptions(): ITriggerOptions;
+    get cOptions(): { [key: string]: any };
 
     private _options: ITriggerOptions;
   }
