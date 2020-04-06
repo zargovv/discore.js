@@ -677,6 +677,12 @@ declare module 'discore.js' {
     get options(): ICommandOptions;
     get cOptions(): { [key: string]: any };
 
+    public noPermsRun(): any;
+    public cdRun(): any;
+    public run(): any;
+
+    private _run(): Promise<boolean>;
+
     private _options: ICommandOptions;
 
     public cooldown: number;
