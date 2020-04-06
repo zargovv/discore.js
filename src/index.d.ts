@@ -606,7 +606,7 @@ declare module 'discore.js' {
     public toString(): String;
   }
   export class Core extends DiscordClient {
-    constructor(options?: ICoreOptions);
+    constructor(options?: ICoreOptions & { prefix: Prefix });
 
     private _private: {
       folders: IFolderOptions;
