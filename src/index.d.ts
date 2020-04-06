@@ -746,6 +746,8 @@ declare module 'discore.js' {
     get options(): ITriggerOptions;
     get cOptions(): { [key: string]: any };
 
+    _run(message: Discord.Message): Promise<boolean>;
+
     private _options: ITriggerOptions;
   }
   export class Pages {
