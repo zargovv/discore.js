@@ -681,7 +681,7 @@ declare module 'discore.js' {
     public cdRun(): any;
     public run(): any;
 
-    private _run(): Promise<boolean>;
+    _run(): Promise<boolean>;
 
     private _options: ICommandOptions;
 
@@ -720,7 +720,7 @@ declare module 'discore.js' {
 
     private _options: IInhibitorOptions;
 
-    private _run(): Promise<boolean>;
+    _run(): Promise<boolean>;
   }
   export class Monitor extends Base {
     constructor(
