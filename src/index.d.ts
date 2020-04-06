@@ -94,15 +94,22 @@ declare module 'discore.js' {
     ignoreSelf?: boolean;
   }
   interface IConfigOptions extends IConfigAddOptions {
-    prefixOptions?: IPrefixOptions;
-    commandOptions?: ICommandConfig;
+    mentionPrefix?: boolean;
+    ignoreBots?: boolean;
+    ignoreSelf?: boolean;
+    argsSeparator?: string | RegExp;
+    spaceSeparator?: boolean;
+    ignoreCase?: boolean;
     prefix?: (string | RegExp)[];
   }
-  interface ICoreOptions extends IConfigOptions {
+  interface ICoreOptions {
+    prefixOptions?: IPrefixOptions;
+    commandOptions?: ICommandConfig;
     mainPath?: string;
     folders?: IFolderOptions;
     mobile?: boolean;
     token?: string;
+    prefix?: (string | RegExp)[];
     db?: DB;
   }
   interface IBaseOptions {

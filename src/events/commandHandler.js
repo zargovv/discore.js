@@ -10,24 +10,21 @@ module.exports = class extends Event {
     if (!message.channel) return;
     if (!message.author) return;
     const {
-      commandOptions,
-      prefixOptions,
-      prefix,
-    } = this.client.config.guild.get(message.guild ? message.guild.id : null);
-    const {
+      mentionPrefix,
       ignoreBots,
       ignoreSelf,
       argsSeparator,
+      spaceSeparator,
       ignoreCase,
-    } = commandOptions;
-    const { spaceSeparator } = prefixOptions;
+      prefix,
+    } = this.client.config.guild.get(message.guild ? message.guild.id : null);
     if (ignoreBots && message.author.bot) return;
     if (ignoreSelf && message.author.id === this.client.user.id) return;
     let { content } = message;
     let prefixes = prefix;
     let matched = null;
     if (!(prefixes instanceof Array)) prefixes = [prefixes];
-    if (prefixOptions.ignoreCase) {
+    if (ignoreCase) {
       content = content.toLowerCase();
       prefixes = prefixes.map((e) =>
         typeof e === 'string' ? e.toLowerCase() : e
@@ -46,7 +43,7 @@ module.exports = class extends Event {
         if (matched) matched = matched[0];
       }
     }
-    if (!matched && prefixOptions.mention) {
+    if (!matched && mentionPrefix) {
       matched = `<@${this.client.user.id}> `;
       if (message.mentions.users.first()) {
         message.mentions.users.delete(
