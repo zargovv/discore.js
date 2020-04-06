@@ -10,24 +10,26 @@ module.exports = class extends Event {
     if (!message.channel) return;
     if (!message.author) return;
     const {
-      ignoreCase,
+      commandOptions,
+      prefixOptions,
       prefix,
-      argsSeparator,
+    } = this.client.config.guild.get(message.guild ? message.guild.id : null);
+    const {
       ignoreBots,
       ignoreSelf,
-      spaceSeparator,
-      mentionPrefix,
-      ignorePrefixCase,
-    } = this.client.config.guild.get(message.guild ? message.guild.id : null);
+      argsSeparator,
+      ignoreCase,
+    } = commandOptions;
+    const { spaceSeparator } = prefixOptions;
     if (ignoreBots && message.author.bot) return;
     if (ignoreSelf && message.author.id === this.client.user.id) return;
     let { content } = message;
     let prefixes = prefix;
     let matched = null;
     if (!(prefixes instanceof Array)) prefixes = [prefixes];
-    if (ignorePrefixCase) {
+    if (prefixOptions.ignoreCase) {
       content = content.toLowerCase();
-      prefixes = prefixes.map(e =>
+      prefixes = prefixes.map((e) =>
         typeof e === 'string' ? e.toLowerCase() : e
       );
     }
@@ -44,7 +46,7 @@ module.exports = class extends Event {
         if (matched) matched = matched[0];
       }
     }
-    if (!matched && mentionPrefix) {
+    if (!matched && prefixOptions.mention) {
       matched = `<@${this.client.user.id}> `;
       if (message.mentions.users.first()) {
         message.mentions.users.delete(
@@ -52,9 +54,9 @@ module.exports = class extends Event {
         );
       }
     }
-    if (!matched) return this.client.triggers.forEach(e => e._run(message));
+    if (!matched) return this.client.triggers.forEach((e) => e._run(message));
     if (typeof matched === 'string' && !content.startsWith(matched)) {
-      this.client.triggers.forEach(e => e._run(message));
+      this.client.triggers.forEach((e) => e._run(message));
       return;
     }
     if (matched instanceof Array) matched = matched[0];
@@ -63,13 +65,13 @@ module.exports = class extends Event {
     let cmd = args.shift();
     if (!cmd && spaceSeparator && args[0]) cmd = args.shift();
     if (ignoreCase) cmd = cmd.toLowerCase();
-    const filter = e =>
+    const filter = (e) =>
       (ignoreCase ? e.key.toLowerCase() : e.key) === cmd ||
-      (ignoreCase ? e.aliases.map(e => e.toLowerCase()) : e.aliases).includes(
+      (ignoreCase ? e.aliases.map((e) => e.toLowerCase()) : e.aliases).includes(
         cmd
       );
     const command = this.client.commands.find(filter);
-    if (!command) return this.client.triggers.forEach(e => e._run(message));
+    if (!command) return this.client.triggers.forEach((e) => e._run(message));
     const permTest = await this.client.permLevels.test(
       command.permLevel,
       message,
