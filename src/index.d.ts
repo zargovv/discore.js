@@ -21,7 +21,7 @@ declare module 'discore.js' {
   type QueryValue = any;
   type Id = any;
   type Level = number;
-  type Prefix = string | string[] | RegExp | RegExp[];
+  type Prefix = string | RegExp | (RegExp | string)[];
   type DB = Mongo | MySql | Json;
   type ArgsSeparator = string | RegExp;
   type PageResolvable = any;
@@ -96,7 +96,7 @@ declare module 'discore.js' {
   interface IConfigOptions extends IConfigAddOptions {
     prefixOptions?: IPrefixOptions;
     commandOptions?: ICommandConfig;
-    prefix?: Prefix;
+    prefix?: (string | RegExp)[];
   }
   interface ICoreOptions extends IConfigOptions {
     mainPath?: string;
@@ -116,8 +116,6 @@ declare module 'discore.js' {
     cooldown?: number;
     aliases?: Aliases;
     permLevel?: number;
-    description?: any;
-    usage?: any;
   }
   interface IEventOptions extends IBaseOptions {}
   interface IInhibitorOptions extends IBaseOptions {}
@@ -636,6 +634,9 @@ declare module 'discore.js' {
       options?: IBaseOptions
     );
 
+    get options(): IBaseOptions;
+    get cOptions(): IBaseOptions;
+
     public _id: Id;
 
     public readonly client: Core;
@@ -666,6 +667,9 @@ declare module 'discore.js' {
       options?: ICommandOptions
     );
 
+    get options(): ICommandOptions;
+    get cOptions(): ICommandOptions;
+
     private _options: ICommandOptions;
 
     public cooldown: number;
@@ -684,6 +688,9 @@ declare module 'discore.js' {
       fullpath: string,
       options?: IEventOptions
     );
+
+    get options(): IEventOptions;
+    get cOptions(): IEventOptions;
 
     private _listener: Function;
     private _options: IEventOptions;
@@ -710,6 +717,9 @@ declare module 'discore.js' {
       options?: IMonitorOptions
     );
 
+    get options(): IMonitorOptions;
+    get cOptions(): IMonitorOptions;
+
     private _options: IMonitorOptions;
   }
   export class Trigger extends Base {
@@ -719,6 +729,9 @@ declare module 'discore.js' {
       fullpath: string,
       options?: ITriggerOptions
     );
+
+    get options(): ITriggerOptions;
+    get cOptions(): ITriggerOptions;
 
     private _options: ITriggerOptions;
   }
