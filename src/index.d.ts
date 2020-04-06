@@ -28,7 +28,6 @@ declare module 'discore.js' {
   type SqlCollection = Collection<string, any>;
   type MongoCollection = Collection<string, any>;
   type Cooldowns = Collection<string, number>;
-  type CoreOptions = ICoreOptions & { prefix?: Prefix };
 
   interface MySqlTypes {
     Double: any;
@@ -111,6 +110,16 @@ declare module 'discore.js' {
     mobile?: boolean;
     token?: string;
     prefix?: (string | RegExp)[];
+    db?: DB;
+  }
+  interface CoreOptions {
+    prefixOptions?: IPrefixOptions;
+    commandOptions?: ICommandConfig;
+    mainPath?: string;
+    folders?: IFolderOptions;
+    mobile?: boolean;
+    token?: string;
+    prefix?: string | RegExp | (string | RegExp)[];
     db?: DB;
   }
   interface IBaseOptions {
