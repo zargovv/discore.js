@@ -63,9 +63,10 @@ module.exports = class extends Event {
     const cmd = this.client.commands
       .map((c) => {
         const name = `${ignoreCase ? c.key.toLowerCase() : c.key} `;
-        const aliases = `${
-          ignoreCase ? c.aliases.map((a) => a.toLowerCase()) : c.aliases
-        } `;
+        const aliases = (ignoreCase
+          ? c.aliases.map((a) => a.toLowerCase())
+          : c.aliases
+        ).map((a) => `${a} `);
         const text = `${args.join(argsSeparator || ' ')} `;
         const commandName = text.startsWith(name)
           ? name
