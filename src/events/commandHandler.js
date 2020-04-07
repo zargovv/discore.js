@@ -62,11 +62,11 @@ module.exports = class extends Event {
     args = args.split(argsSeparator || ' ');
     const cmd = this.client.commands
       .map((c) => {
-        const name = ignoreCase ? c.key.toLowerCase() : c.key;
-        const aliases = ignoreCase
-          ? c.aliases.map((a) => a.toLowerCase())
-          : c.aliases;
-        const text = args.join(argsSeparator || ' ');
+        const name = `${ignoreCase ? c.key.toLowerCase() : c.key} `;
+        const aliases = `${
+          ignoreCase ? c.aliases.map((a) => a.toLowerCase()) : c.aliases
+        } `;
+        const text = `${args.join(argsSeparator || ' ')} `;
         const commandName = text.startsWith(name)
           ? name
           : aliases.find((a) => text.startsWith(a));
@@ -77,8 +77,7 @@ module.exports = class extends Event {
     const { command } = cmd;
     args = args
       .join(argsSeparator || ' ')
-      .substr(cmd.name)
-      .trimLeft()
+      .substr(cmd.name.length)
       .split(argsSeparator || ' ');
     const permTest = await this.client.permLevels.test(
       command.permLevel,
