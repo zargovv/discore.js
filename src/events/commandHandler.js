@@ -57,18 +57,29 @@ module.exports = class extends Event {
       return;
     }
     if (matched instanceof Array) matched = matched[0];
-    let args = message.content.slice(matched.length);
-    if (argsSeparator) args = args.split(argsSeparator);
-    let cmd = args.shift();
-    if (!cmd && spaceSeparator && args[0]) cmd = args.shift();
-    if (ignoreCase) cmd = cmd.toLowerCase();
-    const filter = (e) =>
-      (ignoreCase ? e.key.toLowerCase() : e.key) === cmd ||
-      (ignoreCase ? e.aliases.map((e) => e.toLowerCase()) : e.aliases).includes(
-        cmd
-      );
-    const command = this.client.commands.find(filter);
-    if (!command) return this.client.triggers.forEach((e) => e._run(message));
+    let args = message.content.substr(matched.length);
+    if (spaceSeparator) args = args.trimLeft();
+    args = args.split(argsSeparator || ' ');
+    const cmd = this.client.commands
+      .map((c) => {
+        const name = ignoreCase ? c.key.toLowerCase() : c.key;
+        const aliases = ignoreCase
+          ? c.aliases.map((a) => a.toLowerCase())
+          : c.aliases;
+        const text = args.join(argsSeparator || ' ');
+        const commandName = text.startsWith(name)
+          ? name
+          : aliases.find((a) => text.startsWith(a));
+        return { name: commandName, command: c };
+      })
+      .find((c) => !!c.name);
+    if (!cmd) return this.client.triggers.forEach((e) => e._run(message));
+    const { command } = cmd;
+    args = args
+      .join(argsSeparator || ' ')
+      .substr(cmd.name)
+      .trimLeft()
+      .split(argsSeparator || ' ');
     const permTest = await this.client.permLevels.test(
       command.permLevel,
       message,
