@@ -77,10 +77,11 @@ module.exports = class JsonModel {
   getOne(query, value) {
     if (typeof query === 'string') query = { [query]: value };
     const defaults = { ...(typeof query === 'object' ? query : {}) };
+    const doc = this.findOne(query, value);
     return new Doc(this, {
       ...this.defaults,
       ...defaults,
-      ...(this.findOne(query, value) || {}),
+      ...(doc ? doc.json() : {}),
     });
   }
 

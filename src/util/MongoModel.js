@@ -122,12 +122,12 @@ module.exports = class MongoModel {
       if (typeof query === 'string') query = { [query]: value };
       const defaults = { ...(typeof query === 'object' ? query : {}) };
       this.findOne(query, value)
-        .then((data) => {
+        .then((doc) => {
           resolve(
             new MongoDocument(this, {
               ...this.defaults,
               ...defaults,
-              ...(data || {}),
+              ...(doc ? doc.json() : {}),
             })
           );
         })
