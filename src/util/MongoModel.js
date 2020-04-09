@@ -123,10 +123,13 @@ module.exports = class MongoModel {
       const defaults = { ...(typeof query === 'object' ? query : {}) };
       this.findOne(query, value)
         .then((data) => {
-          resolve({
-            ...this.defaults,
-            ...(data || new MongoDocument(this, defaults)),
-          });
+          resolve(
+            new MongoDocument(this, {
+              ...this.defaults,
+              ...defaults,
+              ...(data || {}),
+            })
+          );
         })
         .catch(reject);
     });

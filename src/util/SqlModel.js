@@ -141,10 +141,13 @@ module.exports = class SqlModel {
       const defaults = { ...(typeof query === 'object' ? query : {}) };
       this.findOne(query, value)
         .then((data) => {
-          resolve({
-            ...this.defaults,
-            ...(data || new SqlDocument(this, defaults)),
-          });
+          resolve(
+            new SqlDocument(this, {
+              ...this.defaults,
+              ...defaults,
+              ...(data || {}),
+            })
+          );
         })
         .catch(reject);
     });
