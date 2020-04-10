@@ -161,17 +161,15 @@ module.exports = class SqlModel {
     const document = new SqlDocument(this, { ...this.defaults, ...data });
     this.data.set(document._id, document);
     const insertData = [];
-    const toInsert = { ...document };
+    const toInsert = document.json();
     const typeRegEx = /((^VARCHAR)|(^((TINY)|(LONG)|(MEDIUM))?TEXT))(\(.+\))?$/;
-    for (const key in toInsert) {
-      if ({}.hasOwnProperty.call(toInsert, key)) {
-        if (!toInsert[key]) toInsert[key] = 'NULL';
-        else if (new RegExp(typeRegEx.source, 'i').test(this.options[key])) {
-          toInsert[key] = `'${toInsert[key]}'`;
-        }
-        insertData.push({ key, value: document[key], name: key });
+    Object.keys(toInsert).forEach((key) => {
+      if (!toInsert[key]) toInsert[key] = 'NULL';
+      else if (new RegExp(typeRegEx.source, 'i').test(this.options[key])) {
+        toInsert[key] = `'${toInsert[key]}'`;
       }
-    }
+      insertData.push({ key, value: document[key], name: key });
+    });
     this.db
       .query(
         `INSERT INTO ${this.name} (${insertData
@@ -236,19 +234,17 @@ module.exports = class SqlModel {
           this.data.set(key, newDocument);
           const updateData = [];
           const typeRegEx = /((^VARCHAR)|(^((TINY)|(LONG)|(MEDIUM))?TEXT))(\(.+\))?$/;
-          for (const okey of Object.keys(newDocument)) {
-            if (!newDocument[okey]) newDocument[okey] = 'NULL';
-            else if (
-              new RegExp(typeRegEx.source, 'i').test(this.options[okey])
-            ) {
-              newDocument[okey] = `'${newDocument[okey]}'`;
+          Object.keys(newDocument.json()).forEach((k) => {
+            if (!newDocument[k]) newDocument[k] = 'NULL';
+            else if (new RegExp(typeRegEx.source, 'i').test(this.options[k])) {
+              newDocument[k] = `'${newDocument[k]}'`;
             }
             updateData.push({
-              key: okey,
-              name: okey,
-              value: newDocument[okey],
+              key: k,
+              name: k,
+              value: newDocument[k],
             });
-          }
+          });
           this.db
             .query(
               `UPDATE ${this.name} SET ${updateData

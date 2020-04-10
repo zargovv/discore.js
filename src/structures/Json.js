@@ -39,7 +39,7 @@ module.exports = class Json {
     const model = this.collections.get(collection);
     if (!model) return false;
     const data = {};
-    for (const [key, val] of model.data) data[key] = val;
+    for (const [key, val] of model.data) data[key] = val.json();
     this.savingQueue.set(model.name, {
       path: model.path,
       data: JSON.stringify(data),

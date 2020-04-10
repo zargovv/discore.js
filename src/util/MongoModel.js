@@ -138,7 +138,7 @@ module.exports = class MongoModel {
   insertOne(data) {
     const document = new MongoDocument(this, { ...this.defaults, ...data });
     this.data.set(document._id, document);
-    this.db.collection(this.name).insertOne({ ...document });
+    this.db.collection(this.name).insertOne(document.json());
     return document;
   }
 
@@ -146,7 +146,7 @@ module.exports = class MongoModel {
     const documents = [];
     for (const document of data) {
       documents.push(
-        new MongoDocument(this, { ...this.defaults, ...document })
+        new MongoDocument(this, { ...this.defaults, ...document.json() })
       );
     }
     for (const document of documents) this.data.set(document._id, document);
@@ -196,7 +196,7 @@ module.exports = class MongoModel {
           this.data.set(key, newDocument);
           this.db
             .collection(this.name)
-            .updateOne({ _id: key }, { $set: { ...newDocument } });
+            .updateOne({ _id: key }, { $set: newDocument.json() });
           resolve(newDocument);
         })
         .catch(reject);
