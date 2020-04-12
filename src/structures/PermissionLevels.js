@@ -70,9 +70,10 @@ module.exports = class PermissionLevels {
     const { brk, fn } = this._collection.get(level);
     let res = fn(message, client);
     if (fn.constructor.name === 'AsyncFunction') res = await res;
+    res = !!res;
     if (res) return res;
     if (!brk) return this._test(level + 1, message, client);
-    return this.test();
+    return res;
   }
 
   get length() {
