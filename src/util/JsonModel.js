@@ -22,11 +22,12 @@ module.exports = class JsonModel {
         body = {};
       }
     }
-    this.data.clear();
+    const data = new Collection();
     Object.keys(body).forEach((key) =>
-      this.data.set(key, new Doc(this, body[key]))
+      data.set(key, new Doc(this, { ...this.defaults, ...body[key] }))
     );
-    return this.data;
+    this.data = data;
+    return data;
   }
 
   getData() {

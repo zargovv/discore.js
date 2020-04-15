@@ -52,7 +52,12 @@ module.exports = class MongoModel {
             return reject(err);
           }
           const data = new Collection();
-          for (const val of docs) data.set(val._id, val);
+          for (const val of docs) {
+            data.set(
+              val._id,
+              new MongoDocument(this, { ...this.defaults, ...val })
+            );
+          }
           this.data = data;
           if (this.state !== 1) {
             this.state = 1;

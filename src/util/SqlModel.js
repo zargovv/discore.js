@@ -69,8 +69,12 @@ module.exports = class SqlModel {
       })
         .then((docs) => {
           const data = new Collection();
-          if (!data) return resolve(data);
-          for (const val of docs) data.set(val._id, val);
+          for (const val of docs) {
+            data.set(
+              val._id,
+              new SqlDocument(this, { ...this.defaults, ...val })
+            );
+          }
           this.data = data;
           if (this.state !== 1) {
             this.state = 1;
