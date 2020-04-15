@@ -72,6 +72,7 @@ module.exports = class MySql {
     }
     const defaultOptions = {};
     for (const key of Object.keys(options)) {
+      if (typeof options[key] === 'function') options[key].type = options[key];
       if (typeof options[key].type === 'function') {
         options[key].type = options[key].type();
       }
