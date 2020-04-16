@@ -81,18 +81,19 @@ module.exports = class Mongo {
     }
     const defaultOptions = {};
     for (const key of Object.keys(options)) {
-      if (typeof options[key] === 'function') {
-        const { type } = options[key];
-        options[key] = { type };
+      let type;
+      let defaults;
+      if (typeof options[key] === 'function') type = options[key];
+      if (!type && typeof options[key].type === 'function') {
+        type = options[key].type;
+        defaults = options[key].default || undefined;
       }
-      if (typeof options[key].type === 'function') {
-        options[key].type = options[key].type();
-      }
-      if (!options[key].type.db.includes('mongo')) {
+      type = type();
+      if (!type.db.includes('mongo')) {
         throw new Error('Sql data types are not allowed for no-sql.');
       }
-      defaultOptions[key] = options[key].default || undefined;
-      options[key] = options[key].type.mongoType || options[key].mongoType;
+      defaultOptions[key] = defaults;
+      options[key] = type.mongoType;
     }
     this.collections.set(
       name,

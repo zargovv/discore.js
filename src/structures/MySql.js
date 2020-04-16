@@ -71,15 +71,19 @@ module.exports = class MySql extends EventEmitter {
     }
     const defaultOptions = {};
     for (const key of Object.keys(options)) {
-      if (typeof options[key] === 'function') options[key].type = options[key];
+      let type;
+      let defaults;
+      if (typeof options[key] === 'function') type = options[key];
       if (typeof options[key].type === 'function') {
-        options[key].type = options[key].type();
+        type = options[key].type;
+        defaults = options[key].default || undefined;
       }
-      if (!options[key].type.db.includes('mysql')) {
+      type = type();
+      if (!type.db.includes('mysql')) {
         throw new Error('No-sql data types are not allowed in sql.');
       }
-      defaultOptions[key] = options[key].default || undefined;
-      options[key] = options[key].type.mySqlType || options[key].mongoType;
+      defaultOptions[key] = defaults;
+      options[key] = type.mySqlType;
     }
     options._id = 'VARCHAR(20)';
     defaultOptions._id = undefined;
