@@ -135,9 +135,9 @@ Their structure (options argument defined with default configuration):
 - `voiceChannelSwitch` (oldState: VoiceState, newState: VoiceState)
 - `voiceChannelLeave` (oldState: VoiceState, newState: VoiceState)
 
-- `dbConnected`
+- `dbConnect`
 - `dbError`
-- `dbDisconnected`
+- `dbDisconnect`
 
 ```js
 const { Event } = require('discore.js');
@@ -616,62 +616,9 @@ setTimeout(() => msg.delete(), timeout);
 - `pages`
 - `filter`
 
-### Embed ( RichEmbed )
-
-Their structure:
-
-```js
-const { Embed } = require('discore.js');
-
-const embed = new Embed()
-  .addBlankField()
-  .addField('Title', 'Description')
-  .attachFile(file)
-  .attachFiles(files)
-  .setAuthor('author', 'image url')
-  .setColor(color)
-  .setDescription('description')
-  .setFooter('footer', 'image url')
-  .setImage('image url')
-  .setThumbnail('image url')
-  .setTimestamp()
-  .setTitle('title')
-  .setURL('url');
-```
-
-#### Methods
-
-- `addBlankField()`
-- `addField()`
-- `attachFile()`
-- `attachFiles()`
-- `setAuthor()`
-- `setColor()`
-- `setDescription()`
-- `setFooter()`
-- `setImage()`
-- `setThumbnail()`
-- `setTimestamp()`
-- `setTitle()`
-- `setURL()`
-
-#### Properties
-
-- `author`
-- `color`
-- `description`
-- `fields`
-- `file`
-- `files`
-- `footer`
-- `image`
-- `length`
-- `thumbnail`
-- `timestamp`
-- `title`
-- `url`
-
 ## Databases
+
+###### `DBs you use but much faster, powerful and object-oriented`
 
 ### Document
 
@@ -690,6 +637,8 @@ doc.someProp = 'some value';
 
 doc.save().then(() => console.log('Saved!'));
 ```
+
+### Global Model Events
 
 ### MongoDB
 
@@ -935,9 +884,9 @@ new Core({
 
 #### Events
 
-- `dbConnected`
+- `dbConnect`
 - `dbError`
-- `dbDisconnected`
+- `dbDisconnect`
 
 #### Methods
 

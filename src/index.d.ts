@@ -175,10 +175,9 @@ declare module 'discore.js' {
     data: string;
   }
 
-  export class SqlModel {
+  export class SqlModel extends EventEmitter {
     constructor(db: any, name: string, options?: object, defaults?: object);
 
-    public emitter: EventEmitter;
     public db: any;
     public defaults: object;
     public name: string;
@@ -296,12 +295,11 @@ declare module 'discore.js' {
     ): Promise<Doc>;
     public upsertOne(query: QueryResolvable, value?: QueryValue): Promise<Doc>;
   }
-  export class MySql {
+  export class MySql extends EventEmitter {
     constructor(url: any);
 
     public collections: Collection<string, SqlModel>;
     public url: any;
-    public emitter: EventEmitter;
 
     public static readonly Types: MySqlTypes;
 
@@ -310,7 +308,7 @@ declare module 'discore.js' {
     public addModel(name: string, options: IMySqlModelOptions): MySql;
     public getCollection(name: string): SqlModel | undefined;
   }
-  class MongoModel {
+  class MongoModel extends EventEmitter {
     constructor(db: any, name: string, options?: object, defaults?: object);
 
     public data: MongoCollection;
@@ -318,7 +316,6 @@ declare module 'discore.js' {
     public name: string;
     public options: object;
     public db: any;
-    public emitter: EventEmitter;
     public state: 0 | 1;
 
     private enqueue(action: () => any): Promise<any>;
@@ -446,7 +443,7 @@ declare module 'discore.js' {
     public getCollection(name: string): MongoModel | undefined;
   }
 
-  class JsonModel {
+  class JsonModel extends EventEmitter {
     public data: Collection<string, Doc>;
     public db: Json;
     public name: string;

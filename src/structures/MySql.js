@@ -4,11 +4,10 @@ const SqlModel = require('../util/SqlModel');
 const Types = require('../util/Types');
 const Collection = require('../util/Collection');
 
-module.exports = class MySql {
+module.exports = class MySql extends EventEmitter {
   constructor(url) {
     this.collections = new Collection();
     this.url = url;
-    this.emitter = new EventEmitter();
     this.open(url);
   }
 
@@ -16,7 +15,7 @@ module.exports = class MySql {
    * @returns {*}
    */
   close() {
-    this.emitter.emit('disconnected', this);
+    this.emit('disconnect');
     return this.db.end();
   }
 
@@ -35,10 +34,10 @@ module.exports = class MySql {
     return new Promise((res, rej) => {
       this.db.connect((err) => {
         if (err) {
-          this.emitter.emit('error', err);
+          this.emit('error', err);
           return rej(err);
         }
-        this.emitter.emit('connected', this);
+        this.emit('connect');
         res(this.db);
       });
     });

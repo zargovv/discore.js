@@ -150,20 +150,16 @@ module.exports = class extends Client {
     if (this.db) {
       if (this.db instanceof Mongo && this.db.connection) {
         this.db.connection.on('connected', () =>
-          this.emit('dbConnected', this.db)
+          this.emit('dbConnect', this.db)
         );
-        this.db.connection.on('err', err => this.emit('dbError', err));
+        this.db.connection.on('err', (err) => this.emit('dbError', err));
         this.db.connection.on('disconnected', () =>
-          this.emit('dbDisconnected', this.db)
+          this.emit('dbDisconnect', this.db)
         );
       } else if (this.db instanceof MySql) {
-        this.db.emitter.on('connected', () =>
-          this.emit('dbConnected', this.db)
-        );
-        this.db.emitter.on('error', err => this.emit('dbError', err));
-        this.db.emitter.on('disconnected', () =>
-          this.emit('dbDisconnected', this.db)
-        );
+        this.db.on('connect', () => this.emit('dbConnect', this.db));
+        this.db.on('error', (err) => this.emit('dbError', err));
+        this.db.on('disconnect', () => this.emit('dbDisconnect', this.db));
       }
     }
     new Store(this, 'event', path.join(__dirname, '../events'));

@@ -2,7 +2,7 @@ const { EventEmitter } = require('events');
 const Collection = require('./Collection');
 const MongoDocument = require('./Document');
 
-module.exports = class MongoModel {
+module.exports = class MongoModel extends EventEmitter {
   constructor(db, name, options = {}, defaults = {}) {
     if (typeof name !== 'string') {
       const text = `Argument 'name' must be in type of string. Instead got ${typeof name}`;
@@ -16,7 +16,6 @@ module.exports = class MongoModel {
     this.db = db;
     if (this.db.readyState === 1) this.fetch();
     this.db.on('connected', () => this.fetch());
-    this.emitter = new EventEmitter();
     this.state = 0;
   }
 
@@ -24,8 +23,8 @@ module.exports = class MongoModel {
     const self = this;
     return new Promise((resolve, reject) => {
       if (self.state !== 1) {
-        self.emitter.on('ready', () => resolve(action.call(self)));
-        self.emitter.on('error', reject);
+        self.on('ready', () => resolve(action.call(self)));
+        self.on('error', reject);
         return;
       }
       resolve(action.call(self));
@@ -43,12 +42,12 @@ module.exports = class MongoModel {
     return new Promise((resolve, reject) => {
       this.db.collection(this.name).find({}, (err, res) => {
         if (err) {
-          if (this.state !== 1) this.emitter.emit('error', err);
+          if (this.state !== 1) this.emit('error', err);
           return reject(err);
         }
         res.toArray((err, docs) => {
           if (err) {
-            if (this.state !== 1) this.emitter.emit('error', err);
+            if (this.state !== 1) this.emit('error', err);
             return reject(err);
           }
           const data = new Collection();
@@ -61,8 +60,9 @@ module.exports = class MongoModel {
           this.data = data;
           if (this.state !== 1) {
             this.state = 1;
-            this.emitter.emit('ready');
+            this.emit('ready');
           }
+          this.emit('fetch', data);
           resolve(data);
         });
       });
@@ -144,6 +144,7 @@ module.exports = class MongoModel {
     const document = new MongoDocument(this, { ...this.defaults, ...data });
     this.data.set(document._id, document);
     this.db.collection(this.name).insertOne(document.json());
+    this.emit('insert', document);
     return document;
   }
 
@@ -156,6 +157,7 @@ module.exports = class MongoModel {
     }
     for (const document of documents) this.data.set(document._id, document);
     this.db.collection(this.name).insertMany(documents.map((d) => ({ ...d })));
+    this.emit('insertMany', documents);
     return documents;
   }
 
@@ -167,6 +169,7 @@ module.exports = class MongoModel {
             const document = this.data.get(key);
             this.data.delete(key);
             this.db.collection(this.name).deleteOne({ _id: key });
+            this.emit('delete', document);
             return resolve(document);
           }
           resolve(undefined);
@@ -180,7 +183,10 @@ module.exports = class MongoModel {
       this.filterKeys(query, value)
         .then((keys) => {
           const deleted = keys.map((key) => this.deleteOne({ _id: key }));
-          resolve(Promise.all(deleted));
+          Promise.all(deleted).then((docs) => {
+            this.emit('deleteMany', docs);
+            resolve(docs);
+          });
         })
         .catch(reject);
     });
@@ -202,6 +208,7 @@ module.exports = class MongoModel {
           this.db
             .collection(this.name)
             .updateOne({ _id: key }, { $set: newDocument.json() });
+          this.emit('update', document, newDocument);
           resolve(newDocument);
         })
         .catch(reject);

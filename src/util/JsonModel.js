@@ -1,8 +1,9 @@
 const fs = require('fs');
+const { EventEmitter } = require('events');
 const Doc = require('./Document');
 const Collection = require('./Collection');
 
-module.exports = class JsonModel {
+module.exports = class JsonModel extends EventEmitter {
   constructor(db, name, path, defaults) {
     this.db = db;
     this.name = name;
@@ -27,6 +28,7 @@ module.exports = class JsonModel {
       data.set(key, new Doc(this, { ...this.defaults, ...body[key] }))
     );
     this.data = data;
+    this.emit('fetch', data);
     return data;
   }
 
@@ -90,6 +92,7 @@ module.exports = class JsonModel {
     const document = new Doc(this, { ...this.defaults, ...data });
     this.data.set(document._id, document);
     this.save();
+    this.emit('insert', document);
     return document;
   }
 
@@ -100,6 +103,7 @@ module.exports = class JsonModel {
     }
     for (const document of documents) this.data.set(document._id, document);
     this.save();
+    this.emit('insertMany', documents);
     return documents;
   }
 
@@ -109,6 +113,7 @@ module.exports = class JsonModel {
       const document = this.data.get(key);
       this.data.delete(key);
       this.save();
+      this.emit('delete', document);
       return document;
     }
     return undefined;
@@ -116,7 +121,9 @@ module.exports = class JsonModel {
 
   deleteMany(query, value) {
     const keys = this.filterKeys(query, value);
+    const documents = this.filter(query, value);
     const deleted = keys.map((key) => this.deleteOne({ _id: key }));
+    this.emit('deleteMany', documents);
     return deleted;
   }
 
@@ -132,6 +139,7 @@ module.exports = class JsonModel {
     });
     this.data.set(key, newDocument);
     this.save();
+    this.emit('update', document, newDocument);
     return newDocument;
   }
 

@@ -2,14 +2,13 @@ const { EventEmitter } = require('events');
 const Collection = require('./Collection');
 const SqlDocument = require('./Document');
 
-module.exports = class SqlModel {
+module.exports = class SqlModel extends EventEmitter {
   constructor(db, name, options = {}, defaults = {}) {
     if (typeof name !== 'string') {
       const text = `Argument 'name' must be in type of string. Instead got ${typeof name}`;
       throw new TypeError(text);
     }
     name = name.toLowerCase();
-    this.emitter = new EventEmitter();
     this.db = db;
     this.defaults = defaults;
     this.name = name;
@@ -31,10 +30,10 @@ module.exports = class SqlModel {
             .join(', ')})`
         )
         .on('error', reject)
-        .on('end', () => resolve(this.emitter.emit('connected', this)));
+        .on('end', () => resolve(this.emit('connect')));
     });
     this.data = new Collection();
-    this.emitter.on('connected', () => this.fetch());
+    this.on('connect', () => this.fetch());
     this.state = 0;
   }
 
@@ -42,8 +41,8 @@ module.exports = class SqlModel {
     const self = this;
     return new Promise((resolve, reject) => {
       if (self.state !== 1) {
-        self.emitter.on('ready', () => resolve(action.call(self)));
-        self.emitter.on('error', reject);
+        self.on('ready', () => resolve(action.call(self)));
+        self.on('error', reject);
         return;
       }
       resolve(action.call(self));
@@ -78,8 +77,9 @@ module.exports = class SqlModel {
           this.data = data;
           if (this.state !== 1) {
             this.state = 1;
-            this.emitter.emit('ready');
+            this.emit('ready');
           }
+          this.emit('fetch', data);
           resolve(data);
         })
         .catch(reject);
@@ -184,12 +184,14 @@ module.exports = class SqlModel {
       )
       .on('error', (err) => {})
       .on('result', () => {});
+    this.emit('insert', document);
     return document;
   }
 
   insertMany(data) {
     const documents = [];
     for (const document of data) documents.push(this.insertOne(document));
+    this.emit('insertMany', documents);
     return documents;
   }
 
@@ -204,6 +206,7 @@ module.exports = class SqlModel {
               .query(`DELETE FROM ${this.name} WHERE _id = '${key}'`)
               .on('result', () => {})
               .on('error', (err) => {});
+            this.emit('delete', document);
             return resolve(document);
           }
           resolve(undefined);
@@ -217,7 +220,10 @@ module.exports = class SqlModel {
       this.filterKeys(query, value)
         .then((keys) => {
           const deleted = keys.map((key) => this.deleteOne({ _id: key }));
-          resolve(Promise.all(deleted));
+          Promise.all(deleted).then((docs) => {
+            this.emit('deleteMany', docs);
+            resolve(docs);
+          });
         })
         .catch(reject);
     });
@@ -257,6 +263,7 @@ module.exports = class SqlModel {
             )
             .on('result', () => {})
             .on('error', (err) => {});
+          this.emit('update', document, newDocument);
           resolve(newDocument);
         })
         .catch(reject);

@@ -1,12 +1,41 @@
 # Change Log
 
-## [1.1.1] - Dev
+## [1.2.1] - Dev
 
 ### Added
+
+- JsonModel#save event
+- JsonModel#fetch event
+- JsonModel#insert event
+- JsonModel#insertMany event
+- JsonModel#delete event
+- JsonModel#deleteMany event
+- JsonModel#update event
+
+- MongoModel#save event
+- MongoModel#fetch event
+- MongoModel#insert event
+- MongoModel#insertMany event
+- MongoModel#delete event
+- MongoModel#deleteMany event
+- MongoModel#update event
+
+- SqlModel#save event
+- SqlModel#fetch event
+- SqlModel#insert event
+- SqlModel#insertMany event
+- SqlModel#delete event
+- SqlModel#deleteMany event
+- SqlModel#update event
 
 - Document#save() method.
 
 ### Removed
+
+- MongoModel#emitter property.
+- SqlModel#emitter property.
+
+- MySql#emitter property.
 
 ### Fixed
 
@@ -15,6 +44,15 @@
 - Minor fixes.
 
 ### Changed
+
+- MySql now extends EventEmitter.
+
+- JsonModel now extends EventEmitter.
+- MongoModel now extends EventEmitter.
+- SqlModel now extends EventEmitter.
+
+- Core#dbConnected event renamed: dbConnect.
+- Core#dbDisconnected event renamed: dbDisconnect.
 
 - Including `default` property isn't necessary when adding a model. It'll be set to `undefined`.
 
@@ -317,9 +355,9 @@
 
 ### Added
 
-- DB Event: 'dbConnected'
+- DB Event: 'dbConnect'
 - DB Event: 'dbError'
-- DB Event: 'dbDisconnected'
+- DB Event: 'dbDisconnect'
 
 ### Changed
 
