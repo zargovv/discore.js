@@ -24,7 +24,6 @@ module.exports = class Document {
     const json = { ...this };
     delete json._model;
     delete json._doc;
-    this._model.emit('save', this);
     return json;
   }
 };

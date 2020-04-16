@@ -4,7 +4,6 @@
 
 ### Added
 
-- JsonModel#save event
 - JsonModel#fetch event
 - JsonModel#insert event
 - JsonModel#insertMany event
@@ -12,7 +11,6 @@
 - JsonModel#deleteMany event
 - JsonModel#update event
 
-- MongoModel#save event
 - MongoModel#fetch event
 - MongoModel#insert event
 - MongoModel#insertMany event
@@ -20,7 +18,6 @@
 - MongoModel#deleteMany event
 - MongoModel#update event
 
-- SqlModel#save event
 - SqlModel#fetch event
 - SqlModel#insert event
 - SqlModel#insertMany event
