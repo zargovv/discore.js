@@ -5,6 +5,7 @@ const Collection = require('./Collection');
 
 module.exports = class JsonModel extends EventEmitter {
   constructor(db, name, path, defaults) {
+    super();
     this.db = db;
     this.name = name;
     this.path = path;

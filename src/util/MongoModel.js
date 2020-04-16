@@ -4,6 +4,7 @@ const MongoDocument = require('./Document');
 
 module.exports = class MongoModel extends EventEmitter {
   constructor(db, name, options = {}, defaults = {}) {
+    super();
     if (typeof name !== 'string') {
       const text = `Argument 'name' must be in type of string. Instead got ${typeof name}`;
       throw new TypeError(text);
