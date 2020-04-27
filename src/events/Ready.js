@@ -6,8 +6,10 @@ module.exports = class extends Event {
   }
 
   run() {
-    this.client.events.forEach(e => e._init());
-    this.client.monitors.forEach(e => e._init());
-    this.client.commands.forEach(e => e._init());
+    this.client.events.forEach((e) => e._init());
+    this.client.monitors.forEach((e) => e._init());
+    this.client.commands.forEach((e) => e._init());
+    this.client.triggers.forEach((e) => e._init());
+    this.client.inhibitors.forEach((e) => e._init());
   }
 };

@@ -90,10 +90,9 @@ module.exports = class extends Event {
     }
     let bool = true;
     for (const inhibitor of this.client.inhibitors.values()) {
-      if (!bool) return;
       bool = Boolean(await inhibitor._run(message, command));
+      if (!bool) return;
     }
-    if (!bool) return;
     command.cooldowns.set(message.author.id, Date.now() + command.cooldown);
     command._run(message, args);
   }
