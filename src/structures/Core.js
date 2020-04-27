@@ -129,7 +129,7 @@ module.exports = class extends Client {
      * @private
      */
     this._private = { folders: {} };
-    this._private.folders.inibitors = thisOptions.inhibitorsFolder;
+    this._private.folders.inhibitors = thisOptions.inhibitorsFolder;
     this._private.folders.commands = thisOptions.commandsFolder;
     this._private.folders.monitors = thisOptions.monitorsFolder;
     this._private.folders.triggers = thisOptions.triggersFolder;
