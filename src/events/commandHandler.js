@@ -43,7 +43,7 @@ module.exports = class extends Event {
         if (matched) matched = matched[0];
       }
     }
-    if (!matched && mentionPrefix) {
+    if (typeof matched !== 'string' && !matched && mentionPrefix) {
       matched = `<@${this.client.user.id}> `;
       if (message.mentions.users.first()) {
         message.mentions.users.delete(
@@ -51,7 +51,9 @@ module.exports = class extends Event {
         );
       }
     }
-    if (!matched) return this.client.triggers.forEach((e) => e._run(message));
+    if (typeof matched !== 'string' && !matched) {
+      return this.client.triggers.forEach((e) => e._run(message));
+    }
     if (typeof matched === 'string' && !content.startsWith(matched)) {
       this.client.triggers.forEach((e) => e._run(message));
       return;
