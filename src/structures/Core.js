@@ -68,7 +68,7 @@ module.exports = class extends Client {
       ignoreSelf: options.commandOptions.ignoreSelf,
 
       mainPath: path.join(
-        path.basename(module.parent.parent.filename),
+        path.dirname(module.parent.parent.filename),
         options.mainPath
       ),
       mobile: options.mobile,
