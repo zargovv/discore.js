@@ -69,7 +69,8 @@ module.exports = class extends Client {
 
       mainPath: path.join(
         path.dirname(module.parent.parent.filename),
-        options.mainPath
+        options.mainPath,
+        path.basename(module.parent.parent.filename)
       ),
       mobile: options.mobile,
       prefix: options.prefix,
