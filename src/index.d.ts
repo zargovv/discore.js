@@ -25,8 +25,8 @@ declare module 'discore.js' {
   type DB = Mongo | MySql | Json;
   type ArgsSeparator = string | RegExp;
   type PageResolvable = any;
-  type SqlCollection = Collection<string, any>;
-  type MongoCollection = Collection<string, any>;
+  type SqlCollection = Collection<string, Doc>;
+  type MongoCollection = Collection<string, Doc>;
   type Cooldowns = Collection<string, number>;
 
   interface MySqlTypes {
