@@ -308,7 +308,7 @@ declare module 'discore.js' {
     public addModel(name: string, options: IMySqlModelOptions): MySql;
     public getCollection(name: string): SqlModel | undefined;
   }
-  class MongoModel extends EventEmitter {
+  export class MongoModel extends EventEmitter {
     constructor(db: any, name: string, options?: object, defaults?: object);
 
     public data: MongoCollection;
@@ -321,6 +321,8 @@ declare module 'discore.js' {
     private enqueue(action: () => any): Promise<any>;
 
     public fetch(): Promise<MongoCollection>;
+
+    public getData(): Promise<MongoCollection>;
 
     public filterKeys(query: string, value: string): Promise<string[]>;
     public filterKeys(query: { [key: string]: any }): Promise<string[]>;
@@ -443,7 +445,7 @@ declare module 'discore.js' {
     public getCollection(name: string): MongoModel | undefined;
   }
 
-  class JsonModel extends EventEmitter {
+  export class JsonModel extends EventEmitter {
     public data: Collection<string, Doc>;
     public db: Json;
     public name: string;
