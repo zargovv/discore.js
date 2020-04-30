@@ -67,7 +67,10 @@ module.exports = class extends Client {
       ignoreBots: options.commandOptions.ignoreBots,
       ignoreSelf: options.commandOptions.ignoreSelf,
 
-      mainPath: path.join(module.parent.parent.filename, options.mainPath),
+      mainPath: path.join(
+        path.basename(module.parent.parent.filename),
+        options.mainPath
+      ),
       mobile: options.mobile,
       prefix: options.prefix,
       token: options.token,
