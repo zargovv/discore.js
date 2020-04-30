@@ -67,11 +67,13 @@ module.exports = class extends Client {
       ignoreBots: options.commandOptions.ignoreBots,
       ignoreSelf: options.commandOptions.ignoreSelf,
 
-      mainPath: path.join(
-        path.dirname(module.parent.parent.filename),
-        options.mainPath,
-        path.basename(module.parent.parent.filename)
-      ),
+      mainPath: options.mainPath.startsWith('/')
+        ? options.mainPath
+        : path.join(
+            path.dirname(module.parent.parent.filename),
+            options.mainPath,
+            path.basename(module.parent.parent.filename)
+          ),
       mobile: options.mobile,
       prefix: options.prefix,
       token: options.token,
