@@ -76,7 +76,9 @@ module.exports = class MySql extends EventEmitter {
       if (typeof options[key] === 'function') type = options[key];
       if (typeof options[key].type === 'function') {
         type = options[key].type;
-        defaults = options[key].default;
+        defaults = {}.hasOwnProperty.call(options[key], 'default')
+          ? options[key].default
+          : undefined;
       }
       type = type();
       if (!type.db.includes('mysql')) {
