@@ -86,7 +86,7 @@ module.exports = class Mongo {
       if (typeof options[key] === 'function') type = options[key];
       if (!type && typeof options[key].type === 'function') {
         type = options[key].type;
-        defaults = options[key].default || undefined;
+        defaults = options[key].default;
       }
       type = type();
       if (!type.db.includes('mongo')) {
