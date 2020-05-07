@@ -76,6 +76,7 @@ declare module 'discore.js' {
   }
   interface IFolderOptions {
     inhibitors?: string;
+    finalizers?: string;
     commands?: string;
     monitors?: string;
     triggers?: string;
@@ -130,14 +131,18 @@ declare module 'discore.js' {
     once?: boolean;
   }
   interface ICommandOptions extends IBaseOptions {
-    cooldown?: number;
+    runIn?: string | string[];
     aliases?: Aliases;
+    cooldown?: number;
     permLevel?: number;
+    requiredPerms?: number | string | Array<string | number>;
+    requiredRoles?: string | string[];
   }
   interface IEventOptions extends IBaseOptions {}
   interface IInhibitorOptions extends IBaseOptions {}
   interface IMonitorOptions extends IBaseOptions {}
   interface ITriggerOptions extends IBaseOptions {}
+  interface IFinalizerOptions extends IBaseOptions {}
 
   interface IPagesOptions {
     filter?(reaction: MessageReaction, user: User): boolean;
@@ -639,6 +644,7 @@ declare module 'discore.js' {
     public monitors: Store<Monitor>;
     public commands: Store<Command>;
     public triggers: Store<Trigger>;
+    public finalizers: Store<Finalizer>;
     public inhibitors: Store<Inhibitor>;
   }
   class Base {
@@ -686,6 +692,8 @@ declare module 'discore.js' {
     get options(): ICommandOptions;
     get cOptions(): { [key: string]: any };
 
+    public noRequiredPermsRun(message: Discord.Message, args: string[]): any;
+    public noRequiredRolesRun(message: Discord.Message, args: string[]): any;
     public noPermsRun(message: Discord.Message, args: string[]): any;
     public cdRun(message: Discord.Message, args: string[]): any;
     public run(message: Discord.Message, args: string[]): any;
@@ -758,6 +766,21 @@ declare module 'discore.js' {
     _run(message: Discord.Message): Promise<boolean>;
 
     private _options: ITriggerOptions;
+  }
+  export class Finalizer extends Base {
+    constructor(
+      client: Core,
+      store: Store<Finalizer>,
+      fullpath: string,
+      options?: IFinalizerOptions
+    );
+
+    get options(): IFinalizerOptions;
+    get cOptions(): { [key: string]: any };
+
+    _run(message: Discord.Message): Promise<boolean>;
+
+    private _options: IFinalizerOptions;
   }
   export class Pages {
     constructor(client: Core, options: IPagesOptions);

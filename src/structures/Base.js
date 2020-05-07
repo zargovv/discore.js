@@ -55,8 +55,6 @@ module.exports = class Base {
   /**
    * @param {...any} ...args
    * @private
-   * @async
-   * @private
    */
   _run(...args) {
     if (this.enabled) this.run(...args);

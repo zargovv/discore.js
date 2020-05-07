@@ -1,8 +1,19 @@
 # Change Log
 
-## [1.2.1] - Dev
+## [1.3.1] - Dev
 
 ### Added
+
+- Finalizers
+
+- Command#noRequiredPermsRun method
+- Command#noRequiredRolesRun method
+
+- CommandOptions#runIn option
+- CommandOptions#requiredPerms option
+- CommandOptions#requiredRoles option
+
+- Constants
 
 - JsonModel#fetch event
 - JsonModel#insert event
@@ -25,33 +36,33 @@
 - SqlModel#deleteMany event
 - SqlModel#update event
 
-- Document#save() method.
+- Document#save() method
 
 ### Removed
 
-- MongoModel#emitter property.
-- SqlModel#emitter property.
+- MongoModel#emitter property
+- SqlModel#emitter property
 
-- MySql#emitter property.
+- MySql#emitter property
 
 ### Fixed
 
-- `voiceChannelJoin` event.
+- `voiceChannelJoin` event
 
-- Minor fixes.
+- Minor fixes
 
 ### Changed
 
-- MySql now extends EventEmitter.
+- MySql now extends EventEmitter
 
-- JsonModel now extends EventEmitter.
-- MongoModel now extends EventEmitter.
-- SqlModel now extends EventEmitter.
+- JsonModel now extends EventEmitter
+- MongoModel now extends EventEmitter
+- SqlModel now extends EventEmitter
 
-- Core#dbConnected event renamed: dbConnect.
-- Core#dbDisconnected event renamed: dbDisconnect.
+- Core#dbConnected event renamed: dbConnect
+- Core#dbDisconnected event renamed: dbDisconnect
 
-- Including `default` property isn't necessary when adding a model. It'll be set to `undefined`.
+- Including `default` property isn't necessary when adding a model. It'll be set to `undefined`
 
 ## [1.0.1] - 2020-03-11
 

@@ -121,8 +121,9 @@ this.client.config.guild.add('guild_id', {
 
 ### Events
 
-Events are placed in `.\events\`(**eventsFolder** option).
-For instance creating `.\events\Main\ready.js` will be an event `ready` in the `Main` category. Subcategories are also allowed and gonna be a second and more folder levels.
+Events are placed in `.\events\`(**CoreOptions#folders#events** option).
+For instance, creating `.\events\Main\ready.js` will be an event named `ready`
+in the `Main` category. Subcategories are also allowed and will have second and greater folder levels.
 
 Their structure (options argument defined with default configuration):
 
@@ -204,8 +205,9 @@ module.exports = class extends Event {
 
 ### Commands
 
-Commands are placed in `.\commands\` (**commandsFolder** option).
-For instance creating `.\events\Main\Command.js` will be a command `Command` in the `Main` category. Subcategories are also allowed and gonna be a second and more folder levels.
+Commands are placed in `.\commands\` (**CoreOptions#folders#commands** option).
+For instance, creating `.\events\Main\help.js` will be a command named `help` in
+the `Main` category. Subcategories are also allowed and will have second and greater folder levels.
 
 Their structure (options argument defined with default configuration):
 
@@ -222,6 +224,8 @@ module.exports = class extends Command {
       aliases: [],
       permLevel: 0, // Runs noPermsRun() method if tests not passed.
       once: false, // Unloads after first use.
+      requiredRoles: [], // Accepts string and string array
+      requiredPerms: [], // Accepts number, string and array of strings and numbers
     };
     // If name is not defined then it will be defined as file name.
     // For example, test.js will be 'test'
@@ -246,25 +250,26 @@ module.exports = class extends Command {
 
   run(message, args) {
     // Command code.
-    // Runs only if enabled.
+    // runs only if enabled.
   }
 
   disabledRun(message, args) {
-    // Same as run but runs only if disabled.
+    // runs only if disabled.
   }
 
   noPermsRun(message, args) {
-    // Same as run
-    // but runs only if Permission Level test is not passed.
+    // runs if Permission Level test hasn't passed.
   }
 
+  noRequiredRolesRun(message, args) {}
+  noRequiredPermsRun(message, args) {}
+
   cdRun(message, args) {
-    // Same as run
-    // but runs only if user has active cooldown.
+    // runs if user have active cooldown on his id
   }
 
   init() {
-    // Optional method. Runs on 'ready'
+    // runs on 'ready'
     // event so you are able to use discord
     // data via this.client
   }
@@ -286,9 +291,10 @@ module.exports = class extends Command {
 
 ### Monitors
 
-Monitors are placed in `.\monitors\`(**monitorsFolder** option).
+Monitors are placed in `.\monitors\`(**CoreOptions#folders#monitors** option).
 Runs on any message and receives message as first argument.
-For instance creating `.\monitors\Main\filter.js` will be a monitor `filter` in the `Main` category. Subcategories are also allowed and gonna be a second and more folder levels.
+For instance, creating `.\monitors\Main\filter.js` will be a monitor named `filter`
+in the `Main` category. Subcategories are also allowed and will have second and greater folder levels.
 
 Their structure (options argument defined with default configuration):
 
@@ -356,9 +362,10 @@ module.exports = class extends Monitor {
 
 ### Triggers
 
-Triggers are placed in `.\triggers\`(**triggersFolder** option).
+Triggers are placed in `.\triggers\`(**CoreOptions#folders#triggers** option).
 Runs on any message if it is not a command and receives message as first argument.
-For instance creating `.\triggers\Main\xp.js` will be a trigger `xp` in the `Main` category. Subcategories are also allowed and gonna be a second and more folder levels.
+For instance, creating `.\triggers\Main\xp.js` will be a trigger named `xp` in the `Main` category.
+Subcategories are also allowed and will have second and greater folder levels.
 
 Their structure (options argument defined with default configuration):
 
@@ -369,7 +376,7 @@ module.exports = class extends Trigger {
   get options() {
     return {
       enabled: true,
-      name: null, // Monitor name.
+      name: null, // Trigger name.
       id: undefined, // Used to get the command.
       once: false, // Unloads after first use.
     };
@@ -426,10 +433,11 @@ module.exports = class extends Trigger {
 
 ### Inhibitors
 
-Inhibitors are placed in `.\inhibitors\`(**inhibitorsFolder** option).
+Inhibitors are placed in `.\inhibitors\`(**CoreOptions#folders#inhibitors** option).
 Runs on any message if it is a command and receives message as first argument
 and command as second argument.
-For instance creating `.\inhibitors\Main\inhibit.js` will be a inhibitor `inhibit` in the `Main` category. Subcategories are also allowed and gonna be a second and more folder levels.
+For instance, creating `.\inhibitors\Main\inhibit.js` will be an inhibitor named `inhibit`
+in the `Main` category. Subcategories are also allowed and will have second and greater folder levels.
 
 Their structure (options argument defined with default configuration):
 
@@ -440,7 +448,7 @@ module.exports = class extends Inhibitor {
   get options() {
     return {
       enabled: true,
-      name: null, // Monitor name.
+      name: null, // Inhibitor name.
       id: undefined, // Used to get the command.
       once: false, // Unloads after first use.
     };
@@ -473,6 +481,81 @@ module.exports = class extends Inhibitor {
   }
 
   disabledRun(message, cmd) {
+    // Same as run but runs only if disabled.
+  }
+
+  init() {
+    // Optional method. Runs on 'ready'
+    // event so you are able to use discord
+    // data via this.client
+  }
+};
+```
+
+#### Methods
+
+- `toggle()`
+- `enable()`
+- `disable()`
+- `unload()`
+- `reload()`
+- `toString()`
+
+#### Properties
+
+- `categories`
+
+### Finalizers
+
+Finalizers are placed in `.\finalizers\`(**CoreOptions#folders#finalizers** option).
+Runs after a command.
+Receives message as first argument, message response as second one, and a boolean,
+which is true wheather if command is enabled, as third argument.
+For instance, creating `.\finalizers\Main\reply.js` will be a finalizer named `reply`
+in the `Main` category. Subcategories are also allowed and will have second and greater folder levels.
+
+Their structure (options argument defined with default configuration):
+
+```js
+const { Finalizer } = require('discore.js');
+
+module.exports = class extends Finalizer {
+  get options() {
+    return {
+      enabled: true,
+      name: null, // Inhibitor name.
+      id: undefined, // Used to get the command.
+      once: false, // Unloads after first use.
+    };
+    // If name is not defined then it will be defined as file name.
+    // For example, server.js will be 'server'
+  }
+
+  get customOptions() {
+    return {
+      // You can put any options you want.
+      // And use it via this.custom
+    };
+  }
+
+  get cOptions() {
+    return {
+      // Shortcut for customOptions property.
+      /*
+        If you define both customOptions and cOptions
+        then customOptions becomes more priority
+      */
+    };
+  }
+
+  run(message, res, enabled) {
+    // Inhibitor code.
+    // Runs only if enabled.
+    // Should return true in the end.
+    // Doesn't run commands if return false or undefined.
+  }
+
+  disabledRun(message, res, enabled) {
     // Same as run but runs only if disabled.
   }
 

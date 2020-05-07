@@ -18,6 +18,7 @@ const defaultOptions = {
 
 const folderDefaults = {
   inhibitors: 'inhibitors',
+  finalizers: 'finalizers',
   commands: 'commands',
   monitors: 'monitors',
   triggers: 'triggers',
@@ -52,6 +53,7 @@ module.exports = class extends Client {
     };
     const thisOptions = {
       inhibitorsFolder: options.folders.inhibitors,
+      finalizersFolder: options.folders.finalizers,
       commandsFolder: options.folders.commands,
       triggersFolder: options.folders.triggers,
       monitorsFolder: options.folders.monitors,
@@ -172,6 +174,7 @@ module.exports = class extends Client {
     new Store(this, 'monitor', path.join(__dirname, '../monitors'));
     new Store(this, 'command');
     new Store(this, 'trigger');
+    new Store(this, 'finalizer');
     new Store(this, 'inhibitor');
     if (thisOptions.token) this.login(thisOptions.token);
   }
