@@ -108,11 +108,12 @@ module.exports = class extends Event {
       }
     }
 
-    command.cooldowns.set(message.author.id, Date.now() + command.cooldown);
-    command
-      ._run(message, args)
-      .then((res) =>
-        this.client.finalizers.forEach((f) => f(message, res, command.enabled))
+    const runFinalizers = (res) =>
+      this.client.finalizers.forEach((f) =>
+        f._run(message, res, command.enabled)
       );
+
+    command.cooldowns.set(message.author.id, Date.now() + command.cooldown);
+    command._run(message, args).then((res) => runFinalizers(res));
   }
 };
