@@ -90,7 +90,7 @@ module.exports = class extends Event {
 
     if (command.runIn.indexOf(message.channel.type) < 0) return runTriggers();
 
-    args = argsContent.split(argsSeparator || ' ');
+    const args = argsContent.split(argsSeparator || ' ');
 
     const permTest = await this.client.permLevels.test(
       command.permLevel,
