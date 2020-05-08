@@ -18,7 +18,7 @@ module.exports = class Command extends Base {
   constructor(client, store, fullpath, options = {}) {
     super(client, store, 'command', fullpath, options);
 
-    const options = { ...defaultOptions, ...this._options };
+    options = { ...defaultOptions, ...options };
     if (options.runIn === '*') options.runIn = defaultOptions.runIn;
     if (typeof options.runIn === 'string') options.runIn = [options.runIn];
     if (typeof options.requiredPerms === 'string') {
