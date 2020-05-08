@@ -47,9 +47,9 @@ module.exports = class extends Client {
     options = {
       ...defaultOptions,
       ...options,
-      folders: { ...(options.folders || {}), ...folderDefaults },
-      prefixOptions: { ...(options.prefixOptions || {}), ...prefixDefaults },
-      commandOptions: { ...(options.commandOptions || {}), ...commandDefaults },
+      folders: { ...folderDefaults, ...(options.folders || {}) },
+      prefixOptions: { ...prefixDefaults, ...(options.prefixOptions || {}) },
+      commandOptions: { ...commandDefaults, ...(options.commandOptions || {}) },
     };
     const thisOptions = {
       inhibitorsFolder: options.folders.inhibitors,
