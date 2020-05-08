@@ -8,7 +8,7 @@ module.exports = {
   Monitor: require('./structures/Monitor'),
   Trigger: require('./structures/Trigger'),
   Inhibitor: require('./structures/Inhibitor'),
-  Finalizzer: require('./structures/Finalizer'),
+  Finalizer: require('./structures/Finalizer'),
   Json: require('./structures/Json'),
   Mongo: require('./structures/Mongo'),
   MySql: require('./structures/MySql'),
