@@ -33,7 +33,7 @@ module.exports = class Base {
     this._id = new UniqueId();
     this.id = options.id;
     if (!this.id) this.id = this._id;
-    if (this.store.find(e => e.id === this.id)) {
+    if (this.store.find((e) => e.id === this.id)) {
       const err = `${this.store.type} with id ${this.id} already exists`;
       return this.client.emit('error', err);
     }
@@ -45,10 +45,7 @@ module.exports = class Base {
     this.key =
       this._options.key ||
       this._options.name ||
-      this.file
-        .split('.')
-        .slice(0, -1)
-        .join('.');
+      this.file.split('.').slice(0, -1).join('.');
     this.name = this.key;
   }
 
@@ -100,7 +97,13 @@ module.exports = class Base {
    */
   reload() {
     this.unload(false);
-    this.store.init(null, null, path.join(this.dir, this.file));
+    this.store.init(
+      null,
+      null,
+      path.join(this.dir, this.file),
+      false,
+      this.categories
+    );
     this.client.emit(`${this.type}Reloaded`, this);
     return this;
   }

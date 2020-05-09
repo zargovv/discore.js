@@ -24,7 +24,7 @@ function getFiles(filename, maindir, thisdir) {
   if (file.folder === path.basename(maindir)) file.folder = null;
   if (fs.statSync(filename).isDirectory()) {
     const data = fs.readdirSync(filename);
-    data.forEach(e =>
+    data.forEach((e) =>
       files.push(...getFiles(path.join(filename, e), maindir, file))
     );
   } else if (file.name.endsWith('.js')) {
@@ -35,12 +35,10 @@ function getFiles(filename, maindir, thisdir) {
 
 function match(text, query) {
   text = String(text).toLowerCase();
-  query = String(query)
-    .toLowerCase()
-    .replace(/ /g, '');
+  query = String(query).toLowerCase().replace(/ /g, '');
   let matches = 0;
   let pos = 0;
-  text.split('').forEach(char => {
+  text.split('').forEach((char) => {
     if (pos >= text.length) return;
     if (char === query[pos]) {
       matches += 1;
@@ -74,21 +72,21 @@ module.exports = class Store extends Collection {
    */
   search(query) {
     const data = [
-      ...this.filter(e => e.id !== e._id).map(e => ({
+      ...this.filter((e) => e.id !== e._id).map((e) => ({
         match: match(e.id, query),
         [this.type]: e,
       })),
-      ...this.map(e => ({
+      ...this.map((e) => ({
         match: match(e.key, query),
         [this.type]: e,
       })),
     ];
     if (this.type === 'command') {
       this.filter(
-        e => typeof e.aliases === 'object' && e.aliases instanceof Array
-      ).forEach(elem => {
+        (e) => typeof e.aliases === 'object' && e.aliases instanceof Array
+      ).forEach((elem) => {
         data.push(
-          ...elem.aliases.map(e => ({
+          ...elem.aliases.map((e) => ({
             match: match(e, query),
             [this.type]: elem,
           }))
@@ -97,14 +95,15 @@ module.exports = class Store extends Collection {
     }
     return data
       .sort((b, a) => a.match - b.match)
-      .map(e => ({
+      .map((e) => ({
         ...e,
         match: Number(String(e.match).slice(0, 4)),
       }))
       .filter(
         (e, i) =>
           e.match > 0 &&
-          data.findIndex(elem => elem[this.type]._id === e[this.type]._id) === i
+          data.findIndex((elem) => elem[this.type]._id === e[this.type]._id) ===
+            i
       );
   }
 
@@ -113,10 +112,10 @@ module.exports = class Store extends Collection {
    * @returns {*|null}
    */
   get(key) {
-    let data = this.find(e => e.id === key);
-    if (!data) data = this.find(e => e.key === key);
+    let data = this.find((e) => e.id === key);
+    if (!data) data = this.find((e) => e.key === key);
     if (!data && this.type === 'command') {
-      data = this.find(e => e.aliases.includes(key));
+      data = this.find((e) => e.aliases.includes(key));
     }
     if (!data) data = null;
     return data;
@@ -140,7 +139,13 @@ module.exports = class Store extends Collection {
    * @param {String} foldername
    * @returns {Store}
    */
-  init(filepath, foldername, onlyfile = null, _private = false) {
+  init(
+    filepath,
+    foldername,
+    onlyfile = null,
+    _private = false,
+    propCategories = undefined
+  ) {
     try {
       if (typeof onlyfile === 'string') {
         filepath = path.dirname(onlyfile);
@@ -148,7 +153,7 @@ module.exports = class Store extends Collection {
       }
       const dirPath = path.dirname(filepath);
       let files = fs.readdirSync(dirPath);
-      let dir = files.find(e => e === foldername);
+      let dir = files.find((e) => e === foldername);
       if (!dir) {
         this.client[`${this.type}s`] = this;
         return this;
@@ -165,9 +170,9 @@ module.exports = class Store extends Collection {
       }
       files = getFiles(dir);
       if (typeof onlyfile === 'string') {
-        files = [files.find(e => e.path === onlyfile)];
+        files = [files.find((e) => e.path === onlyfile)];
       }
-      files.forEach(file => {
+      files.forEach((file) => {
         const parents = [];
         let temp = file;
         while (temp.folder) {
@@ -199,6 +204,8 @@ module.exports = class Store extends Collection {
           prop.categories = parents.reverse();
           if (!_private) this.set(prop.id, prop);
         }
+
+        if (propCategories) prop.categories = propCategories;
       });
       if (!_private) {
         this.client[`${this.type}s`] = this;
