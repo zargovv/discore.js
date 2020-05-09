@@ -61,7 +61,7 @@ module.exports = class extends Event {
         const match = cmdContent.match(regex);
         if (!match) return;
 
-        return { name: match[1], command: c };
+        return { name: match[0], command: c };
       })
       .filter(Boolean)[0];
     if (!cmd) return runTriggers();
@@ -90,7 +90,7 @@ module.exports = class extends Event {
 
     if (command.runIn.indexOf(message.channel.type) < 0) return runTriggers();
 
-    const args = argsContent.split(argsSeparator || ' ');
+    const args = argsContent ? argsContent.split(argsSeparator || ' ') : [];
 
     const permTest = await this.client.permLevels.test(
       command.permLevel,
