@@ -196,6 +196,7 @@ module.exports = class Store extends Collection {
               prop._private = { parents };
               prop.categories = parents.reverse();
               if (!_private) this.set(prop.id, prop);
+              if (propCategories) prop.categories = propCategories;
             }
           }
         } else {
@@ -203,9 +204,8 @@ module.exports = class Store extends Collection {
           prop._private = { parents };
           prop.categories = parents.reverse();
           if (!_private) this.set(prop.id, prop);
+          if (propCategories) prop.categories = propCategories;
         }
-
-        if (propCategories) prop.categories = propCategories;
       });
       if (!_private) {
         this.client[`${this.type}s`] = this;
