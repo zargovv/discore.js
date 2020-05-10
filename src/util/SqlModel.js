@@ -220,11 +220,17 @@ module.exports = class SqlModel extends EventEmitter {
     return new Promise((resolve, reject) => {
       this.filterKeys(query, value)
         .then((keys) => {
-          const deleted = keys.map((key) => this.deleteOne({ _id: key }));
-          Promise.all(deleted).then((docs) => {
-            this.emit('deleteMany', docs);
-            resolve(docs);
-          });
+          const docs = keys.map((k) => this.data.get(k));
+          if (keys.length > 0) {
+            this.db
+              .query(
+                `DELETE FROM ${this.name} WHERE _id IN ('${keys.join("', '")}')`
+              )
+              .on('result', () => {})
+              .on('error', (err) => {});
+          }
+          this.emit('deleteMany', docs);
+          resolve(docs);
         })
         .catch(reject);
     });

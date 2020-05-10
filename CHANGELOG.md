@@ -53,6 +53,9 @@
 
 ### Changed
 
+- MongoModel#deleteMany improvements
+- SqlModel#deleteMany improvements
+
 - MySql now extends EventEmitter
 
 - JsonModel now extends EventEmitter

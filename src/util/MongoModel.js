@@ -183,11 +183,12 @@ module.exports = class MongoModel extends EventEmitter {
     return new Promise((resolve, reject) => {
       this.filterKeys(query, value)
         .then((keys) => {
-          const deleted = keys.map((key) => this.deleteOne({ _id: key }));
-          Promise.all(deleted).then((docs) => {
-            this.emit('deleteMany', docs);
-            resolve(docs);
-          });
+          const docs = keys.map((k) => this.data.get(k));
+          if (keys.length > 0) {
+            this.db.collection(this.name).deleteMany({ _id: { $in: keys } });
+          }
+          this.emit('deleteMany', docs);
+          resolve(docs);
         })
         .catch(reject);
     });
