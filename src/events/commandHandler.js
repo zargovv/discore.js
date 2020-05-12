@@ -49,19 +49,25 @@ module.exports = class extends Event {
     const cmdContent = content.substr(
       prefixMatch.index + prefixMatch[0].length
     );
-    const cmd = this.client.commands
-      .map((c) => {
-        const aliases = c.aliases.length > 0 ? `|${c.aliases.join('|')}` : '';
 
+    const commands = [];
+    this.client.commands.forEach((c) => {
+      commands.push({ name: c.name, command: c });
+      c.aliases.forEach((a) => commands.push({ name: a, command: c }));
+    });
+
+    const cmd = commands
+      .sort((b, a) => a.name.length - b.name.length)
+      .map((c) => {
         const regex = new RegExp(
-          `^(${c.key}${aliases})(?:\\s|$)`,
+          `^(${c.name})(?:\\s|$)`,
           ignoreCase ? 'i' : ''
         );
 
         const match = cmdContent.match(regex);
         if (!match) return;
 
-        return { name: match[0], command: c };
+        return { name: match[0], command: c.command };
       })
       .filter(Boolean)[0];
     if (!cmd) return runTriggers();
