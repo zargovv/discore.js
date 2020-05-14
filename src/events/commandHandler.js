@@ -1,5 +1,9 @@
 const Event = require('../structures/Event');
 
+function escape(source) {
+  return source.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
 module.exports = class extends Event {
   get options() {
     return { key: 'message' };
@@ -25,7 +29,7 @@ module.exports = class extends Event {
     const prefixes = prefix instanceof Array ? prefix : [prefix];
 
     const strPrefixes = prefixes.map((p) =>
-      p instanceof RegExp ? p.source : p
+      p instanceof RegExp ? p.source : escape(p)
     );
 
     const prefixRegex = new RegExp(
@@ -60,7 +64,7 @@ module.exports = class extends Event {
       .sort((b, a) => a.name.length - b.name.length)
       .map((c) => {
         const regex = new RegExp(
-          `^(${c.name})(?:\\s|$)`,
+          `^(${escape(c.name)})(?:\\s|$)`,
           ignoreCase ? 'i' : ''
         );
 

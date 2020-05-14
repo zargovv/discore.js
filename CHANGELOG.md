@@ -1,6 +1,13 @@
 # Change Log
 
-## [1.3.1] - Dev
+## [1.3.2] - 2020-05-14
+
+### Fixed
+
+- CommandHandler fix:
+  - Commands and prefixes matching were fixed
+
+## [1.3.1] - 2020-05-11
 
 ### Added
 
