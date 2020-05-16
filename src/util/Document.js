@@ -8,7 +8,7 @@ module.exports = class Document {
   }
 
   save() {
-    return this._model.upsertOne({ _id: this._doc._id }, this.json());
+    return this._model.upsertOne({ _id: this._id }, this.json());
   }
 
   populate(keys, remove = false) {
