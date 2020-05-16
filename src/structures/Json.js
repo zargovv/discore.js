@@ -9,7 +9,7 @@ module.exports = class Json {
       throw new TypeError("'DirPath' argument must be a string.");
     }
     this.path = path.join(
-      path.dirname(module.parent.parent.parent.filename),
+      path.dirname(module.parent.parent.parent.filename || process.cwd()),
       dirPath
     );
     this.collections = new Collection();
