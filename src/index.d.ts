@@ -155,7 +155,6 @@ declare module 'discore.js' {
   }
   class Doc implements IDocument {
     [key: string]: any;
-    private _doc: IDocument;
     private _model: JsonModel | SqlModel | MongoModel;
 
     public save(): Promise<Doc>;

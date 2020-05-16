@@ -4,7 +4,6 @@ module.exports = class Document {
   constructor(model, entries = {}) {
     this._model = model;
     if (!entries._id) entries._id = new UniqueId().id;
-    this._doc = entries;
     Object.keys(entries).forEach((key) => (this[key] = entries[key]));
   }
 
@@ -23,7 +22,6 @@ module.exports = class Document {
   json() {
     const json = { ...this };
     delete json._model;
-    delete json._doc;
     return json;
   }
 };
