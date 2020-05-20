@@ -124,7 +124,7 @@ module.exports = class JsonModel extends EventEmitter {
     const keys = this.filterKeys(query, value);
     const documents = this.filter(query, value);
     const deleted = keys.map((key) => this.deleteOne({ _id: key }));
-    this.emit('deleteMany', documents);
+    this.emit('deleteMany', deleted);
     return deleted;
   }
 
@@ -142,6 +142,19 @@ module.exports = class JsonModel extends EventEmitter {
     this.save();
     this.emit('update', document, newDocument);
     return newDocument;
+  }
+
+  updateMany(query, value, newData = {}) {
+    const keys = this.filterKeys(query, value);
+    const documents = this.filter(query, value);
+    if (keys.length > 0) {
+      if (typeof query !== 'string') newData = value;
+      keys.forEach((k) => {
+        this.data.set(k, { ...this.data.get(k), ...newData });
+      });
+      this.save();
+    }
+    this.emit('updateMany', documents);
   }
 
   upsertOne(query, value, newData = {}) {

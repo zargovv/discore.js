@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.3.3] - DEV
+
+### Added
+
+- JsonModel#updateMany method
+- MongoModel#updateMany method
+
 ## [1.3.2] - 2020-05-14
 
 ### Fixed

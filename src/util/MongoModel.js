@@ -217,6 +217,24 @@ module.exports = class MongoModel extends EventEmitter {
     });
   }
 
+  updateMany(query, value, newData = {}) {
+    return new Promise((resolve, reject) => {
+      this.filterKeys(query, value)
+        .then((keys) => {
+          const docs = keys.map((k) => this.data.get(k));
+          if (keys.length > 0) {
+            if (typeof query !== 'string') newData = value;
+            this.db
+              .collection(this.name)
+              .updateMany({ _id: { $in: keys } }, { $set: newData });
+          }
+          this.emit('updateMany', docs);
+          resolve(docs);
+        })
+        .catch(reject);
+    });
+  }
+
   upsertOne(query, value, newData = {}) {
     return new Promise((resolve, reject) => {
       this.findKey(query, value)

@@ -11,25 +11,25 @@ declare module 'discore.js' {
   import * as Discord from 'discord.js';
   import { EventEmitter } from 'events';
 
-  type Aliases = string | string[];
-  type QueryKey = any;
-  type QueryResolvable =
+  export type Aliases = string | string[];
+  export type QueryKey = any;
+  export type QueryResolvable =
     | { [key: number]: any }
     | { [key: string]: any }
     | ((key: any, value: any) => boolean)
     | QueryKey;
-  type QueryValue = any;
-  type Id = any;
-  type Level = number;
-  type Prefix = string | RegExp | (RegExp | string)[];
-  type DB = Mongo | MySql | Json;
-  type ArgsSeparator = string | RegExp;
-  type PageResolvable = any;
-  type SqlCollection = Collection<string, Doc>;
-  type MongoCollection = Collection<string, Doc>;
-  type Cooldowns = Collection<string, number>;
+  export type QueryValue = any;
+  export type Id = any;
+  export type Level = number;
+  export type Prefix = string | RegExp | (RegExp | string)[];
+  export type DB = Mongo | MySql | Json;
+  export type ArgsSeparator = string | RegExp;
+  export type PageResolvable = any;
+  export type SqlCollection = Collection<string, Doc>;
+  export type MongoCollection = Collection<string, Doc>;
+  export type Cooldowns = Collection<string, number>;
 
-  interface MySqlTypes {
+  export interface MySqlTypes {
     Double: any;
     Boolean: any;
     Date: any;
@@ -54,7 +54,7 @@ declare module 'discore.js' {
     Enum: any;
     Set: any;
   }
-  interface MongoTypes {
+  export interface MongoTypes {
     Number: any;
     Double: any;
     String: any;
@@ -65,16 +65,16 @@ declare module 'discore.js' {
     Date: any;
     RegExp: any;
   }
-  interface IMongoModelOptions {
+  export interface IMongoModelOptions {
     [key: string]: { type: any; default: any };
   }
-  interface IMySqlModelOptions {
+  export interface IMySqlModelOptions {
     [key: string]: { type: any; default: any };
   }
-  interface IConfigAddOptions {
+  export interface IConfigAddOptions {
     prefix?: Prefix;
   }
-  interface IFolderOptions {
+  export interface IFolderOptions {
     inhibitors?: string;
     finalizers?: string;
     commands?: string;
@@ -82,19 +82,19 @@ declare module 'discore.js' {
     triggers?: string;
     events?: string;
   }
-  interface IPrefixOptions {
+  export interface IPrefixOptions {
     spaceSeparator?: boolean;
     ignoreCase?: boolean;
     mention?: boolean;
   }
-  interface ICommandConfig {
+  export interface ICommandConfig {
     argsSeparator?: string | RegExp;
     permLevels?: PermissionLevels;
     ignoreCase?: boolean;
     ignoreBots?: boolean;
     ignoreSelf?: boolean;
   }
-  interface IConfigOptions extends IConfigAddOptions {
+  export interface IConfigOptions extends IConfigAddOptions {
     mentionPrefix?: boolean;
     ignoreBots?: boolean;
     ignoreSelf?: boolean;
@@ -103,7 +103,7 @@ declare module 'discore.js' {
     ignoreCase?: boolean;
     prefix?: (string | RegExp)[];
   }
-  interface ICoreOptions {
+  export interface ICoreOptions {
     prefixOptions?: IPrefixOptions;
     commandOptions?: ICommandConfig;
     mainPath?: string;
@@ -113,7 +113,7 @@ declare module 'discore.js' {
     prefix?: (string | RegExp)[];
     db?: DB;
   }
-  interface CoreOptions {
+  export interface CoreOptions {
     prefixOptions?: IPrefixOptions;
     commandOptions?: ICommandConfig;
     mainPath?: string;
@@ -123,14 +123,14 @@ declare module 'discore.js' {
     prefix?: string | RegExp | (string | RegExp)[];
     db?: DB;
   }
-  interface IBaseOptions {
+  export interface IBaseOptions {
     enabled?: boolean;
     key?: any;
     name?: any;
     id?: any;
     once?: boolean;
   }
-  interface ICommandOptions extends IBaseOptions {
+  export interface ICommandOptions extends IBaseOptions {
     runIn?: string | string[];
     aliases?: Aliases;
     cooldown?: number;
@@ -138,22 +138,22 @@ declare module 'discore.js' {
     requiredPerms?: number | string | Array<string | number>;
     requiredRoles?: string | string[];
   }
-  interface IEventOptions extends IBaseOptions {}
-  interface IInhibitorOptions extends IBaseOptions {}
-  interface IMonitorOptions extends IBaseOptions {}
-  interface ITriggerOptions extends IBaseOptions {}
-  interface IFinalizerOptions extends IBaseOptions {}
+  export interface IEventOptions extends IBaseOptions {}
+  export interface IInhibitorOptions extends IBaseOptions {}
+  export interface IMonitorOptions extends IBaseOptions {}
+  export interface ITriggerOptions extends IBaseOptions {}
+  export interface IFinalizerOptions extends IBaseOptions {}
 
-  interface IPagesOptions {
+  export interface IPagesOptions {
     filter?(reaction: MessageReaction, user: User): boolean;
     prevPage?: string;
     nextPage?: string;
   }
 
-  interface IDocument {
+  export interface IDocument {
     [key: string]: any;
   }
-  class Doc implements IDocument {
+  export class Doc implements IDocument {
     [key: string]: any;
     private _model: JsonModel | SqlModel | MongoModel;
 
@@ -417,6 +417,24 @@ declare module 'discore.js' {
       value?: QueryValue
     ): Promise<Doc | undefined>;
 
+    public updateMany(
+      query: string,
+      value: string,
+      newData: IDocument
+    ): Promise<Doc[] | undefined>;
+    public updateMany(
+      query: { [key: string]: any },
+      newData: IDocument
+    ): Promise<Doc[] | undefined>;
+    public updateMany(
+      query: (value: any, key: string, collection: MongoCollection) => boolean,
+      newData: IDocument
+    ): Promise<Doc[] | undefined>;
+    public updateMany(
+      query: QueryResolvable,
+      value?: QueryValue
+    ): Promise<Doc[] | undefined>;
+
     public upsertOne(
       query: string,
       value: string,
@@ -549,6 +567,22 @@ declare module 'discore.js' {
       value: TQueryValue,
       newData?: TQueryValue
     ): Doc | undefined;
+
+    public updateMany(query: IDocument, newData: IDocument): Doc | undefined;
+    public updateMany(
+      query: string,
+      value: any,
+      newData: IDocument
+    ): Doc[] | undefined;
+    public updateMany(
+      query: (value: Doc, key: string, model: JsonModel) => boolean,
+      newData: IDocument
+    ): Doc[] | undefined;
+    public updateMany(
+      query: TQueryResolvable,
+      value: TQueryValue,
+      newData?: TQueryValue
+    ): Doc[] | undefined;
 
     public upsertOne(query: IDocument, newData: IDocument): Doc;
     public upsertOne(query: string, value: any, newData: IDocument): Doc;
