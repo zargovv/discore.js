@@ -112,11 +112,15 @@ module.exports = class extends Event {
       return command.cdRun(message, args);
     }
 
-    for (const inhibitor of this.client.inhibitors.values()) {
-      if (!Boolean(await inhibitor._run(message, command))) {
-        return runTriggers();
+    const runInhibitors = async () => {
+      let bool = true;
+      for (const inhibitor of this.client.inhibitors.values()) {
+        bool = Boolean(Math.min(bool, await inhibitor._run(message, command)));
       }
-    }
+      return bool;
+    };
+
+    if (!(await runInhibitors())) return runTriggers();
 
     const runFinalizers = (res) =>
       this.client.finalizers.forEach((f) =>
