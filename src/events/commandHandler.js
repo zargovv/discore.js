@@ -76,6 +76,7 @@ module.exports = class extends Event {
       .filter(Boolean)[0];
     if (!cmd) return runTriggers();
 
+    message.cmd = cmd.name;
     const argsContent = cmdContent.substr(cmd.name.length);
 
     const { command } = cmd;

@@ -28,6 +28,8 @@ declare module 'discore.js' {
   export type SqlCollection = Collection<string, Doc>;
   export type MongoCollection = Collection<string, Doc>;
   export type Cooldowns = Collection<string, number>;
+  export type CommandMessage = Message & { cmd: string };
+  export type PartialCommandMessage = Message & { cmd?: string };
 
   export interface MySqlTypes {
     Double: any;
@@ -632,12 +634,16 @@ declare module 'discore.js' {
 
     public addLevel(level: Level, brk: boolean, fn: Function): PermissionLevels;
     public add(level: Level, brk: boolean, fn: Function): PermissionLevels;
-    public test(level: Level, message: Message, client: Core): Promise<boolean>;
+    public test(
+      level: Level,
+      message: PartialCommandMessage,
+      client: Core
+    ): Promise<boolean>;
 
     private _getId(): Level;
     private _test(
       level: Level,
-      message: Message,
+      message: PartialCommandMessage,
       client: Core
     ): Promise<boolean>;
   }
@@ -725,13 +731,13 @@ declare module 'discore.js' {
     get options(): ICommandOptions;
     get cOptions(): { [key: string]: any };
 
-    public noRequiredPermsRun(message: Discord.Message, args: string[]): any;
-    public noRequiredRolesRun(message: Discord.Message, args: string[]): any;
-    public noPermsRun(message: Discord.Message, args: string[]): any;
-    public cdRun(message: Discord.Message, args: string[]): any;
-    public run(message: Discord.Message, args: string[]): any;
+    public noRequiredPermsRun(message: CommandMessage, args: string[]): any;
+    public noRequiredRolesRun(message: CommandMessage, args: string[]): any;
+    public noPermsRun(message: CommandMessage, args: string[]): any;
+    public cdRun(message: CommandMessage, args: string[]): any;
+    public run(message: CommandMessage, args: string[]): any;
 
-    _run(message: Discord.Message, args: string[]): Promise<boolean>;
+    _run(message: CommandMessage, args: string[]): Promise<boolean>;
 
     private _options: ICommandOptions;
 
@@ -770,7 +776,7 @@ declare module 'discore.js' {
 
     private _options: IInhibitorOptions;
 
-    _run(message: Discord.Message, cmd: Command): Promise<boolean>;
+    _run(message: CommandMessage, cmd: Command): Promise<boolean>;
   }
   export class Monitor extends Base {
     constructor(
@@ -796,7 +802,7 @@ declare module 'discore.js' {
     get options(): ITriggerOptions;
     get cOptions(): { [key: string]: any };
 
-    _run(message: Discord.Message): Promise<boolean>;
+    _run(message: PartialCommandMessage): Promise<boolean>;
 
     private _options: ITriggerOptions;
   }
@@ -811,7 +817,7 @@ declare module 'discore.js' {
     get options(): IFinalizerOptions;
     get cOptions(): { [key: string]: any };
 
-    _run(message: Discord.Message): Promise<boolean>;
+    _run(message: CommandMessage, res: any, enabled: boolean): Promise<boolean>;
 
     private _options: IFinalizerOptions;
   }
