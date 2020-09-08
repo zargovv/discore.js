@@ -1,11 +1,14 @@
 # Change Log
 
-## [1.3.3] - DEV
+## [1.3.3] - 2020-09-08
 
 ### Added
 
 - JsonModel#updateMany method
 - MongoModel#updateMany method
+- Dynamic typing to SqlModel
+- Dynamic typing to JsonModel
+- Dynamic typing to MongoModel
 
 ## [1.3.2] - 2020-05-14
 
