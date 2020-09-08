@@ -448,7 +448,7 @@ declare module 'discore.js' {
 
   export class JsonModel<
     T extends Document = Document,
-    D = { [K in keyof T]: T[K] } & { [key: string]: any }
+    D = { [K in keyof T]?: T[K] } & { [key: string]: any }
   > extends EventEmitter {
     public data: Collection<string, T>
     public db: Json
