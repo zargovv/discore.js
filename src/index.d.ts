@@ -9,6 +9,7 @@ declare module 'discore.js' {
     MessageEmbed as Embed
   } from 'discord.js'
   import * as Discord from 'discord.js'
+
   import { EventEmitter } from 'events'
 
   export type Aliases = string | string[]
@@ -25,8 +26,8 @@ declare module 'discore.js' {
   export type DB = Mongo | MySql | Json
   export type ArgsSeparator = string | RegExp
   export type PageResolvable = any
-  export type SqlCollection = Collection<string, Document>
-  export type MongoCollection = Collection<string, Document>
+  export type SqlCollection<T> = Collection<string, T>
+  export type MongoCollection<T> = Collection<string, T>
   export type Cooldowns = Collection<string, number>
   export type CommandMessage = Message & { cmd: string }
   export type PartialCommandMessage = Message & { cmd?: string }
@@ -115,14 +116,15 @@ declare module 'discore.js' {
     prefix?: (string | RegExp)[]
     db?: DB
   }
-  export interface CoreOptions {
-    prefixOptions?: IPrefixOptions
+  export interface CoreOptions extends Discord.ClientOptions {
     commandOptions?: ICommandConfig
+    prefixOptions?: IPrefixOptions
+    maxListeners?: number
     mainPath?: string
     folders?: IFolderOptions
     mobile?: boolean
-    token?: string
     prefix?: string | RegExp | (string | RegExp)[]
+    token?: string
     db?: DB
   }
   export interface IBaseOptions {
@@ -183,7 +185,8 @@ declare module 'discore.js' {
 
   export class SqlModel<
     T extends Document = Document,
-    D = { [K in keyof T]: T[K] } & { [key: string]: any }
+    D = { [K in keyof T]?: T[K] } & { [key: string]: any },
+    Col = SqlCollection<T>
   > extends EventEmitter {
     constructor(db: any, name: string, options?: object, defaults?: object)
 
@@ -191,39 +194,36 @@ declare module 'discore.js' {
     public defaults: object
     public name: string
     public options: object
-    public data: SqlCollection
+    public data: Col
     public state: 0 | 1
 
     private enqueue(action: () => any): Promise<any>
 
-    public fetch(): Promise<SqlCollection>
+    public fetch(): Promise<Col>
 
-    public getData(): Promise<SqlCollection>
+    public getData(): Promise<Col>
 
     public filterKeys(query: string, value: string): Promise<string[]>
-    public filterKeys(query: { [key: string]: any }): Promise<string[]>
+    public filterKeys(query: D): Promise<string[]>
     public filterKeys(
-      query: (value: any, key: string, collection: SqlCollection) => boolean
+      query: (value: D, key: keyof D | string, collection: Col) => boolean
     ): Promise<string[]>
     public filterKeys(
       query: QueryResolvable,
       value?: QueryValue
     ): Promise<string[]>
 
-    public filter(query: string, value: string): Promise<SqlCollection>
-    public filter(query: { [key: string]: any }): Promise<SqlCollection>
+    public filter(query: string, value: string): Promise<Col>
+    public filter(query: D): Promise<Col>
     public filter(
-      query: (value: any, key: string, collection: SqlCollection) => boolean
-    ): Promise<SqlCollection>
-    public filter(
-      query: QueryResolvable,
-      value?: QueryValue
-    ): Promise<SqlCollection>
+      query: (value: D, key: keyof D | string, collection: Col) => boolean
+    ): Promise<Col>
+    public filter(query: QueryResolvable, value?: QueryValue): Promise<Col>
 
     public findKey(query: string, value: string): Promise<string | undefined>
-    public findKey(query: { [key: string]: any }): Promise<string | undefined>
+    public findKey(query: D): Promise<string | undefined>
     public findKey(
-      query: (value: any, key: string, collection: SqlCollection) => boolean
+      query: (value: D, key: keyof D | string, collection: Col) => boolean
     ): Promise<string | undefined>
     public findKey(
       query: QueryResolvable,
@@ -231,9 +231,9 @@ declare module 'discore.js' {
     ): Promise<string | undefined>
 
     public findOne(query: string, value: string): Promise<T | undefined>
-    public findOne(query: { [key: string]: any }): Promise<T | undefined>
+    public findOne(query: D): Promise<T | undefined>
     public findOne(
-      query: (value: any, key: string, collection: SqlCollection) => boolean
+      query: (value: D, key: keyof D | string, collection: Col) => boolean
     ): Promise<T | undefined>
     public findOne(
       query: QueryResolvable,
@@ -241,9 +241,9 @@ declare module 'discore.js' {
     ): Promise<T | undefined>
 
     public getOne(query: string, value: string): Promise<T>
-    public getOne(query: { [key: string]: any }): Promise<T>
+    public getOne(query: D): Promise<T>
     public getOne(
-      query: (value: any, key: string, collection: SqlCollection) => boolean
+      query: (value: D, key: keyof D | string, collection: Col) => boolean
     ): Promise<T>
     public getOne(query: QueryResolvable, value?: QueryValue): Promise<T>
 
@@ -254,7 +254,7 @@ declare module 'discore.js' {
     public deleteOne(query: string, value: string): Promise<T | undefined>
     public deleteOne(query: D): Promise<T | undefined>
     public deleteOne(
-      query: (value: any, key: string, collection: SqlCollection) => boolean
+      query: (value: D, key: keyof D | string, collection: Col) => boolean
     ): Promise<T | undefined>
     public deleteOne(
       query: QueryResolvable,
@@ -264,7 +264,7 @@ declare module 'discore.js' {
     public deleteMany(query: string, value: string): Promise<T[]>
     public deleteMany(query: D): Promise<T[]>
     public deleteMany(
-      query: (value: any, key: string, collection: SqlCollection) => boolean
+      query: (value: D, key: keyof D | string, collection: Col) => boolean
     ): Promise<T[]>
     public deleteMany(query: QueryResolvable, value?: QueryValue): Promise<T[]>
 
@@ -275,7 +275,7 @@ declare module 'discore.js' {
     ): Promise<T | undefined>
     public updateOne(query: D, newData: D): Promise<T | undefined>
     public updateOne(
-      query: (value: any, key: string, collection: SqlCollection) => boolean,
+      query: (value: D, key: keyof D | string, collection: Col) => boolean,
       newData: D
     ): Promise<T | undefined>
     public updateOne(
@@ -286,7 +286,7 @@ declare module 'discore.js' {
     public upsertOne(query: string, value: string, newData: D): Promise<T>
     public upsertOne(query: D, newData: D): Promise<T>
     public upsertOne(
-      query: (value: any, key: string, collection: SqlCollection) => boolean,
+      query: (value: D, key: keyof D | string, collection: Col) => boolean,
       newData: D
     ): Promise<T>
     public upsertOne(query: QueryResolvable, value?: QueryValue): Promise<T>
@@ -306,11 +306,12 @@ declare module 'discore.js' {
   }
   export class MongoModel<
     T extends Document = Document,
-    D = { [K in keyof T]: T[K] } & { [key: string]: any }
+    D = { [K in keyof T]?: T[K] } & { [key: string]: any },
+    Col = MongoCollection<T>
   > extends EventEmitter {
     constructor(db: any, name: string, options?: object, defaults?: object)
 
-    public data: MongoCollection
+    public data: Col
     public defaults: object
     public name: string
     public options: object
@@ -319,34 +320,31 @@ declare module 'discore.js' {
 
     private enqueue(action: () => any): Promise<any>
 
-    public fetch(): Promise<MongoCollection>
+    public fetch(): Promise<Col>
 
-    public getData(): Promise<MongoCollection>
+    public getData(): Promise<Col>
 
     public filterKeys(query: string, value: string): Promise<string[]>
     public filterKeys(query: D): Promise<string[]>
     public filterKeys(
-      query: (value: any, key: string, collection: MongoCollection) => boolean
+      query: (value: D, key: keyof D | string, collection: Col) => boolean
     ): Promise<string[]>
     public filterKeys(
       query: QueryResolvable,
       value?: QueryValue
     ): Promise<string[]>
 
-    public filter(query: string, value: string): Promise<MongoCollection>
-    public filter(query: D): Promise<MongoCollection>
+    public filter(query: string, value: string): Promise<Col>
+    public filter(query: D): Promise<Col>
     public filter(
-      query: (value: any, key: string, collection: MongoCollection) => boolean
-    ): Promise<MongoCollection>
-    public filter(
-      query: QueryResolvable,
-      value?: QueryValue
-    ): Promise<MongoCollection>
+      query: (value: D, key: keyof D | string, collection: Col) => boolean
+    ): Promise<Col>
+    public filter(query: QueryResolvable, value?: QueryValue): Promise<Col>
 
     public findKey(query: string, value: string): Promise<string | undefined>
     public findKey(query: D): Promise<string | undefined>
     public findKey(
-      query: (value: any, key: string, collection: MongoCollection) => boolean
+      query: (value: D, key: keyof D | string, collection: Col) => boolean
     ): Promise<string | undefined>
     public findKey(
       query: QueryResolvable,
@@ -356,7 +354,7 @@ declare module 'discore.js' {
     public findOne(query: string, value: string): Promise<T | undefined>
     public findOne(query: D): Promise<T | undefined>
     public findOne(
-      query: (value: any, key: string, collection: MongoCollection) => boolean
+      query: (value: D, key: keyof D | string, collection: Col) => boolean
     ): Promise<T | undefined>
     public findOne(
       query: QueryResolvable,
@@ -366,7 +364,7 @@ declare module 'discore.js' {
     public getOne(query: string, value: string): Promise<T>
     public getOne(query: D): Promise<T>
     public getOne(
-      query: (value: any, key: string, collection: MongoCollection) => boolean
+      query: (value: D, key: keyof D | string, collection: Col) => boolean
     ): Promise<T>
     public getOne(query: QueryResolvable, value?: QueryValue): Promise<T>
 
@@ -375,9 +373,9 @@ declare module 'discore.js' {
     public insertMany(data: D[]): T
 
     public deleteOne(query: string, value: string): Promise<T | undefined>
-    public deleteOne(query: { [key: string]: any }): Promise<T | undefined>
+    public deleteOne(query: D): Promise<T | undefined>
     public deleteOne(
-      query: (value: any, key: string, collection: MongoCollection) => boolean
+      query: (value: D, key: keyof D | string, collection: Col) => boolean
     ): Promise<T | undefined>
     public deleteOne(
       query: QueryResolvable,
@@ -387,7 +385,7 @@ declare module 'discore.js' {
     public deleteMany(query: string, value: string): Promise<T[]>
     public deleteMany(query: D): Promise<T[]>
     public deleteMany(
-      query: (value: any, key: string, collection: MongoCollection) => boolean
+      query: (value: D, key: keyof D | string, collection: Col) => boolean
     ): Promise<T[]>
     public deleteMany(query: QueryResolvable, value?: QueryValue): Promise<T[]>
 
@@ -398,7 +396,7 @@ declare module 'discore.js' {
     ): Promise<T | undefined>
     public updateOne(query: D, newData: D): Promise<T | undefined>
     public updateOne(
-      query: (value: any, key: string, collection: MongoCollection) => boolean,
+      query: (value: D, key: keyof D | string, collection: Col) => boolean,
       newData: D
     ): Promise<T | undefined>
     public updateOne(
@@ -413,7 +411,7 @@ declare module 'discore.js' {
     ): Promise<T[] | undefined>
     public updateMany(query: D, newData: D): Promise<T[] | undefined>
     public updateMany(
-      query: (value: any, key: string, collection: MongoCollection) => boolean,
+      query: (value: D, key: keyof D | string, collection: Col) => boolean,
       newData: D
     ): Promise<T[] | undefined>
     public updateMany(
@@ -424,7 +422,7 @@ declare module 'discore.js' {
     public upsertOne(query: string, value: string, newData: D): Promise<T>
     public upsertOne(query: D, newData: D): Promise<T>
     public upsertOne(
-      query: (value: any, key: string, collection: MongoCollection) => boolean,
+      query: (value: D, key: keyof D | string, collection: Col) => boolean,
       newData: D
     ): Promise<T>
     public upsertOne(query: QueryResolvable, value?: QueryValue): Promise<T>

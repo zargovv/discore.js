@@ -69,6 +69,7 @@ module.exports = class extends Client {
       ignoreBots: options.commandOptions.ignoreBots,
       ignoreSelf: options.commandOptions.ignoreSelf,
 
+      maxListeners: options.maxListeners,
       mainPath: options.mainPath.startsWith('/')
         ? options.mainPath
         : path.join(
@@ -84,6 +85,7 @@ module.exports = class extends Client {
     delete options.folders;
     delete options.prefixOptions;
     delete options.commandOptions;
+    delete options.maxListeners;
     delete options.mainPath;
     delete options.mobile;
     delete options.prefix;
@@ -99,6 +101,9 @@ module.exports = class extends Client {
           }
         : {}),
     });
+    if (typeof thisOptions.maxListeners === 'number') {
+      this.setMaxListeners(thisOptions.maxListeners);
+    }
     const { prefix, argsSeparator, db } = thisOptions;
     if (
       db !== undefined &&

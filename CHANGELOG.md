@@ -1,5 +1,19 @@
 # Change Log
 
+## [1.3.6] - 2020-10-04
+
+### Added
+
+- CoreOptions#maxListeners
+
+### Fixed
+
+- DB Typings
+
+### Changed
+
+- CoreOptions now extends ClientOptions
+
 ## [1.3.3] - 2020-09-08
 
 ### Added
