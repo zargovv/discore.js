@@ -185,6 +185,7 @@ module.exports = class MongoModel extends EventEmitter {
         .then((keys) => {
           const docs = keys.map((k) => this.data.get(k));
           if (keys.length > 0) {
+            keys.forEach(k => this.data.delete(k));
             this.db.collection(this.name).deleteMany({ _id: { $in: keys } });
           }
           this.emit('deleteMany', docs);

@@ -222,6 +222,7 @@ module.exports = class SqlModel extends EventEmitter {
         .then((keys) => {
           const docs = keys.map((k) => this.data.get(k));
           if (keys.length > 0) {
+            keys.forEach(k => this.data.delete(k));
             this.db
               .query(
                 `DELETE FROM ${this.name} WHERE _id IN ('${keys.join("', '")}')`
