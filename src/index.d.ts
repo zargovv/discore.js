@@ -746,7 +746,7 @@ declare module 'discore.js' {
 
     private _options: IInhibitorOptions
 
-    _run(message: CommandMessage, cmd: Command): Promise<boolean>
+    _run(cmd: Command, message: CommandMessage, args: string[]): Promise<boolean>
   }
   export class Monitor extends Base {
     constructor(

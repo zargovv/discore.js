@@ -116,7 +116,9 @@ module.exports = class extends Event {
     const runInhibitors = async () => {
       let bool = true;
       for (const inhibitor of this.client.inhibitors.values()) {
-        bool = Boolean(Math.min(bool, await inhibitor._run(message, command)));
+        bool = Boolean(
+          Math.min(bool, await inhibitor._run(command, message, args))
+        );
       }
       return bool;
     };

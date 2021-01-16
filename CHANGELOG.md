@@ -1,14 +1,18 @@
 # Change Log
 
-## [1.3.8] - 2020-01-17
+## [1.3.9] - 2020-01-17
 
 ### Added
+
+  - InhibitorRunArgs: args argument.
 
 ### Fixed
 
   - Typings
 
 ### Changed
+
+  - InhibitorRunArgs now takes [Command, Discord.Message, string[]] instead of [Discord.Message, Command]
 
 ## [1.3.6] - 2020-10-04
 

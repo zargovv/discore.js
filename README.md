@@ -473,14 +473,14 @@ module.exports = class extends Inhibitor {
     };
   }
 
-  run(message, cmd) {
+  run(cmd, message, args) {
     // Inhibitor code.
     // Runs only if enabled.
     // Should return true in the end.
     // Doesn't run commands if return false or undefined.
   }
 
-  disabledRun(message, cmd) {
+  disabledRun(cmd, message, args) {
     // Same as run but runs only if disabled.
   }
 
