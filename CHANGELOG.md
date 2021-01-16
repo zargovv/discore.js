@@ -1,5 +1,15 @@
 # Change Log
 
+## [1.3.8] - 2020-01-17
+
+### Added
+
+### Fixed
+
+  - Typings
+
+### Changed
+
 ## [1.3.6] - 2020-10-04
 
 ### Added
