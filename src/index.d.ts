@@ -213,12 +213,12 @@ declare module 'discore.js' {
       value?: QueryValue
     ): Promise<string[]>
 
-    public filter(query: string, value: string): Promise<Col>
-    public filter(query: D): Promise<Col>
+    public filter(query: string, value: string): Promise<T[]>
+    public filter(query: D): Promise<T[]>
     public filter(
       query: (value: D, key: keyof D | string, collection: Col) => boolean
-    ): Promise<Col>
-    public filter(query: QueryResolvable, value?: QueryValue): Promise<Col>
+    ): Promise<T[]>
+    public filter(query: QueryResolvable, value?: QueryValue): Promise<T[]>
 
     public findKey(query: string, value: string): Promise<string | undefined>
     public findKey(query: D): Promise<string | undefined>
@@ -334,12 +334,12 @@ declare module 'discore.js' {
       value?: QueryValue
     ): Promise<string[]>
 
-    public filter(query: string, value: string): Promise<Col>
-    public filter(query: D): Promise<Col>
+    public filter(query: string, value: string): Promise<T[]>
+    public filter(query: D): Promise<T[]>
     public filter(
       query: (value: D, key: keyof D | string, collection: Col) => boolean
-    ): Promise<Col>
-    public filter(query: QueryResolvable, value?: QueryValue): Promise<Col>
+    ): Promise<T[]>
+    public filter(query: QueryResolvable, value?: QueryValue): Promise<T[]>
 
     public findKey(query: string, value: string): Promise<string | undefined>
     public findKey(query: D): Promise<string | undefined>
@@ -708,6 +708,9 @@ declare module 'discore.js' {
 
     private _options: ICommandOptions
 
+    public runIn: string[]
+    public requiredRoles: string[]
+    public requiredPerms: string[]
     public cooldown: number
     public aliases: Aliases
     public permLevel: number
