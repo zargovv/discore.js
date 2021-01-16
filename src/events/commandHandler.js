@@ -103,21 +103,26 @@ module.exports = class extends Event {
 
     const args = argsContent ? argsContent.split(argsSeparator || ' ') : [];
 
+    const params = {
+      usedPrefix: prefixMatch[0],
+      usedCommand: cmd.name
+    }
+
     const permTest = await this.client.permLevels.test(
       command.permLevel,
       message,
       this.client
     );
-    if (!permTest) return command.noPermsRun(message, args);
+    if (!permTest) return command.noPermsRun(message, args, params);
     if (command.cooldowns.get(message.author.id) > Date.now()) {
-      return command.cdRun(message, args);
+      return command.cdRun(message, args, params);
     }
 
     const runInhibitors = async () => {
       let bool = true;
       for (const inhibitor of this.client.inhibitors.values()) {
         bool = Boolean(
-          Math.min(bool, await inhibitor._run(command, message, args))
+          Math.min(bool, await inhibitor._run(command, message, args, params))
         );
       }
       return bool;
@@ -131,6 +136,6 @@ module.exports = class extends Event {
       );
 
     command.cooldowns.set(message.author.id, Date.now() + command.cooldown);
-    command._run(message, args).then((res) => runFinalizers(res));
+    command._run(message, args, params).then((res) => runFinalizers(res));
   }
 };

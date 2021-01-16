@@ -1,9 +1,13 @@
 # Change Log
 
-## [1.3.9] - 2020-01-17
+## [1.3.10] - 2020-01-17
 
 ### Added
 
+  - CommandParams interface: { usedPrefix: string; usedCommand: string }
+
+  - CommandRunArgs: CommandParams argument.
+  - InhibitorRunArgs: CommandParams argument.
   - InhibitorRunArgs: args argument.
 
 ### Fixed
@@ -12,7 +16,7 @@
 
 ### Changed
 
-  - InhibitorRunArgs now takes [Command, Discord.Message, string[]] instead of [Discord.Message, Command]
+  - InhibitorRunArgs now takes [Command, Discord.Message, string[], CommandParams] instead of [Discord.Message, Command]
 
 ## [1.3.6] - 2020-10-04
 

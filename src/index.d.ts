@@ -32,6 +32,10 @@ declare module 'discore.js' {
   export type CommandMessage = Message & { cmd: string }
   export type PartialCommandMessage = Message & { cmd?: string }
 
+  export interface CommandParams {
+    usedPrefix: string
+    usedCommand: string
+  }
   export interface MySqlTypes {
     Double: any
     Boolean: any
@@ -698,13 +702,13 @@ declare module 'discore.js' {
     get options(): ICommandOptions
     get cOptions(): { [key: string]: any }
 
-    public noRequiredPermsRun(message: CommandMessage, args: string[]): any
-    public noRequiredRolesRun(message: CommandMessage, args: string[]): any
-    public noPermsRun(message: CommandMessage, args: string[]): any
-    public cdRun(message: CommandMessage, args: string[]): any
-    public run(message: CommandMessage, args: string[]): any
+    public noRequiredPermsRun(message: CommandMessage, args: string[], params: CommandParams): any
+    public noRequiredRolesRun(message: CommandMessage, args: string[], params: CommandParams): any
+    public noPermsRun(message: CommandMessage, args: string[], params: CommandParams): any
+    public cdRun(message: CommandMessage, args: string[], params: CommandParams): any
+    public run(message: CommandMessage, args: string[], params: CommandParams): any
 
-    _run(message: CommandMessage, args: string[]): Promise<boolean>
+    _run(message: CommandMessage, args: string[], params: CommandParams): Promise<boolean>
 
     private _options: ICommandOptions
 
@@ -746,7 +750,7 @@ declare module 'discore.js' {
 
     private _options: IInhibitorOptions
 
-    _run(cmd: Command, message: CommandMessage, args: string[]): Promise<boolean>
+    _run(cmd: Command, message: CommandMessage, args: string[], params: CommandParams): Promise<boolean>
   }
   export class Monitor extends Base {
     constructor(
