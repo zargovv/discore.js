@@ -7,8 +7,8 @@
   "author": "Zargovv (Max Zargov)",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "12.3.1",
-    "mongoose": "5.10.7",
+    "discord.js": "12.5.1",
+    "mongoose": "5.11.12",
     "mysql": "2.18.1"
   },
   "repository": {
