@@ -4,7 +4,9 @@ function escape(source) {
   return source.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
-module.exports = class extends Event {
+module.exports = class extends (
+  Event
+) {
   get options() {
     return { key: 'message' };
   }
@@ -20,7 +22,7 @@ module.exports = class extends Event {
       argsSeparator,
       spaceSeparator,
       ignoreCase,
-      prefix,
+      prefix
     } = this.client.config.guild.get(message.guild ? message.guild.id : null);
     if (ignoreBots && message.author.bot) return;
     if (ignoreSelf && message.author.id === this.client.user.id) return;
@@ -28,7 +30,7 @@ module.exports = class extends Event {
 
     const prefixes = prefix instanceof Array ? prefix : [prefix];
 
-    const strPrefixes = prefixes.map((p) =>
+    const strPrefixes = prefixes.map(p =>
       p instanceof RegExp ? p.source : escape(p)
     );
 
@@ -40,7 +42,7 @@ module.exports = class extends Event {
     );
 
     const runTriggers = () =>
-      this.client.triggers.forEach((e) => e._run(message));
+      this.client.triggers.forEach(e => e._run(message));
 
     const prefixMatch = content.match(prefixRegex);
     if (!prefixMatch) return runTriggers();
@@ -55,14 +57,14 @@ module.exports = class extends Event {
     );
 
     const commands = [];
-    this.client.commands.forEach((c) => {
+    this.client.commands.forEach(c => {
       commands.push({ name: c.name, command: c });
-      c.aliases.forEach((a) => commands.push({ name: a, command: c }));
+      c.aliases.forEach(a => commands.push({ name: a, command: c }));
     });
 
     const cmd = commands
       .sort((b, a) => a.name.length - b.name.length)
-      .map((c) => {
+      .map(c => {
         const regex = new RegExp(
           `^(${escape(c.name)})(?:\\s|$)`,
           ignoreCase ? 'i' : ''
@@ -83,18 +85,14 @@ module.exports = class extends Event {
 
     if (command.requiredPerms.length > 0) {
       if (!message.member) return runTriggers();
-      if (
-        command.requiredPerms.some((p) => !message.member.permissions.has(p))
-      ) {
+      if (!command.requiredPerms.some(p => message.member.permissions.has(p))) {
         return command.noRequiredPerms(message, args);
       }
     }
 
     if (command.requiredRoles.length > 0) {
       if (!message.member) return runTriggers();
-      if (
-        command.requiredRoles.some((p) => !message.member.roles.cache.has(p))
-      ) {
+      if (!command.requiredRoles.some(p => message.member.roles.cache.has(p))) {
         return runTriggers();
       }
     }
@@ -106,7 +104,7 @@ module.exports = class extends Event {
     const params = {
       usedPrefix: prefixMatch[0],
       usedCommand: cmd.name
-    }
+    };
 
     const permTest = await this.client.permLevels.test(
       command.permLevel,
@@ -130,12 +128,12 @@ module.exports = class extends Event {
 
     if (!(await runInhibitors())) return runTriggers();
 
-    const runFinalizers = (res) =>
-      this.client.finalizers.forEach((f) =>
+    const runFinalizers = res =>
+      this.client.finalizers.forEach(f =>
         f._run(message, res, command.enabled)
       );
 
     command.cooldowns.set(message.author.id, Date.now() + command.cooldown);
-    command._run(message, args, params).then((res) => runFinalizers(res));
+    command._run(message, args, params).then(res => runFinalizers(res));
   }
 };
