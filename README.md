@@ -248,23 +248,23 @@ module.exports = class extends Command {
     };
   }
 
-  run(message, args) {
+  run(message, args, { usedPrefix, usedCommand }) {
     // Command code.
     // runs only if enabled.
   }
 
-  disabledRun(message, args) {
+  disabledRun(message, args, { usedPrefix, usedCommand }) {
     // runs only if disabled.
   }
 
-  noPermsRun(message, args) {
+  noPermsRun(message, args, { usedPrefix, usedCommand }) {
     // runs if Permission Level test hasn't passed.
   }
 
-  noRequiredRolesRun(message, args) {}
-  noRequiredPermsRun(message, args) {}
+  noRequiredRolesRun(message, args, { usedPrefix, usedCommand }) {}
+  noRequiredPermsRun(message, args, { usedPrefix, usedCommand }) {}
 
-  cdRun(message, args) {
+  cdRun(message, args, { usedPrefix, usedCommand }) {
     // runs if user have active cooldown on his id
   }
 
@@ -473,14 +473,14 @@ module.exports = class extends Inhibitor {
     };
   }
 
-  run(cmd, message, args) {
+  run(cmd, message, args, { usedPrefix, usedCommand }) {
     // Inhibitor code.
     // Runs only if enabled.
     // Should return true in the end.
     // Doesn't run commands if return false or undefined.
   }
 
-  disabledRun(cmd, message, args) {
+  disabledRun(cmd, message, args, { usedPrefix, usedCommand }) {
     // Same as run but runs only if disabled.
   }
 
