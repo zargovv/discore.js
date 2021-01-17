@@ -86,14 +86,14 @@ module.exports = class extends (
     if (command.requiredPerms.length > 0) {
       if (!message.member) return runTriggers();
       if (!command.requiredPerms.some(p => message.member.permissions.has(p))) {
-        return command.noRequiredPerms(message, args);
+        return command.noRequiredPermsRun(message, args, params);
       }
     }
 
     if (command.requiredRoles.length > 0) {
       if (!message.member) return runTriggers();
       if (!command.requiredRoles.some(p => message.member.roles.cache.has(p))) {
-        return runTriggers();
+        return command.noRequiredRolesRun(message, args, params);
       }
     }
 
