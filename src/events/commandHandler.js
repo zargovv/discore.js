@@ -83,6 +83,8 @@ module.exports = class extends (
 
     const { command } = cmd;
 
+    const args = argsContent ? argsContent.split(argsSeparator || ' ') : [];
+
     if (command.requiredPerms.length > 0) {
       if (!message.member) return runTriggers();
       if (!command.requiredPerms.some(p => message.member.permissions.has(p))) {
@@ -98,8 +100,6 @@ module.exports = class extends (
     }
 
     if (command.runIn.indexOf(message.channel.type) < 0) return runTriggers();
-
-    const args = argsContent ? argsContent.split(argsSeparator || ' ') : [];
 
     const params = {
       usedPrefix: prefixMatch[0],
