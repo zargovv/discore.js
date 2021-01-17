@@ -84,6 +84,10 @@ module.exports = class extends (
     const { command } = cmd;
 
     const args = argsContent ? argsContent.split(argsSeparator || ' ') : [];
+    const params = {
+      usedPrefix: prefixMatch[0],
+      usedCommand: cmd.name
+    };
 
     if (command.requiredPerms.length > 0) {
       if (!message.member) return runTriggers();
@@ -100,11 +104,6 @@ module.exports = class extends (
     }
 
     if (command.runIn.indexOf(message.channel.type) < 0) return runTriggers();
-
-    const params = {
-      usedPrefix: prefixMatch[0],
-      usedCommand: cmd.name
-    };
 
     const permTest = await this.client.permLevels.test(
       command.permLevel,
