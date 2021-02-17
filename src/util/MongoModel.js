@@ -225,6 +225,15 @@ module.exports = class MongoModel extends EventEmitter {
           const docs = keys.map((k) => this.data.get(k));
           if (keys.length > 0) {
             if (typeof query !== 'string') newData = value;
+            keys.forEach((k) => {
+              const newDocument = new MongoDocument({
+                ...this.defaults,
+                ...this.data.get(k),
+                ...newData
+              })
+
+              this.data.set(k, newDocument)
+            });
             this.db
               .collection(this.name)
               .updateMany({ _id: { $in: keys } }, { $set: newData });
