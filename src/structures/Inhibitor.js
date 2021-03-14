@@ -23,17 +23,9 @@ module.exports = class Inhibitor extends Base {
    */
   async _run(...args) {
     let bool = false;
-    if (this.enabled) {
-      if (this.run.constructor.name === 'AsyncFunction') {
-        bool = await this.run(...args);
-      } else {
-        bool = this.run(...args);
-      }
-    } else if (this.disabledRun.constructor.name === 'AsyncFunction') {
-      bool = await this.disabledRun(...args);
-    } else {
-      bool = this.disabledRun(...args);
-    }
+    const runFunc = this.enabled ? 'run' : 'disabledRun';
+    const res = this[runFunc](...args);
+    bool = res instanceof Promise ? await res : res;
     if (this.once) this.unload();
     return Boolean(bool);
   }

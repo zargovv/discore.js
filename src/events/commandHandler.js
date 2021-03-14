@@ -4,9 +4,7 @@ function escape(source) {
   return source.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
-module.exports = class extends (
-  Event
-) {
+module.exports = class extends Event {
   get options() {
     return { key: 'message' };
   }
@@ -115,14 +113,10 @@ module.exports = class extends (
       return command.cdRun(message, args, params);
     }
 
-    const runInhibitors = async () => {
-      let bool = true;
-      for (const inhibitor of this.client.inhibitors.values()) {
-        bool = Boolean(
-          Math.min(bool, await inhibitor._run(command, message, args, params))
-        );
-      }
-      return bool;
+    const runInhibitors = () => {
+      const inhibitors = [...this.client.inhibitors.values()];
+      const promises = inhibitors.forEach(inhibitor => inhibitor._run());
+      return Promise.all(promises).then(res => !res.includes(false));
     };
 
     if (!(await runInhibitors())) return runTriggers();
