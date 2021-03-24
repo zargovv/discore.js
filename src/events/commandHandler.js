@@ -115,7 +115,9 @@ module.exports = class extends Event {
 
     const runInhibitors = () => {
       const inhibitors = [...this.client.inhibitors.values()];
-      const promises = inhibitors.map(inhibitor => inhibitor._run());
+      const promises = inhibitors.map(inhibitor => {
+        return inhibitor._run(command, message, args, params);
+      });
       return Promise.all(promises).then(res => !res.includes(false));
     };
 
